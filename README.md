@@ -67,6 +67,7 @@ V1 explicitly excludes airline portal login, schedule scraping, public nearby cr
 - [Milestone Execution Plan](docs/MILESTONE_EXECUTION_PLAN.md)
 - [Landing Page Waitlist Plan](docs/LANDING_PAGE_WAITLIST_PLAN.md)
 - [Legal Policy Requirements](docs/LEGAL_POLICY_REQUIREMENTS.md)
+- [Docs Consistency Review](docs/DOCS_CONSISTENCY_REVIEW.md)
 - [Research Notes](docs/RESEARCH_NOTES.md)
 
 ## Current Repo Boundary
