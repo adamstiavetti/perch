@@ -70,6 +70,7 @@ V1 explicitly excludes airline portal login, schedule scraping, public nearby cr
 - [Landing Page Waitlist Plan](docs/LANDING_PAGE_WAITLIST_PLAN.md)
 - [M0 Validation Operating Packet](docs/M0_VALIDATION_OPERATING_PACKET.md)
 - [No-Code Waitlist Execution](docs/NO_CODE_WAITLIST_EXECUTION.md)
+- [Product Delivery Operating Model](docs/PRODUCT_DELIVERY_OPERATING_MODEL.md)
 - [Legal Policy Requirements](docs/LEGAL_POLICY_REQUIREMENTS.md)
 - [Docs Consistency Review](docs/DOCS_CONSISTENCY_REVIEW.md)
 - [Research Notes](docs/RESEARCH_NOTES.md)
