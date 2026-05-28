@@ -6,6 +6,17 @@ Working name note: "Deadhead Club" is a working product name pending legal and t
 
 These notes summarize public web research used to refine the planning docs. Sources are summarized in original language; long copyrighted passages are intentionally not copied.
 
+## Research Synthesis Artifacts
+
+### Discovery Research Report 001
+
+- URL: `docs/DISCOVERY_RESEARCH_REPORT_001.md`
+- Source type: internal synthesis / desk research report
+- Date recorded: May 28, 2026
+- Supports: Organizes founder/assistant-provided Discovery Research Pass 1 findings using the existing public source base in this file. It supports continuing validation around Base Boards, Layover Boards, verified anonymous Crew Rooms, and community-generated aviation knowledge, while preserving V1 exclusions around schedule import, non-rev load requests, nearby crew tracking, dating/swiping, exact hotel exposure, public location tracking, and badge uploads on public waitlists.
+- Product-plan impact: Updated `PROBLEM_SOLUTION_VALIDATION_MATRIX.md` to mark relevant assumptions as desk-researched only, not user-validated or beta-validated. Preserved the FA expert interview as pending.
+- Limitations: This is a synthesis of existing research and user-provided findings, not fresh web research, not customer interviews, not expert-reviewed evidence, and not beta behavior. It should not be used to claim validation is complete.
+
 ## Competitor and Market Sources
 
 ### Flight Crew View App - App Store
