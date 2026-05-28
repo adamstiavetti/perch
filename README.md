@@ -74,6 +74,7 @@ V1 explicitly excludes airline portal login, schedule scraping, public nearby cr
 - [Discovery Research Plan](docs/DISCOVERY_RESEARCH_PLAN.md)
 - [Problem/Solution Validation Matrix](docs/PROBLEM_SOLUTION_VALIDATION_MATRIX.md)
 - [Discovery Research Report 001](docs/DISCOVERY_RESEARCH_REPORT_001.md)
+- [Epoch Roadmap](docs/EPOCH_ROADMAP.md)
 - [App Foundation Notes](docs/APP_FOUNDATION_NOTES.md)
 - [Deployment and Waitlist Readiness](docs/DEPLOYMENT_AND_WAITLIST_READINESS.md)
 - [Deployment Record 001](docs/DEPLOYMENT_RECORD_001.md)
