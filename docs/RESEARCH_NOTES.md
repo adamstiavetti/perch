@@ -702,3 +702,95 @@ These sources were used for `docs/LEGAL_POLICY_REQUIREMENTS.md`. Date accessed: 
 - Source type: methodology reference
 - Supports: Configuration should live outside code, backing services should be treated as attached resources, and apps should be portable across environments.
 - Product-plan impact: added 12-factor style environment/config guidance and separation of production/preview/development secrets.
+
+## Three.js Airside Journey V2 Planning Sources
+
+Accessed: May 28, 2026
+
+### React Three Fiber Scaling Performance
+
+- URL: https://r3f.docs.pmnd.rs/advanced/scaling-performance
+- Source type: official documentation
+- Supports: React Three Fiber performance planning should consider on-demand rendering, reuse of geometries/materials, instancing for repeated objects, level of detail, performance monitoring, and adaptive pixel ratio strategies.
+- Product-plan impact: informed the Airside Journey V2 recommendation to lazy-load 3D, cap DPR, reuse resources, avoid heavy object counts, and keep mobile scenes small.
+- Limitations: Framework guidance, not Deadhead Club-specific UX validation or device benchmark data.
+
+### React Three Fiber Performance Pitfalls
+
+- URL: https://r3f.docs.pmnd.rs/advanced/pitfalls
+- Source type: official documentation
+- Supports: Creating objects can be expensive; materials/geometries should be shared where practical; fast animation updates should avoid React state updates inside frame loops.
+- Product-plan impact: informed V2 component guidance to use procedural geometry carefully, reuse materials/geometries, and avoid React state churn during animation.
+- Limitations: Technical best practices only; does not define brand direction or conversion impact.
+
+### Next.js Lazy Loading Guide
+
+- URL: https://nextjs.org/docs/app/guides/lazy-loading
+- Source type: official documentation
+- Supports: Next.js supports dynamic imports and lazy loading for client components; browser-only work should be isolated appropriately.
+- Product-plan impact: reinforced the recommendation to keep the 3D experience client-only, dynamically loaded, and separate from the HTML content path.
+- Limitations: General Next.js guidance; Three.js-specific implementation still needs app-level testing.
+
+### MDN WebGL Best Practices
+
+- URL: https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices
+- Source type: authoritative web platform documentation
+- Supports: WebGL applications need careful resource and performance management, especially for broad device compatibility.
+- Product-plan impact: informed the mobile performance budget, fallback requirements, and no-multiple-heavy-canvases recommendation.
+- Limitations: WebGL platform guidance, not React-specific or product-specific.
+
+### Three.js Object Disposal Guide
+
+- URL: https://threejs.org/manual/en/how-to-dispose-of-objects.html
+- Source type: official documentation
+- Supports: Three.js resources such as geometries, materials, textures, and render targets are not automatically released and may require explicit disposal.
+- Product-plan impact: informed the recommendation to isolate V2 scene resources, avoid repeated mount/unmount churn, and preserve a clean rollback path.
+- Limitations: Low-level resource guidance; exact disposal needs depend on implementation.
+
+### Three.js Cleanup Manual
+
+- URL: https://threejs.org/manual/en/cleanup.html
+- Source type: official documentation
+- Supports: Three.js apps can use significant memory, and cleanup patterns are needed when resources are loaded or replaced over time.
+- Product-plan impact: reinforced the caution against multiple active chapter canvases and the need to keep V2 assets procedural and isolated.
+- Limitations: Example-driven manual page, not a formal performance benchmark.
+
+### MDN prefers-reduced-motion
+
+- URL: https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion
+- Source type: authoritative web platform documentation
+- Supports: Web experiences should detect and respect users who request reduced motion.
+- Product-plan impact: informed the Airside Journey V2 reduced-motion requirement and fallback plan.
+- Limitations: CSS/media-query guidance only; implementation still needs browser testing.
+
+### WCAG 2.2 Pause, Stop, Hide
+
+- URL: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html
+- Source type: authoritative accessibility standard guidance
+- Supports: Moving, blinking, scrolling, or auto-updating content that starts automatically and runs alongside other content can distract users and may need a way to pause, stop, or hide unless essential.
+- Product-plan impact: informed the motion-design guardrails, reduced-motion requirements, and recommendation to avoid persistent distracting animation.
+- Limitations: Accessibility interpretation guidance, not a WebGL implementation recipe.
+
+### Drei ScrollControls Documentation
+
+- URL: https://drei.docs.pmnd.rs/controls/scroll-controls
+- Source type: official documentation
+- Supports: Drei provides scroll-related helpers for React Three Fiber scenes.
+- Product-plan impact: informed the comparison of scroll-aware architecture options, while the recommendation remains to avoid scroll-jacking and preserve normal page scrolling.
+- Limitations: Specific helper documentation; using it may add dependency and interaction complexity.
+
+### Awwwards Three.js Collection
+
+- URL: https://www.awwwards.com/awwwards/collections/three-js/
+- Source type: design inspiration / secondary curation
+- Supports: High-end marketing and portfolio sites use Three.js to create premium visual storytelling and immersive brand moments.
+- Product-plan impact: informed the ambition level for Airside Journey V2 while reinforcing that visual inspiration must be constrained by conversion, accessibility, and safety.
+- Limitations: Inspiration source only; awards examples may over-prioritize spectacle over accessibility or conversion.
+
+### Awwwards WebGL Websites Collection
+
+- URL: https://www.awwwards.com/websites/webgl/
+- Source type: design inspiration / secondary curation
+- Supports: WebGL can support distinctive full-page brand experiences and section-based storytelling.
+- Product-plan impact: informed the recommendation that V2 should support the entire landing-page journey rather than remain a small hero background.
+- Limitations: Inspiration source only; does not provide implementation or performance guarantees.

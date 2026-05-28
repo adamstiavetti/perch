@@ -77,6 +77,7 @@ V1 explicitly excludes airline portal login, schedule scraping, public nearby cr
 - [Epoch Roadmap](docs/EPOCH_ROADMAP.md)
 - [App Foundation Notes](docs/APP_FOUNDATION_NOTES.md)
 - [Three.js Landing Page Enhancement Plan](docs/THREEJS_LANDING_PAGE_ENHANCEMENT_PLAN.md)
+- [Three.js Airside Journey V2 Plan](docs/THREEJS_AIRSIDE_JOURNEY_V2_PLAN.md)
 - [Deployment and Waitlist Readiness](docs/DEPLOYMENT_AND_WAITLIST_READINESS.md)
 - [Deployment Record 001](docs/DEPLOYMENT_RECORD_001.md)
 - [Private App Auth DB Architecture](docs/PRIVATE_APP_AUTH_DB_ARCHITECTURE.md)
