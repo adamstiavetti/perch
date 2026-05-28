@@ -4,7 +4,7 @@ Deadhead Club is a verified off-duty network for airline people: flight attendan
 
 Working name note: "Deadhead Club" is a working product name pending legal and trademark clearance. This repo does not claim that the name is cleared for legal or trademark use.
 
-This repository currently contains product planning and build-blueprint documentation only. It intentionally does not include application code, framework scaffolding, database migrations, Supabase configuration, API routes, or UI implementation.
+This repository contains Deadhead Club product planning docs and the first narrow app foundation slice: an M1A public splash/waitlist landing page. It intentionally does not include authentication, database migrations, Supabase configuration, API routes, verification uploads, community features, AI implementation, payments, or persistence.
 
 ## Product North Star
 
@@ -74,13 +74,64 @@ V1 explicitly excludes airline portal login, schedule scraping, public nearby cr
 - [Discovery Research Plan](docs/DISCOVERY_RESEARCH_PLAN.md)
 - [Problem/Solution Validation Matrix](docs/PROBLEM_SOLUTION_VALIDATION_MATRIX.md)
 - [Discovery Research Report 001](docs/DISCOVERY_RESEARCH_REPORT_001.md)
+- [App Foundation Notes](docs/APP_FOUNDATION_NOTES.md)
 - [Legal Policy Requirements](docs/LEGAL_POLICY_REQUIREMENTS.md)
 - [Docs Consistency Review](docs/DOCS_CONSISTENCY_REVIEW.md)
 - [Research Notes](docs/RESEARCH_NOTES.md)
 
 ## Current Repo Boundary
 
-This repo is a planning source of truth for future build work. App foundation work remains out of scope until explicitly approved, and no product-feature implementation should begin until the relevant validation, policy, safety, and sequencing gates are accepted.
+This repo is now both the planning source of truth and the home for the first approved M1A app foundation slice. Product-feature implementation remains out of scope until explicitly approved, and no auth, database, Supabase, verification, community, AI, moderation, admin, payment, or deployment work should begin until the relevant validation, policy, safety, and sequencing gates are accepted.
+
+## App Foundation Quick Start
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the local dev server:
+
+```bash
+npm run dev
+```
+
+Run checks:
+
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
+
+Configure the external waitlist CTA:
+
+```bash
+cp .env.example .env.local
+```
+
+Then set:
+
+```bash
+NEXT_PUBLIC_WAITLIST_FORM_URL=
+```
+
+If `NEXT_PUBLIC_WAITLIST_FORM_URL` is set, the splash page links to that external form. If it is missing, the page shows `Waitlist form coming soon.` No waitlist submissions are stored in this app.
+
+Implemented now:
+
+- `/` public splash/waitlist landing page.
+- `/app` inaccessible private beta placeholder.
+- Next.js App Router, TypeScript strict mode, ESLint, responsive CSS, and accessible semantic HTML.
+
+Intentionally not implemented:
+
+- Auth or user accounts.
+- Supabase or database.
+- API waitlist submission or persistence.
+- Verification uploads or storage.
+- Crew Rooms, Base Boards, Layover Boards, posts, comments, moderation, admin dashboard, AI, payments, marketplace, native mobile, schedule integrations, airline portal login, flight-load requests, nearby crew tracking, or dating/swiping.
 
 ## Engineering Standards Baseline
 
