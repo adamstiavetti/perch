@@ -1,0 +1,102 @@
+.page {
+  position: relative;
+  isolation: isolate;
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #01060d;
+}
+
+.stage,
+.backgroundPlate,
+.wakeLayer,
+.vignetteLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.stage {
+  overflow: hidden;
+}
+
+.backgroundPlate {
+  background:
+    linear-gradient(180deg, rgba(0, 2, 8, 0.16), rgba(0, 2, 8, 0.3)),
+    url("/cinematic/backgrounds/boarding-portal-entry-background.png") center / cover no-repeat;
+  opacity: 0;
+  transform: scale(1.018);
+  animation: plateIn 900ms ease-out forwards;
+}
+
+.wakeLayer {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(168, 220, 255, 0.1), transparent 10%),
+    radial-gradient(ellipse at 50% 34%, rgba(72, 145, 214, 0.1), transparent 22%),
+    linear-gradient(180deg, rgba(0, 2, 8, 0.18), transparent 20%, transparent 82%, rgba(0, 2, 8, 0.24));
+  opacity: 0;
+  animation:
+    wakeIn 1100ms ease-out 260ms forwards,
+    wakePulse 8s ease-in-out 1.4s infinite;
+}
+
+.vignetteLayer {
+  background:
+    radial-gradient(circle at 50% 40%, transparent 28%, rgba(0, 2, 7, 0.16) 58%, rgba(0, 1, 4, 0.78) 100%),
+    linear-gradient(180deg, rgba(0, 1, 6, 0.12), transparent 14%, transparent 82%, rgba(0, 1, 6, 0.28));
+}
+
+@keyframes plateIn {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.018);
+  }
+}
+
+@keyframes wakeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes wakePulse {
+  0%,
+  100% {
+    opacity: 0.84;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 900px) {
+  .backgroundPlate {
+    background-position: center top;
+    transform: scale(1.01);
+  }
+
+  .vignetteLayer {
+    background:
+      radial-gradient(circle at 50% 34%, transparent 26%, rgba(0, 2, 7, 0.14) 56%, rgba(0, 1, 4, 0.76) 100%),
+      linear-gradient(180deg, rgba(0, 1, 6, 0.14), transparent 16%, transparent 80%, rgba(0, 1, 6, 0.26));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backgroundPlate,
+  .wakeLayer {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-05-30T20:06:12.443Z",
+  "inputs": {
+    "day": "public/cinematic/textures/cgtrader-earth-day-4k.jpg",
+    "night": "public/cinematic/textures/cgtrader-earth-night-4k.jpg",
+    "clouds": "public/cinematic/textures/cgtrader-earth-clouds-4k.jpg",
+    "specular": "public/cinematic/textures/cgtrader-earth-specular-4k.jpg"
+  },
+  "outputs": {
+    "albedo": "public/cinematic/textures/deadhead-earth-albedo-v2.webp",
+    "emission": "public/cinematic/textures/deadhead-earth-emission-v2.webp",
+    "clouds": "public/cinematic/textures/deadhead-earth-clouds-v2.webp",
+    "oceanMask": "public/cinematic/textures/deadhead-earth-ocean-mask-v2.webp",
+    "desertMask": "public/cinematic/textures/deadhead-earth-desert-suppression-v2.webp",
+    "iceMask": "public/cinematic/textures/deadhead-earth-ice-suppression-v2.webp",
+    "metadata": "public/cinematic/textures/deadhead-earth-lookdev-metadata.json",
+    "albedoPreview": "public/cinematic/previews/deadhead-earth-albedo-v2-preview.png",
+    "emissionPreview": "public/cinematic/previews/deadhead-earth-emission-v2-preview.png",
+    "cloudsPreview": "public/cinematic/previews/deadhead-earth-clouds-v2-preview.png"
+  },
+  "texture_audit": {
+    "runtime_geometry": "SphereGeometry in app/lab/live-globe-proof/page.tsx",
+    "glb_present_but_unused_at_runtime": "public/cinematic/models/cgtrader-earth-live-proof.glb",
+    "runtime_loading": "External textures loaded directly in Three.js code; no embedded GLB textures are sampled by the live route.",
+    "current_map_usage": {
+      "albedo_base_color": "cgtrader-earth-day-4k.jpg",
+      "emission_city_lights": "cgtrader-earth-night-4k.jpg",
+      "clouds": "cgtrader-earth-clouds-4k.jpg",
+      "bump_normal_displacement": "cgtrader-earth-normal-4k.jpg exists but was not consumed by the active shader during this pass.",
+      "ocean_response": "cgtrader-earth-specular-4k.jpg",
+      "atmosphere_rim": "Procedural shader only; not texture-backed."
+    }
+  },
+  "transforms": {
+    "albedo": [
+      "Deepened oceans toward navy/blue-black using the CGTrader specular-derived ocean mask.",
+      "Muted land saturation, reduced bright desert response, and cooled polar whites into restrained blue-gray values.",
+      "Kept subtle cloud lift in the beauty map so the surface stays dimensional instead of turning into a flat dark sphere."
+    ],
+    "emission": [
+      "Derived from the CGTrader night map with transparent non-city areas instead of keeping the source's dark land background.",
+      "Shifted lights toward amber/gold and boosted source geography selectively over North America and Europe."
+    ],
+    "clouds": [
+      "Derived from the CGTrader cloud texture with the low-level haze removed and the remaining cloud bodies carried in alpha."
+    ],
+    "helper_masks": [
+      "Ocean mask derived from the specular source plus day-map blue separation.",
+      "Desert and ice suppression masks derived from day-map color, brightness, saturation, and latitude cues."
+    ]
+  },
+  "statistics": {
+    "ocean_mask": {
+      "min": 0,
+      "max": 1,
+      "mean": 0.6722
+    },
+    "desert_mask": {
+      "min": 0,
+      "max": 0.2194,
+      "mean": 0.0011
+    },
+    "ice_mask": {
+      "min": 0,
+      "max": 1,
+      "mean": 0.0899
+    },
+    "city_strength": {
+      "min": 0,
+      "max": 1,
+      "mean": 0.0078
+    },
+    "cloud_alpha": {
+      "min": 0,
+      "max": 0.92,
+      "mean": 0.058
+    }
+  },
+  "procedural_supporting_maps": [
+    "deadhead-earth-ocean-mask-v2.webp",
+    "deadhead-earth-desert-suppression-v2.webp",
+    "deadhead-earth-ice-suppression-v2.webp"
+  ],
+  "notes": [
+    "Raw CGTrader assets remain private under the ignored Globe/ source directory.",
+    "These outputs are lab-safe derivatives intended for live-globe proof evaluation, not a production approval claim."
+  ]
+}

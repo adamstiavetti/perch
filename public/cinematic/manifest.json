@@ -1,0 +1,106 @@
+{
+  "name": "Deadhead cinematic waitlist hero asset manifest",
+  "generatedAt": "2026-05-30T13:27:54.955778+00:00",
+  "pipeline": "Blender-first scripted previs and GLB export",
+  "assets": [
+    {
+      "id": "globePlateMobile",
+      "path": "/cinematic/plates/globe-mobile.png",
+      "purpose": "Temporary art-directed mobile globe plate for the plate integration lab.",
+      "exists": true,
+      "status": "placeholder copied from current globe-only generated plate"
+    },
+    {
+      "id": "globePlateDesktop",
+      "path": "/cinematic/plates/globe-desktop.png",
+      "purpose": "Temporary art-directed desktop globe plate for the plate integration lab.",
+      "exists": true,
+      "status": "placeholder copied from current globe-only generated plate"
+    },
+    {
+      "id": "globePlateOnly",
+      "path": "/cinematic/plates/globe-only.png",
+      "purpose": "Temporary standalone globe plate source for reference-matched plate workflow.",
+      "exists": true,
+      "status": "placeholder copied from current globe-only generated plate"
+    },
+    {
+      "id": "scannerPrinter",
+      "path": "/cinematic/models/deadhead-scanner-printer.glb",
+      "purpose": "Sleek black scanner/printer GLB with slot and amber light strips.",
+      "exists": true
+    },
+    {
+      "id": "ticketPlane",
+      "path": "/cinematic/models/deadhead-ticket-plane.glb",
+      "purpose": "Thin physical ticket/card surface aligned to emerge from the scanner.",
+      "exists": true
+    },
+    {
+      "id": "aircraft",
+      "path": "/cinematic/models/deadhead-aircraft.glb",
+      "purpose": "Small optimized passenger aircraft GLB for route placement.",
+      "exists": true
+    },
+    {
+      "id": "globeHelpers",
+      "path": "/cinematic/models/deadhead-globe-helpers.glb",
+      "purpose": "Optional atmosphere shell and reference rings for globe composition.",
+      "exists": true
+    },
+    {
+      "id": "routeGuides",
+      "path": "/cinematic/models/deadhead-route-guides.glb",
+      "purpose": "Thin route guide curves for later R3F curve reconstruction.",
+      "exists": true
+    },
+    {
+      "id": "mobilePreview",
+      "path": "/cinematic/previews/deadhead-hero-mobile-preview.png",
+      "purpose": "Vertical framing preview: globe over scanner over ticket.",
+      "exists": true
+    },
+    {
+      "id": "desktopPreview",
+      "path": "/cinematic/previews/deadhead-hero-desktop-preview.png",
+      "purpose": "Wide cinematic framing preview: globe/scanner/ticket composition.",
+      "exists": true
+    },
+    {
+      "id": "contactSheet",
+      "path": "/cinematic/previews/deadhead-hero-contact-sheet.png",
+      "purpose": "Reference comparison contact sheet for mobile and desktop render review.",
+      "exists": true
+    },
+    {
+      "id": "debugEarthDay",
+      "path": "/cinematic/previews/debug-earth-day-only.png",
+      "purpose": "Debug render showing day texture visibility on the opaque Earth sphere.",
+      "exists": true
+    },
+    {
+      "id": "debugEarthNight",
+      "path": "/cinematic/previews/debug-earth-night-city-lights-only.png",
+      "purpose": "Debug render showing city-light texture visibility and UV alignment.",
+      "exists": true
+    },
+    {
+      "id": "debugEarthFinal",
+      "path": "/cinematic/previews/debug-earth-final-material.png",
+      "purpose": "Debug render showing final combined globe material layers.",
+      "exists": true
+    },
+    {
+      "id": "debugEarthFinalNoAtmosphere",
+      "path": "/cinematic/previews/debug-earth-final-no-atmosphere.png",
+      "purpose": "Debug render showing final globe material with atmosphere/cloud shells disabled.",
+      "exists": true
+    },
+    {
+      "id": "debugEarthFinalWithAtmosphere",
+      "path": "/cinematic/previews/debug-earth-final-with-atmosphere.png",
+      "purpose": "Debug render showing final globe material with atmosphere/cloud shells enabled.",
+      "exists": true
+    }
+  ]
+}

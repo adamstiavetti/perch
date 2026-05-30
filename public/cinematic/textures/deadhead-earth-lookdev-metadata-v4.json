@@ -1,0 +1,93 @@
+{
+  "generated_at": "2026-05-30T20:28:18.822Z",
+  "inputs": {
+    "day": "public/cinematic/textures/cgtrader-earth-day-4k.jpg",
+    "night": "public/cinematic/textures/cgtrader-earth-night-4k.jpg",
+    "clouds": "public/cinematic/textures/cgtrader-earth-clouds-4k.jpg",
+    "specular": "public/cinematic/textures/cgtrader-earth-specular-4k.jpg"
+  },
+  "outputs": {
+    "albedo": "public/cinematic/textures/deadhead-earth-albedo-v4.webp",
+    "emission": "public/cinematic/textures/deadhead-earth-emission-v4.webp",
+    "emissionHalo": "public/cinematic/textures/deadhead-earth-emission-halo-v4.webp",
+    "clouds": "public/cinematic/textures/deadhead-earth-clouds-v4.webp",
+    "oceanMask": "public/cinematic/textures/deadhead-earth-ocean-mask-v4.webp",
+    "desertMask": "public/cinematic/textures/deadhead-earth-desert-suppression-v4.webp",
+    "iceMask": "public/cinematic/textures/deadhead-earth-ice-suppression-v4.webp",
+    "metadata": "public/cinematic/textures/deadhead-earth-lookdev-metadata-v4.json",
+    "albedoPreview": "public/cinematic/previews/deadhead-earth-albedo-v4-preview.png",
+    "emissionPreview": "public/cinematic/previews/deadhead-earth-emission-v4-preview.png",
+    "emissionHaloPreview": "public/cinematic/previews/deadhead-earth-emission-halo-v4-preview.png",
+    "cloudsPreview": "public/cinematic/previews/deadhead-earth-clouds-v4-preview.png"
+  },
+  "texture_audit": {
+    "runtime_geometry": "SphereGeometry in app/lab/live-globe-proof/page.tsx",
+    "glb_present_but_unused_at_runtime": "public/cinematic/models/cgtrader-earth-live-proof.glb",
+    "runtime_loading": "External textures loaded directly in Three.js code; no embedded GLB textures are sampled by the live route.",
+    "current_map_usage": {
+      "albedo_base_color": "cgtrader-earth-day-4k.jpg",
+      "emission_city_lights": "cgtrader-earth-night-4k.jpg",
+      "clouds": "cgtrader-earth-clouds-4k.jpg",
+      "bump_normal_displacement": "cgtrader-earth-normal-4k.jpg exists but was not consumed by the active shader during this pass.",
+      "ocean_response": "cgtrader-earth-specular-4k.jpg",
+      "atmosphere_rim": "Procedural shader only; not texture-backed."
+    }
+  },
+  "transforms": {
+    "albedo": [
+      "Deepened oceans toward navy/blue-black using the CGTrader specular-derived ocean mask.",
+      "Muted land saturation, reduced bright desert response, and cooled polar whites into restrained blue-gray values.",
+      "Kept subtle cloud lift in the beauty map so the surface stays dimensional instead of turning into a flat dark sphere."
+    ],
+    "emission": [
+      "Derived from the CGTrader night map with transparent non-city areas instead of keeping the source's dark land background.",
+      "Shifted lights toward amber/gold and boosted source geography selectively over North America and Europe."
+    ],
+    "emission_halo": [
+      "Derived from the same CGTrader night geography, then blurred to produce broader metro and coastline glow without inventing new city locations."
+    ],
+    "clouds": [
+      "Derived from the CGTrader cloud texture with the low-level haze removed and the remaining cloud bodies carried in alpha."
+    ],
+    "helper_masks": [
+      "Ocean mask derived from the specular source plus day-map blue separation.",
+      "Desert and ice suppression masks derived from day-map color, brightness, saturation, and latitude cues."
+    ]
+  },
+  "statistics": {
+    "ocean_mask": {
+      "min": 0,
+      "max": 1,
+      "mean": 0.6726
+    },
+    "desert_mask": {
+      "min": 0,
+      "max": 0.2371,
+      "mean": 0.0023
+    },
+    "ice_mask": {
+      "min": 0,
+      "max": 1,
+      "mean": 0.0912
+    },
+    "city_strength": {
+      "min": 0,
+      "max": 1,
+      "mean": 0.0194
+    },
+    "cloud_alpha": {
+      "min": 0,
+      "max": 0.9,
+      "mean": 0.0976
+    }
+  },
+  "procedural_supporting_maps": [
+    "deadhead-earth-ocean-mask-v4.webp",
+    "deadhead-earth-desert-suppression-v4.webp",
+    "deadhead-earth-ice-suppression-v4.webp"
+  ],
+  "notes": [
+    "Raw CGTrader assets remain private under the ignored Globe/ source directory.",
+    "These outputs are lab-safe derivatives intended for live-globe proof evaluation, not a production approval claim."
+  ]
+}
