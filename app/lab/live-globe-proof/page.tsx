@@ -657,25 +657,26 @@ export default function LiveGlobeProofPage() {
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
+    let targetProgress = 0;
+    let smoothedProgress = 0;
+    let ticking = false;
+    let isMobileViewport = window.matchMedia("(max-width: 760px)").matches;
 
-    const updateScrollProgress = () => {
-      frame = 0;
-      const viewportHeight = Math.max(window.innerHeight, 1);
-      const transitionDistance = viewportHeight * 0.14;
-      const rawProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(window.scrollY / transitionDistance, 0, 1);
-      const orbProgress = 1 - Math.pow(1 - rawProgress, 3);
-      const collapseProgress = THREE.MathUtils.smoothstep(rawProgress, 0.34, 0.82);
-      const widthCollapseProgress = THREE.MathUtils.smoothstep(rawProgress, 0.3, 0.82);
-      const absorbProgress = THREE.MathUtils.smoothstep(rawProgress, 0.24, 0.48) * (1 - THREE.MathUtils.smoothstep(rawProgress, 0.96, 1));
-      const wordmarkExit = THREE.MathUtils.smoothstep(rawProgress, 0.985, 1);
-      const suckedWordProgress = THREE.MathUtils.smoothstep(rawProgress, 0.08, 1);
-      const fastPullProgress = 1 - Math.pow(1 - rawProgress, 1.65);
-      const gapCloseProgress = THREE.MathUtils.smoothstep(rawProgress, 0, 0.76);
+    const applyProgressStyles = (rawProgress: number) => {
+      const clampedProgress = THREE.MathUtils.clamp(rawProgress, 0, 1);
+      const orbProgress = 1 - Math.pow(1 - clampedProgress, 3);
+      const collapseProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.34, 0.82);
+      const widthCollapseProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.3, 0.82);
+      const absorbProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.24, 0.48) * (1 - THREE.MathUtils.smoothstep(clampedProgress, 0.96, 1));
+      const wordmarkExit = THREE.MathUtils.smoothstep(clampedProgress, 0.985, 1);
+      const suckedWordProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.08, 1);
+      const fastPullProgress = 1 - Math.pow(1 - clampedProgress, 1.65);
+      const gapCloseProgress = THREE.MathUtils.smoothstep(clampedProgress, 0, 0.76);
       const wordmarkMouthY = Math.min(54, 32 * fastPullProgress + 32 * gapCloseProgress);
       const absorptionMouthY = Math.min(26, 15 * fastPullProgress + 19 * gapCloseProgress);
       page.style.setProperty("--orb-progress", orbProgress.toFixed(4));
       page.style.setProperty("--wordmark-y", `${(-wordmarkMouthY).toFixed(3)}vh`);
-      page.style.setProperty("--wordmark-scale", (1 - rawProgress * 0.1).toFixed(4));
+      page.style.setProperty("--wordmark-scale", (1 - clampedProgress * 0.1).toFixed(4));
       page.style.setProperty("--wordmark-collapse-x", Math.max(0.045, 1 - collapseProgress * 0.955).toFixed(4));
       page.style.setProperty("--wordmark-width", `${(58 - widthCollapseProgress * 53.5).toFixed(3)}vw`);
       page.style.setProperty("--wordmark-opacity", Math.max(0, 1 - wordmarkExit).toFixed(4));
@@ -690,14 +691,43 @@ export default function LiveGlobeProofPage() {
       page.style.setProperty("--scroll-cue-opacity", "1");
     };
 
-    const requestScrollProgress = () => {
-      if (frame !== 0) {
-        return;
-      }
-      frame = window.requestAnimationFrame(updateScrollProgress);
+    const computeTargetProgress = () => {
+      const viewportHeight = Math.max(window.innerHeight, 1);
+      const distanceMultiplier = isMobileViewport ? 0.68 : 0.34;
+      const transitionDistance = viewportHeight * distanceMultiplier;
+      targetProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(window.scrollY / transitionDistance, 0, 1);
     };
 
-    updateScrollProgress();
+    const tick = () => {
+      const ease = isMobileViewport ? 0.14 : 0.2;
+      smoothedProgress = THREE.MathUtils.lerp(smoothedProgress, targetProgress, ease);
+      if (Math.abs(targetProgress - smoothedProgress) < 0.0006) {
+        smoothedProgress = targetProgress;
+      }
+      applyProgressStyles(smoothedProgress);
+
+      if (Math.abs(targetProgress - smoothedProgress) > 0.0006) {
+        frame = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      frame = 0;
+      ticking = false;
+    };
+
+    const requestScrollProgress = () => {
+      isMobileViewport = window.matchMedia("(max-width: 760px)").matches;
+      computeTargetProgress();
+      if (ticking) {
+        return;
+      }
+      ticking = true;
+      frame = window.requestAnimationFrame(tick);
+    };
+
+    computeTargetProgress();
+    smoothedProgress = targetProgress;
+    applyProgressStyles(smoothedProgress);
     window.addEventListener("scroll", requestScrollProgress, { passive: true });
     window.addEventListener("resize", requestScrollProgress);
     window.visualViewport?.addEventListener("resize", requestScrollProgress);
@@ -706,6 +736,7 @@ export default function LiveGlobeProofPage() {
       if (frame !== 0) {
         window.cancelAnimationFrame(frame);
       }
+      ticking = false;
       window.removeEventListener("scroll", requestScrollProgress);
       window.removeEventListener("resize", requestScrollProgress);
       window.visualViewport?.removeEventListener("resize", requestScrollProgress);
