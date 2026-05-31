@@ -1,3 +1,15 @@
+@property --scene-materialize-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --scene-materialize-background-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.42;
+}
+
 .page {
   --orb-progress: 0;
   --wordmark-y: 0px;
@@ -14,6 +26,8 @@
   --sucked-word-opacity: 0;
   --sucked-gap-close: 0;
   --scroll-cue-opacity: 1;
+  --scene-materialize-opacity: 0;
+  --scene-materialize-background-opacity: 0.42;
   position: relative;
   isolation: isolate;
   min-width: 320px;
@@ -22,6 +36,15 @@
   min-height: 300dvh;
   overflow-x: hidden;
   background: #01060d;
+}
+
+.pageMaterializing {
+  animation: sceneMaterialize 4.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pageMaterialized {
+  --scene-materialize-opacity: 1;
+  --scene-materialize-background-opacity: 1;
 }
 
 .heroStage {
@@ -78,6 +101,7 @@
     linear-gradient(180deg, rgba(0, 2, 8, 0.14), rgba(0, 2, 8, 0.28)),
     url("/cinematic/backgrounds/boarding-portal-entry-background.png") center / cover no-repeat;
   transform: scale(1.018);
+  opacity: var(--scene-materialize-background-opacity);
 }
 
 .wakeLayer {
@@ -98,6 +122,7 @@
     auto
     calc(env(safe-area-inset-left, 0px) + clamp(14px, 2.8vw, 34px));
   pointer-events: none;
+  opacity: var(--scene-materialize-opacity);
 }
 
 .cornerLogoImage {
@@ -149,6 +174,7 @@
   user-select: none;
   -webkit-user-drag: none;
   image-rendering: auto;
+  opacity: var(--scene-materialize-opacity);
   transform: scaleX(var(--wordmark-collapse-x));
   transform-origin: 50% 50%;
   will-change: transform, width, opacity;
@@ -458,6 +484,33 @@
   }
 }
 
+@keyframes sceneMaterialize {
+  0% {
+    --scene-materialize-opacity: 0;
+    --scene-materialize-background-opacity: 0.42;
+  }
+
+  18% {
+    --scene-materialize-opacity: 0.12;
+    --scene-materialize-background-opacity: 0.55;
+  }
+
+  58% {
+    --scene-materialize-opacity: 0.72;
+    --scene-materialize-background-opacity: 0.84;
+  }
+
+  82% {
+    --scene-materialize-opacity: 1;
+    --scene-materialize-background-opacity: 1;
+  }
+
+  100% {
+    --scene-materialize-opacity: 1;
+    --scene-materialize-background-opacity: 1;
+  }
+}
+
 @media (min-width: 900px) {
   .backgroundPlate {
     background-position: center top;
@@ -593,10 +646,16 @@
   align-items: center;
   justify-content: flex-end;
   gap: clamp(4px, 0.7vw, 8px);
-  opacity: var(--scroll-cue-opacity);
+  opacity: 0;
   pointer-events: none;
   user-select: none;
+  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity;
+}
+
+.pageInteractionReady .scrollCue {
+  opacity: var(--scroll-cue-opacity);
+  animation: scrollCueReveal 980ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .scrollCueIcon {
@@ -708,6 +767,20 @@
   }
 }
 
+@keyframes scrollCueReveal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+    filter: blur(4px);
+  }
+
+  100% {
+    opacity: var(--scroll-cue-opacity);
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
 @keyframes loadingSweep {
   0% {
     transform: translateX(-100%);
@@ -723,6 +796,9 @@
     min-height: 100vh;
     min-height: 100svh;
     min-height: 100dvh;
+    --scene-materialize-opacity: 1;
+    --scene-materialize-background-opacity: 1;
+    animation: none;
   }
 
   .heroStage {
