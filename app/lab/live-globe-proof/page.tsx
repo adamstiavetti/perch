@@ -351,7 +351,7 @@ const INITIAL_GLOBE_ROTATION = {
 const DEFAULT_TEXTURE_SET: TextureSetName = "cityhalo";
 const DEFAULT_GRADE: GradeName = "cityhalo";
 const DEFAULT_ROUTES_MODE: RoutesMode = "on";
-const DEFAULT_AIRCRAFT_MODE: AircraftMode = "off";
+const DEFAULT_AIRCRAFT_MODE: AircraftMode = "on";
 const AIRCRAFT_MODEL_PATH = "/cinematic/models/deadhead-aircraft-v1.glb";
 const AIRCRAFT_CLEARANCE = 0;
 const AIRCRAFT_VISUAL_SIZE = 0.132;
@@ -633,7 +633,7 @@ function buildAircraftTrafficConfigs(routes: RouteArcConfig[]) {
       routeId: `route-${routeIndex}`,
       routeIndex,
       initialT,
-      speed: 0.0035 + (slot % 5) * 0.0005,
+      speed: 0.0105 + (slot % 5) * 0.0012,
       scaleMultiplier: role === "hero" ? 1.08 : 0.72 + (slot % 4) * 0.05,
       visibilityBias: role === "hero" ? 0.2 : -0.02 + (slot % 6) * 0.028,
       role,
@@ -645,57 +645,141 @@ const AIRCRAFT_TRAFFIC = buildAircraftTrafficConfigs(ROUTE_ARCS);
 
 export default function LiveGlobeProofPage() {
   const [isGlobeReady, setIsGlobeReady] = useState(false);
+  const pageRef = useRef<HTMLElement | null>(null);
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
   const { textureSetName, gradeName, routesMode, aircraftMode } = useLiveGlobeOverrides();
 
+  useEffect(() => {
+    const page = pageRef.current;
+    if (!page) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+
+    const updateScrollProgress = () => {
+      frame = 0;
+      const viewportHeight = Math.max(window.innerHeight, 1);
+      const transitionDistance = viewportHeight * 0.14;
+      const rawProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(window.scrollY / transitionDistance, 0, 1);
+      const orbProgress = 1 - Math.pow(1 - rawProgress, 3);
+      const collapseProgress = THREE.MathUtils.smoothstep(rawProgress, 0.34, 0.82);
+      const widthCollapseProgress = THREE.MathUtils.smoothstep(rawProgress, 0.3, 0.82);
+      const absorbProgress = THREE.MathUtils.smoothstep(rawProgress, 0.24, 0.48) * (1 - THREE.MathUtils.smoothstep(rawProgress, 0.96, 1));
+      const wordmarkExit = THREE.MathUtils.smoothstep(rawProgress, 0.985, 1);
+      const suckedWordProgress = THREE.MathUtils.smoothstep(rawProgress, 0.08, 1);
+      const fastPullProgress = 1 - Math.pow(1 - rawProgress, 1.65);
+      const gapCloseProgress = THREE.MathUtils.smoothstep(rawProgress, 0, 0.76);
+      const wordmarkMouthY = Math.min(54, 32 * fastPullProgress + 32 * gapCloseProgress);
+      const absorptionMouthY = Math.min(26, 15 * fastPullProgress + 19 * gapCloseProgress);
+      page.style.setProperty("--orb-progress", orbProgress.toFixed(4));
+      page.style.setProperty("--wordmark-y", `${(-wordmarkMouthY).toFixed(3)}vh`);
+      page.style.setProperty("--wordmark-scale", (1 - rawProgress * 0.1).toFixed(4));
+      page.style.setProperty("--wordmark-collapse-x", Math.max(0.045, 1 - collapseProgress * 0.955).toFixed(4));
+      page.style.setProperty("--wordmark-width", `${(58 - widthCollapseProgress * 53.5).toFixed(3)}vw`);
+      page.style.setProperty("--wordmark-opacity", Math.max(0, 1 - wordmarkExit).toFixed(4));
+      page.style.setProperty("--absorb-opacity", Math.max(0, absorbProgress * 0.92).toFixed(4));
+      page.style.setProperty("--absorb-y", `${(-absorptionMouthY).toFixed(3)}vh`);
+      page.style.setProperty("--absorb-scale-x", Math.max(0.06, 1 - widthCollapseProgress * 0.94).toFixed(4));
+      page.style.setProperty("--absorb-cone-opacity", Math.max(0, absorbProgress * 0.62).toFixed(4));
+      page.style.setProperty("--sucked-word-y", `${(-28 * suckedWordProgress - 28 * gapCloseProgress).toFixed(3)}vh`);
+      page.style.setProperty("--sucked-gap-close", gapCloseProgress.toFixed(4));
+      page.style.setProperty("--sucked-word-collapse-x", Math.max(0.028, 1 - widthCollapseProgress * 0.972).toFixed(4));
+      page.style.setProperty("--sucked-word-opacity", Math.max(0, absorbProgress * (1 - wordmarkExit * 0.95)).toFixed(4));
+      page.style.setProperty("--scroll-cue-opacity", "1");
+    };
+
+    const requestScrollProgress = () => {
+      if (frame !== 0) {
+        return;
+      }
+      frame = window.requestAnimationFrame(updateScrollProgress);
+    };
+
+    updateScrollProgress();
+    window.addEventListener("scroll", requestScrollProgress, { passive: true });
+    window.addEventListener("resize", requestScrollProgress);
+    window.visualViewport?.addEventListener("resize", requestScrollProgress);
+
+    return () => {
+      if (frame !== 0) {
+        window.cancelAnimationFrame(frame);
+      }
+      window.removeEventListener("scroll", requestScrollProgress);
+      window.removeEventListener("resize", requestScrollProgress);
+      window.visualViewport?.removeEventListener("resize", requestScrollProgress);
+    };
+  }, []);
+
   return (
-    <main className={styles.page} aria-label="Deadhead live globe proof lab">
-      <div className={styles.backgroundPlate} />
-      <div className={styles.wakeLayer} />
-      <div className={styles.cornerLogo} aria-hidden="true">
-        <img
-          src="/cinematic/branding/skybyrd-logo.png"
-          alt=""
-          className={styles.cornerLogoImage}
-          decoding="async"
-          loading="eager"
-          draggable={false}
-        />
-      </div>
-      <LiveGlobeCanvas
-        onReady={handleGlobeReady}
-        textureSet={TEXTURE_SETS[textureSetName]}
-        grade={GRADE_CONFIGS[gradeName]}
-        routesEnabled={routesMode === "on"}
-        aircraftEnabled={aircraftMode === "on"}
-      />
-      <div className={styles.wordmark} aria-hidden="true">
-        <img
-          src="/cinematic/branding/skybyrd-wordmark-8k.png"
-          alt=""
-          className={styles.wordmarkImage}
-          decoding="async"
-          loading="eager"
-          draggable={false}
-        />
-      </div>
-      <div className={styles.topGlowLayer} />
-      <div className={styles.vignetteLayer} />
-      <div className={styles.scrollCue} aria-hidden="true">
-        <div className={styles.scrollCueIcon}>
-          <div className={styles.scrollCueRing} />
-          <div className={styles.scrollCueChevronTrack}>
-            <span className={styles.scrollCueChevron} />
-            <span className={`${styles.scrollCueChevron} ${styles.scrollCueChevronAlt}`} />
-          </div>
+    <main ref={pageRef} className={styles.page} aria-label="Deadhead live globe proof lab">
+      <section className={styles.heroStage} aria-label="Skybyrd live globe hero">
+        <div className={styles.backgroundPlate} />
+        <div className={styles.wakeLayer} />
+        <div className={styles.cornerLogo} aria-hidden="true">
+          <img
+            src="/cinematic/branding/skybyrd-logo.png"
+            alt=""
+            className={styles.cornerLogoImage}
+            decoding="async"
+            loading="eager"
+            draggable={false}
+          />
         </div>
-        <span className={styles.scrollCueText}>SCROLL TO CONTINUE</span>
-      </div>
-      <div className={`${styles.loadingLayer} ${isGlobeReady ? styles.loadingLayerReady : ""}`} aria-hidden="true">
-        <div className={styles.loadingOrb} />
-        <div className={styles.loadingLine} />
-      </div>
-      <h1 className={styles.srOnly}>Live CGTrader Earth globe proof</h1>
+        <div className={styles.globeOrbRig}>
+          <LiveGlobeCanvas
+            onReady={handleGlobeReady}
+            textureSet={TEXTURE_SETS[textureSetName]}
+            grade={GRADE_CONFIGS[gradeName]}
+            routesEnabled={routesMode === "on"}
+            aircraftEnabled={aircraftMode === "on"}
+          />
+        </div>
+        <div className={styles.wordmark} aria-hidden="true">
+          <img
+            src="/cinematic/branding/skybyrd-wordmark-8k.png"
+            alt=""
+            className={styles.wordmarkImage}
+            decoding="async"
+            loading="eager"
+            draggable={false}
+          />
+        </div>
+        <div className={styles.wordmarkAbsorption} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className={styles.topGlowLayer} />
+        <div className={styles.vignetteLayer} />
+        <div className={styles.scrollCue} aria-hidden="true">
+          <div className={styles.scrollCueIcon}>
+            <div className={styles.scrollCueRing} />
+            <div className={styles.scrollCueChevronTrack}>
+              <span className={styles.scrollCueChevron} />
+              <span className={`${styles.scrollCueChevron} ${styles.scrollCueChevronAlt}`} />
+            </div>
+          </div>
+          <span className={styles.scrollCueText}>SCROLL TO CONTINUE</span>
+        </div>
+        <div className={`${styles.loadingLayer} ${isGlobeReady ? styles.loadingLayerReady : ""}`} aria-hidden="true">
+          <div className={styles.loadingOrb} />
+          <div className={styles.loadingLine} />
+        </div>
+        <h1 className={styles.srOnly}>Live CGTrader Earth globe proof</h1>
+      </section>
     </main>
   );
 }
@@ -816,6 +900,10 @@ function LiveGlobeCanvas({
     const aircraftMaterials: THREE.MeshPhongMaterial[] = [];
     const aircraftEntries: AircraftEntry[] = [];
     const aircraftGlowTextures: THREE.Texture[] = [];
+    let baseGlobeY = 0;
+    let baseGlobeScale = 1;
+    let isMobileLayout = false;
+    let currentOrbProgress = 0;
 
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -855,6 +943,25 @@ function LiveGlobeCanvas({
         ? maxPixelRatio
         : THREE.MathUtils.clamp(activePixelRatio, minPixelRatio, maxPixelRatio);
       setPixelRatio(nextRatio);
+    };
+    const readOrbProgress = () => {
+      if (prefersReducedMotion) {
+        return 0;
+      }
+
+      const progress = Number.parseFloat(getComputedStyle(mount).getPropertyValue("--orb-progress"));
+      return Number.isFinite(progress) ? THREE.MathUtils.clamp(progress, 0, 1) : 0;
+    };
+    const applyGlobeOrbTransform = () => {
+      const progress = readOrbProgress();
+      currentOrbProgress = progress;
+      const finalScale = isMobileLayout ? 0.24 : 0.23;
+      const finalY = isMobileLayout ? 0.86 : 1.12;
+      globeRig.position.set(0, baseGlobeY + THREE.MathUtils.lerp(0, finalY, progress), 0);
+      globeRig.scale.setScalar(baseGlobeScale * THREE.MathUtils.lerp(1, finalScale, progress));
+      for (const material of routeShaderMaterials) {
+        material.uniforms.globeCenter.value.copy(globeRig.position);
+      }
     };
     updatePixelRatio(mount.getBoundingClientRect().width, true);
     mount.appendChild(renderer.domElement);
@@ -1267,6 +1374,79 @@ function LiveGlobeCanvas({
         }
       `,
     });
+    const atmosphereBaseColor = new THREE.Color(grade.atmosphereColor);
+    const atmosphereAliveColor = new THREE.Color(0x28cfff);
+    const cityHaloBaseColor = new THREE.Color(grade.cityHaloColor);
+    const cityHaloAliveColor = new THREE.Color(0xfff8e8);
+
+    const orbAuraMaterial = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      uniforms: {
+        auraColor: { value: new THREE.Color(0x32d8ff) },
+        progress: { value: 0 },
+        time: { value: 0 },
+      },
+      vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vSpherePosition;
+        varying vec3 vWorldPosition;
+
+        void main() {
+          vNormal = normalize(normalMatrix * normal);
+          vSpherePosition = normalize(position);
+          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+          vWorldPosition = worldPosition.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 auraColor;
+        uniform float progress;
+        uniform float time;
+        varying vec3 vNormal;
+        varying vec3 vSpherePosition;
+        varying vec3 vWorldPosition;
+
+        void main() {
+          vec3 viewDirection = normalize(cameraPosition - vWorldPosition);
+          float fresnel = 1.0 - max(dot(vNormal, viewDirection), 0.0);
+          float rim = pow(fresnel, 11.0);
+          float needle = pow(fresnel, 34.0);
+          float electric = 0.54 + 0.46 * pow(max(sin(time * 5.6 + vSpherePosition.y * 11.0 + vSpherePosition.x * 6.0), 0.0), 1.7);
+          float sparkle = pow(max(sin(time * 9.6 + vSpherePosition.x * 20.0 - vSpherePosition.z * 17.0), 0.0), 5.0);
+          float topBias = smoothstep(-0.32, 0.94, vSpherePosition.y);
+          float alpha = progress * (rim * 0.24 + needle * 0.86 + sparkle * rim * 0.12) * (0.34 + topBias * 0.78) * electric;
+          if (alpha < 0.002) discard;
+          vec3 color = mix(auraColor, vec3(0.58, 0.94, 1.0), needle * 0.36 + sparkle * 0.18);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `,
+    });
+
+    const updateOrbAliveLook = (elapsed: number) => {
+      const energy = Math.pow(currentOrbProgress, 1.18);
+      const shimmer = 0.5 + 0.5 * Math.sin(elapsed * 4.2);
+      const quickFlicker = 0.5 + 0.5 * Math.sin(elapsed * 9.4 + Math.sin(elapsed * 1.7) * 1.6);
+      const pulse = shimmer * 0.64 + quickFlicker * 0.36;
+      renderer.toneMappingExposure = grade.rendererExposure * (1 + energy * (0.72 + pulse * 0.32));
+      cityMaterial.opacity = grade.cityOpacity * (1 + energy * (2.6 + pulse * 1.35));
+      cityHaloMaterial.opacity = grade.cityHaloOpacity * (1 + energy * (7.2 + pulse * 3.4));
+      cityHaloMaterial.color.copy(cityHaloBaseColor).lerp(cityHaloAliveColor, energy * 0.94);
+      cloudMaterial.uniforms.opacity.value = Math.min(grade.cloudOpacity + 0.1 + energy * (0.18 + pulse * 0.07), 0.58);
+      atmosphereMaterial.uniforms.strength.value = grade.atmosphereStrength * (1 + energy * (8.4 + pulse * 4.2));
+      atmosphereMaterial.uniforms.glowColor.value.copy(atmosphereBaseColor).lerp(atmosphereAliveColor, energy * (0.98 + pulse * 0.02));
+      orbAuraMaterial.uniforms.progress.value = energy * (2.65 + pulse * 1.75);
+      orbAuraMaterial.uniforms.time.value = elapsed;
+      for (const material of routeShaderMaterials) {
+        const baseOpacity = typeof material.userData.baseOpacity === "number" ? material.userData.baseOpacity : material.uniforms.opacity.value;
+        material.uniforms.opacity.value = baseOpacity * (1 + energy * (3.2 + pulse * 1.58));
+        material.uniforms.aliveProgress.value = energy;
+        material.uniforms.time.value = elapsed;
+      }
+    };
 
     const createRouteMaterial = ({
       color,
@@ -1286,6 +1466,8 @@ function LiveGlobeCanvas({
           routeColor: { value: new THREE.Color(color) },
           opacity: { value: opacity },
           globeCenter: { value: new THREE.Vector3() },
+          aliveProgress: { value: 0 },
+          time: { value: 0 },
         },
         vertexShader: `
           varying vec3 vWorldPosition;
@@ -1302,6 +1484,8 @@ function LiveGlobeCanvas({
           uniform vec3 routeColor;
           uniform float opacity;
           uniform vec3 globeCenter;
+          uniform float aliveProgress;
+          uniform float time;
           varying vec3 vWorldPosition;
           varying vec2 vUv;
 
@@ -1311,9 +1495,13 @@ function LiveGlobeCanvas({
             float front = smoothstep(-0.08, 0.18, hemisphereFacing);
             float edgeFade = sin(vUv.x * 3.14159265);
             edgeFade = pow(max(edgeFade, 0.0), 0.72);
-            float alpha = opacity * edgeFade * mix(0.22, 1.0, front);
+            float travelingSpark = fract(vUv.x * 2.4 - time * 0.34);
+            float sparkCore = pow(max(1.0 - abs(travelingSpark * 2.0 - 1.0), 0.0), 8.0);
+            float carrierWave = 0.68 + 0.32 * sin(vUv.x * 28.0 + time * 4.4);
+            float alpha = opacity * edgeFade * mix(0.22, 1.0, front) * (1.0 + aliveProgress * (carrierWave * 0.22 + sparkCore * front * 0.92));
             if (alpha < 0.01) discard;
-            gl_FragColor = vec4(routeColor, alpha);
+            vec3 energizedColor = mix(routeColor, vec3(0.94, 0.99, 1.0), aliveProgress * sparkCore * front * 0.42);
+            gl_FragColor = vec4(energizedColor, alpha);
           }
         `,
       });
@@ -1678,6 +1866,7 @@ function LiveGlobeCanvas({
           opacity: route.glowOpacity,
           additive: true,
         });
+        glowMaterial.userData.baseOpacity = route.glowOpacity;
         const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
         glowMesh.renderOrder = 8;
 
@@ -1687,6 +1876,7 @@ function LiveGlobeCanvas({
           opacity: route.opacity,
           additive: true,
         });
+        coreMaterial.userData.baseOpacity = route.opacity;
         const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
         coreMesh.renderOrder = 9;
 
@@ -1708,10 +1898,11 @@ function LiveGlobeCanvas({
       const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.438, 192, 112), cloudMaterial);
       clouds.name = "cloud-base";
       const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(grade.atmosphereScale, 192, 112), atmosphereMaterial);
+      const orbAura = new THREE.Mesh(new THREE.SphereGeometry(grade.atmosphereScale * 1.018, 192, 112), orbAuraMaterial);
       const routeGroup = routesEnabled ? createRouteGroup() : null;
       cloudRig.add(clouds);
       cloudRig.name = "cloud-rig";
-      globeRig.add(earth, cities, cityHalo, cloudRig, atmosphere);
+      globeRig.add(earth, cities, cityHalo, cloudRig, atmosphere, orbAura);
       if (routeGroup) {
         globeRig.add(routeGroup.group);
         if (aircraftEnabled) {
@@ -1729,18 +1920,19 @@ function LiveGlobeCanvas({
       camera.aspect = rect.width / rect.height;
       camera.updateProjectionMatrix();
 
-      const isMobile = rect.width < 760;
-      const cameraZ = isMobile ? 6.35 : 6.15;
+      isMobileLayout = rect.width < 760;
+      const cameraZ = isMobileLayout ? 6.35 : 6.15;
       const visibleHeight = 2 * cameraZ * Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5));
       const visibleWidth = visibleHeight * camera.aspect;
-      const targetDiameter = isMobile ? Math.min(visibleWidth * 0.84, visibleHeight * 0.5) : visibleHeight * 0.61;
-      const scale = THREE.MathUtils.clamp(targetDiameter / 2.84, isMobile ? 0.37 : 0.66, isMobile ? 0.56 : 0.84);
-      camera.position.set(0, isMobile ? 0.02 : 0.04, cameraZ);
-      globeRig.position.set(0, isMobile ? 0.66 : 0.04, 0);
-      globeRig.scale.setScalar(scale);
-      for (const material of routeShaderMaterials) {
-        material.uniforms.globeCenter.value.copy(globeRig.position);
-      }
+      const targetDiameter = isMobileLayout ? Math.min(visibleWidth * 0.84, visibleHeight * 0.5) : visibleHeight * 0.61;
+      baseGlobeScale = THREE.MathUtils.clamp(
+        targetDiameter / 2.84,
+        isMobileLayout ? 0.37 : 0.66,
+        isMobileLayout ? 0.56 : 0.84,
+      );
+      baseGlobeY = isMobileLayout ? 0.66 : 0.04;
+      camera.position.set(0, isMobileLayout ? 0.02 : 0.04, cameraZ);
+      applyGlobeOrbTransform();
     };
 
     const animate = () => {
@@ -1757,10 +1949,13 @@ function LiveGlobeCanvas({
           setPixelRatio(Math.min(maxPixelRatio, activePixelRatio + 0.12));
         }
       }
+      applyGlobeOrbTransform();
+      updateOrbAliveLook(elapsed);
       const cloudRig = globeRig.getObjectByName("cloud-rig");
       if (!prefersReducedMotion) {
-        globeRig.rotation.y = INITIAL_GLOBE_ROTATION.y + elapsed * 0.0118;
-        globeRig.rotation.x = INITIAL_GLOBE_ROTATION.x + Math.sin(elapsed * 0.28) * 0.003;
+        const orbSpinBoost = Math.pow(currentOrbProgress, 1.35);
+        globeRig.rotation.y = INITIAL_GLOBE_ROTATION.y + elapsed * THREE.MathUtils.lerp(0.0195, 0.092, orbSpinBoost);
+        globeRig.rotation.x = INITIAL_GLOBE_ROTATION.x + Math.sin(elapsed * THREE.MathUtils.lerp(0.28, 1.1, orbSpinBoost)) * THREE.MathUtils.lerp(0.003, 0.013, orbSpinBoost);
         globeRig.rotation.z = INITIAL_GLOBE_ROTATION.z;
         for (const material of routeShaderMaterials) {
           material.uniforms.globeCenter.value.copy(globeRig.position);
@@ -1821,6 +2016,7 @@ function LiveGlobeCanvas({
       cityHaloMaterial.dispose();
       cloudMaterial.dispose();
       atmosphereMaterial.dispose();
+      orbAuraMaterial.dispose();
       for (const geometry of routeDisposables) {
         geometry.dispose();
       }

@@ -20,7 +20,7 @@ Preserved intentionally:
 - ticket
 - ENTER CTA
 - chapter cards
-- no aircraft added
+- aircraft enabled by default on the lab route
 
 ## Files Changed In This Pass
 
@@ -55,6 +55,14 @@ Accepted improvements:
 - Routes remain thin, luminous, and depth-aware rather than turning into thick neon tubes or flat UI scribbles.
 - Continent relief was pushed further, especially around Greenland and the northern landmass, to increase the 3D feel.
 
+Current unified Skybyrd state:
+
+- The default lab URL now includes the accepted cityhalo globe, routes, aircraft, branding, scroll cue, and scroll-to-compact-orb transition together.
+- The aircraft mode no longer requires the `aircraft=on` query string.
+- The default route deploys 18 aircraft across the network.
+- The initial globe spin and aircraft speed were increased so the hero reads as alive before scroll.
+- The compact orb aura was reduced away from white and tuned back toward a sharper electric-blue pulse.
+
 Remaining risk:
 
 - The route network is now intentionally denser than the original 4-6-arc target because later art direction requested a broader global system.
@@ -79,4 +87,4 @@ Reason:
 
 ## Single Next Best Correction
 
-Add a selective endpoint-glint / landing-node pass so the strongest routes have intentional takeoff/arrival emphasis before any aircraft are introduced.
+Add a first post-orb content section once the compact living globe is locked as the journey driver.
