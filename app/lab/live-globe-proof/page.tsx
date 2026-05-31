@@ -61,9 +61,12 @@ type RouteArcConfig = {
 
 type AircraftPlacementConfig = {
   routeIndex: number;
-  progress: number;
+  initialT: number;
   speed: number;
-  baseScale: number;
+  scaleMultiplier: number;
+  visibilityBias: number;
+  role: "hero" | "support";
+  routeId: string;
 };
 
 type RouteCurveEntry = {
@@ -76,11 +79,13 @@ type AircraftEntry = {
   anchor: THREE.Group;
   pose: THREE.Group;
   visual: THREE.Group;
+  config: AircraftPlacementConfig;
   routeEntry: RouteCurveEntry;
+  routeGlowColor: THREE.Color;
   progress: number;
-  speed: number;
-  baseScale: number;
+  bank: number;
   materials: THREE.MeshPhongMaterial[];
+  glowMaterials: THREE.Material[];
   trailPoints: THREE.Mesh[];
 };
 
@@ -355,13 +360,7 @@ const AIRCRAFT_TRAIL_STEPS = 6;
 const AIRCRAFT_TRAIL_STEP = 0.016;
 const AIRCRAFT_ROUTE_MIN_SCALE = 0.24;
 const AIRCRAFT_ROUTE_MAX_SCALE = 1.24;
-const AIRCRAFT_DEBUG_ROUTE = {
-  routeIndex: 10,
-  routeName: "Lagos -> Dallas",
-  progress: 0.01,
-  speed: 0.038,
-  baseScale: 1,
-} satisfies AircraftPlacementConfig & { routeName: string };
+const AIRCRAFT_ROUTE_COVERAGE_RATIO = 0.8;
 
 const ROUTE_ARCS: RouteArcConfig[] = [
   {
@@ -608,6 +607,42 @@ const ROUTE_ARCS: RouteArcConfig[] = [
   },
 ];
 
+function buildAircraftTrafficConfigs(routes: RouteArcConfig[]) {
+  const routeCount = routes.length;
+  if (routeCount === 0) {
+    return [] as AircraftPlacementConfig[];
+  }
+
+  const desiredCount = Math.max(4, Math.min(routeCount, Math.round(routeCount * AIRCRAFT_ROUTE_COVERAGE_RATIO)));
+  const spacing = routeCount / desiredCount;
+  const selectedRouteIndices: number[] = [];
+
+  for (let slot = 0; slot < desiredCount; slot += 1) {
+    let routeIndex = Math.floor(slot * spacing);
+    while (selectedRouteIndices.includes(routeIndex)) {
+      routeIndex = (routeIndex + 1) % routeCount;
+    }
+    selectedRouteIndices.push(routeIndex);
+  }
+
+  return selectedRouteIndices.map((routeIndex, slot) => {
+    const phase = THREE.MathUtils.euclideanModulo(routeIndex * 0.173 + slot * 0.127, 1);
+    const initialT = THREE.MathUtils.euclideanModulo(0.08 + phase * 0.84, 1);
+    const role = routeIndex === 0 ? "hero" : "support";
+    return {
+      routeId: `route-${routeIndex}`,
+      routeIndex,
+      initialT,
+      speed: 0.0035 + (slot % 5) * 0.0005,
+      scaleMultiplier: role === "hero" ? 1.08 : 0.72 + (slot % 4) * 0.05,
+      visibilityBias: role === "hero" ? 0.2 : -0.02 + (slot % 6) * 0.028,
+      role,
+    } satisfies AircraftPlacementConfig;
+  });
+}
+
+const AIRCRAFT_TRAFFIC = buildAircraftTrafficConfigs(ROUTE_ARCS);
+
 export default function LiveGlobeProofPage() {
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
@@ -750,6 +785,7 @@ function LiveGlobeCanvas({
     const routeShaderMaterials: THREE.ShaderMaterial[] = [];
     const aircraftMaterials: THREE.MeshPhongMaterial[] = [];
     const aircraftEntries: AircraftEntry[] = [];
+    const aircraftGlowTextures: THREE.Texture[] = [];
 
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -1255,6 +1291,40 @@ function LiveGlobeCanvas({
       return new THREE.CatmullRomCurve3(points, false, "catmullrom", 0.28);
     };
 
+    const createAircraftGlowTexture = (width: number, height: number, verticalPower: number) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d");
+      if (!context) {
+        return null;
+      }
+      const centerX = width * 0.5;
+      const centerY = height * 0.5;
+      for (let x = 0; x < width; x += 1) {
+        for (let y = 0; y < height; y += 1) {
+          const nx = Math.abs((x - centerX) / Math.max(centerX, 1));
+          const ny = Math.abs((y - centerY) / Math.max(centerY, 1));
+          const horizontal = Math.pow(Math.max(1 - nx, 0), 2.2);
+          const vertical = Math.pow(Math.max(1 - ny, 0), verticalPower);
+          const alpha = horizontal * vertical;
+          const value = Math.floor(255 * alpha);
+          context.fillStyle = `rgba(255,255,255,${value / 255})`;
+          context.fillRect(x, y, 1, 1);
+        }
+      }
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.needsUpdate = true;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      aircraftGlowTextures.push(texture);
+      return texture;
+    };
+
+    const aircraftGlowCoreTexture = createAircraftGlowTexture(128, 128, 2.4);
+    const aircraftGlowStreakTexture = createAircraftGlowTexture(256, 80, 6.5);
+
     const aircraftUp = new THREE.Vector3();
     const aircraftPoint = new THREE.Vector3();
     const aircraftTangent = new THREE.Vector3();
@@ -1268,11 +1338,18 @@ function LiveGlobeCanvas({
     const aircraftFutureTangent = new THREE.Vector3();
     const aircraftTrailPoint = new THREE.Vector3();
     const aircraftTrailNormal = new THREE.Vector3();
+    const aircraftNearBodyColor = new THREE.Color(0xc0cada);
+    const aircraftFarBodyColor = new THREE.Color(0x546076);
+    const aircraftBodyColor = new THREE.Color();
+    const aircraftSpecularNear = new THREE.Color(0xd8e3f6);
+    const aircraftSpecularFar = new THREE.Color(0x5e6f8f);
+    const aircraftSpecularColor = new THREE.Color();
 
     const applyAircraftPose = (
       entry: AircraftEntry,
       progress: number,
       camera: THREE.PerspectiveCamera,
+      elapsed: number,
     ) => {
       const clampedProgress = THREE.MathUtils.euclideanModulo(progress, 1);
       entry.routeEntry.curve.getPointAt(clampedProgress, aircraftPoint);
@@ -1287,12 +1364,13 @@ function LiveGlobeCanvas({
       entry.anchor.position.copy(aircraftPoint).addScaledVector(aircraftUp, AIRCRAFT_CLEARANCE);
       entry.pose.quaternion.setFromRotationMatrix(aircraftBasis);
       const bankAmount = THREE.MathUtils.clamp(
-        aircraftFutureTangent.sub(aircraftTangent).dot(aircraftRight) * 4.5,
-        -0.18,
-        0.18,
+        aircraftFutureTangent.sub(aircraftTangent).dot(aircraftRight) * 2.8,
+        -0.11,
+        0.11,
       );
+      entry.bank = THREE.MathUtils.lerp(entry.bank, bankAmount, 0.16);
+      entry.pose.rotateZ(entry.bank);
       entry.visual.quaternion.copy(AIRCRAFT_FORWARD_AXIS_CORRECTION);
-      entry.visual.rotateZ(bankAmount);
 
       entry.anchor.getWorldPosition(aircraftWorldPosition);
       globeToCamera.copy(camera.position).sub(globeRig.position).normalize();
@@ -1306,11 +1384,31 @@ function LiveGlobeCanvas({
         AIRCRAFT_ROUTE_MAX_SCALE,
         routeCenterPresence,
       );
-      const depthScale = THREE.MathUtils.lerp(0.82, 1.34, depthPresence) * entry.baseScale;
+      const roleScale = entry.config.role === "hero" ? 1.06 : 1;
+      const visibilityPresence = THREE.MathUtils.clamp(depthPresence + entry.config.visibilityBias, 0, 1);
+      const depthScale = THREE.MathUtils.lerp(0.76, 1.32, visibilityPresence) * entry.config.scaleMultiplier * roleScale;
       entry.anchor.scale.setScalar(depthScale * routeProgressScale);
-      const opacity = THREE.MathUtils.lerp(0.22, 0.98, depthPresence);
+      const opacityMax = entry.config.role === "hero" ? 1 : 0.94;
+      const opacity = THREE.MathUtils.lerp(0.56, opacityMax, visibilityPresence);
       for (const material of entry.materials) {
         material.opacity = opacity;
+        aircraftBodyColor.copy(aircraftFarBodyColor).lerp(aircraftNearBodyColor, visibilityPresence);
+        material.color.copy(aircraftBodyColor);
+        aircraftSpecularColor.copy(aircraftSpecularFar).lerp(aircraftSpecularNear, visibilityPresence);
+        material.specular.copy(aircraftSpecularColor);
+        material.shininess = THREE.MathUtils.lerp(16, 44, visibilityPresence);
+        material.emissive.copy(entry.routeGlowColor);
+        material.emissiveIntensity = THREE.MathUtils.lerp(0.2, entry.config.role === "hero" ? 0.78 : 0.62, visibilityPresence);
+      }
+      const sunPulseBase = Math.sin(elapsed * 0.92 + entry.config.routeIndex * 0.77);
+      const sunPulsePeak = Math.pow(Math.max(sunPulseBase, 0), 3.2);
+      const sunPulse = 0.76 + sunPulsePeak * 1.05;
+      const glowOpacity = THREE.MathUtils.lerp(0.1, entry.config.role === "hero" ? 0.32 : 0.26, visibilityPresence) * sunPulse;
+      for (const material of entry.glowMaterials) {
+        const glowGain = typeof material.userData.glowGain === "number" ? material.userData.glowGain : 1;
+        if ("opacity" in material) {
+          material.opacity = glowOpacity * glowGain;
+        }
       }
       for (const [index, trailPoint] of entry.trailPoints.entries()) {
         const trailProgress = THREE.MathUtils.euclideanModulo(clampedProgress - (index + 1) * AIRCRAFT_TRAIL_STEP, 1);
@@ -1371,56 +1469,130 @@ function LiveGlobeCanvas({
 
         const aircraftRig = new THREE.Group();
         aircraftRig.name = "aircraft-rig";
+        const deployedTraffic: Array<{
+          routeId: string;
+          routeIndex: number;
+          initialT: number;
+          speed: number;
+          role: "hero" | "support";
+        }> = [];
 
-        const routeEntry = routeEntries.find((entry) => entry.routeIndex === AIRCRAFT_DEBUG_ROUTE.routeIndex);
-        if (!routeEntry) {
-          routeGroup.add(aircraftRig);
-          return;
-        }
+        for (const config of AIRCRAFT_TRAFFIC) {
+          const routeEntry = routeEntries.find((entry) => entry.routeIndex === config.routeIndex);
+          if (!routeEntry) {
+            continue;
+          }
 
-        const { visual, materials } = buildAircraftModel(gltf.scene);
+          const { visual, materials } = buildAircraftModel(gltf.scene);
 
-        const aircraftAnchor = new THREE.Group();
-        aircraftAnchor.name = "aircraft-anchor";
-        const aircraftPose = new THREE.Group();
-        aircraftPose.name = "aircraft-pose";
-        aircraftPose.add(visual);
-        aircraftAnchor.add(aircraftPose);
-        aircraftRig.add(aircraftAnchor);
+          const aircraftAnchor = new THREE.Group();
+          aircraftAnchor.name = "aircraft-anchor";
+          const aircraftPose = new THREE.Group();
+          aircraftPose.name = "aircraft-pose";
+          aircraftPose.add(visual);
+          aircraftAnchor.add(aircraftPose);
+          aircraftRig.add(aircraftAnchor);
 
-        const trailPoints: THREE.Mesh[] = [];
-        for (let index = 0; index < AIRCRAFT_TRAIL_STEPS; index += 1) {
-          const trailGeometry = new THREE.SphereGeometry(THREE.MathUtils.lerp(0.005, 0.002, index / Math.max(AIRCRAFT_TRAIL_STEPS - 1, 1)), 10, 10);
-          const trailMaterial = new THREE.MeshBasicMaterial({
-            color: 0xd8e7ff,
-            transparent: true,
-            opacity: 0.05,
-            depthWrite: false,
-            blending: THREE.AdditiveBlending,
+          const routeGlowColor = new THREE.Color(routeEntry.routeConfig.glowColor);
+          const glowMaterials: THREE.Material[] = [];
+          if (aircraftGlowCoreTexture && aircraftGlowStreakTexture) {
+            const flareGroup = new THREE.Group();
+            flareGroup.name = "aircraft-flare";
+
+            const coreMaterial = new THREE.SpriteMaterial({
+              map: aircraftGlowCoreTexture,
+              color: routeGlowColor.clone().lerp(new THREE.Color(0xffffff), 0.22),
+              transparent: true,
+              opacity: 0,
+              depthWrite: false,
+              depthTest: true,
+              blending: THREE.AdditiveBlending,
+            });
+            coreMaterial.userData.glowGain = 1.08;
+            const coreSprite = new THREE.Sprite(coreMaterial);
+            coreSprite.scale.setScalar(config.role === "hero" ? 0.11 : 0.09);
+            flareGroup.add(coreSprite);
+
+            const wingStreakMaterial = new THREE.SpriteMaterial({
+              map: aircraftGlowStreakTexture,
+              color: routeGlowColor,
+              transparent: true,
+              opacity: 0,
+              depthWrite: false,
+              depthTest: true,
+              blending: THREE.AdditiveBlending,
+            });
+            wingStreakMaterial.userData.glowGain = 0.8;
+            const wingStreak = new THREE.Sprite(wingStreakMaterial);
+            wingStreak.scale.set(config.role === "hero" ? 0.24 : 0.2, config.role === "hero" ? 0.06 : 0.05, 1);
+            flareGroup.add(wingStreak);
+
+            const crossStreakMaterial = new THREE.SpriteMaterial({
+              map: aircraftGlowStreakTexture,
+              color: routeGlowColor.clone().lerp(new THREE.Color(0xffffff), 0.12),
+              transparent: true,
+              opacity: 0,
+              depthWrite: false,
+              depthTest: true,
+              blending: THREE.AdditiveBlending,
+              rotation: Math.PI * 0.5,
+            });
+            crossStreakMaterial.userData.glowGain = 0.56;
+            const crossStreak = new THREE.Sprite(crossStreakMaterial);
+            crossStreak.scale.set(config.role === "hero" ? 0.13 : 0.11, config.role === "hero" ? 0.04 : 0.034, 1);
+            flareGroup.add(crossStreak);
+
+            visual.add(flareGroup);
+            glowMaterials.push(coreMaterial, wingStreakMaterial, crossStreakMaterial);
+            routeMaterials.push(coreMaterial, wingStreakMaterial, crossStreakMaterial);
+          }
+
+          const trailPoints: THREE.Mesh[] = [];
+          const trailSteps = config.role === "hero" ? AIRCRAFT_TRAIL_STEPS : 3;
+          for (let index = 0; index < trailSteps; index += 1) {
+            const trailGeometry = new THREE.SphereGeometry(THREE.MathUtils.lerp(0.005, 0.002, index / Math.max(trailSteps - 1, 1)), 10, 10);
+            const trailMaterial = new THREE.MeshBasicMaterial({
+              color: config.role === "hero" ? 0xeaf5ff : 0xd8e7ff,
+              transparent: true,
+              opacity: config.role === "hero" ? 0.05 : 0.03,
+              depthWrite: false,
+              blending: THREE.AdditiveBlending,
+            });
+            const trailPointMesh = new THREE.Mesh(trailGeometry, trailMaterial);
+            trailPointMesh.renderOrder = 11;
+            trailPoints.push(trailPointMesh);
+            routeDisposables.push(trailGeometry);
+            routeMaterials.push(trailMaterial);
+            routeGroup.add(trailPointMesh);
+          }
+
+          aircraftEntries.push({
+            anchor: aircraftAnchor,
+            pose: aircraftPose,
+            visual,
+            config,
+            routeEntry,
+            routeGlowColor,
+            progress: config.initialT,
+            bank: 0,
+            materials,
+            glowMaterials,
+            trailPoints,
           });
-          const trailPointMesh = new THREE.Mesh(trailGeometry, trailMaterial);
-          trailPointMesh.renderOrder = 11;
-          trailPoints.push(trailPointMesh);
-          routeDisposables.push(trailGeometry);
-          routeMaterials.push(trailMaterial);
-          routeGroup.add(trailPointMesh);
+
+          deployedTraffic.push({
+            routeId: config.routeId,
+            routeIndex: config.routeIndex,
+            initialT: config.initialT,
+            speed: config.speed,
+            role: config.role,
+          });
         }
-        aircraftEntries.push({
-          anchor: aircraftAnchor,
-          pose: aircraftPose,
-          visual,
-          routeEntry,
-          progress: AIRCRAFT_DEBUG_ROUTE.progress,
-          speed: AIRCRAFT_DEBUG_ROUTE.speed,
-          baseScale: AIRCRAFT_DEBUG_ROUTE.baseScale,
-          materials,
-          trailPoints,
-        });
-        window.console.info("[live-globe-proof] aircraft motion debug", {
-          route: AIRCRAFT_DEBUG_ROUTE.routeName,
-          initialT: AIRCRAFT_DEBUG_ROUTE.progress,
-          speed: AIRCRAFT_DEBUG_ROUTE.speed,
+
+        window.console.info("[live-globe-proof] aircraft traffic", {
           aircraftModelPath: AIRCRAFT_MODEL_PATH,
+          count: deployedTraffic.length,
+          traffic: deployedTraffic,
         });
         routeGroup.add(aircraftRig);
       });
@@ -1517,8 +1689,8 @@ function LiveGlobeCanvas({
           material.uniforms.globeCenter.value.copy(globeRig.position);
         }
         for (const entry of aircraftEntries) {
-          entry.progress = THREE.MathUtils.euclideanModulo(entry.progress + entry.speed * delta, 1);
-          applyAircraftPose(entry, entry.progress, camera);
+          entry.progress = THREE.MathUtils.euclideanModulo(entry.progress + entry.config.speed * delta, 1);
+          applyAircraftPose(entry, entry.progress, camera, elapsed);
         }
         if (cloudRig) {
           cloudRig.rotation.y = elapsed * 0.0028;
@@ -1534,7 +1706,7 @@ function LiveGlobeCanvas({
       } else {
         globeRig.rotation.set(INITIAL_GLOBE_ROTATION.x, INITIAL_GLOBE_ROTATION.y, INITIAL_GLOBE_ROTATION.z);
         for (const entry of aircraftEntries) {
-          applyAircraftPose(entry, entry.progress, camera);
+          applyAircraftPose(entry, entry.progress, camera, elapsed);
         }
         if (cloudRig) {
           cloudRig.rotation.set(0, 0, 0);
@@ -1578,6 +1750,9 @@ function LiveGlobeCanvas({
       }
       for (const material of aircraftMaterials) {
         material.dispose();
+      }
+      for (const texture of aircraftGlowTextures) {
+        texture.dispose();
       }
       mount.removeChild(renderer.domElement);
     };
