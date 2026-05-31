@@ -4,116 +4,79 @@ Date: 2026-05-30
 
 ## Route
 
-- Local route: `/lab/live-globe-proof`
-- Proof URL used during this pass: `http://localhost:3000/lab/live-globe-proof`
+- Route URL: `/lab/live-globe-proof`
+- Verification URL: `http://localhost:3001/lab/live-globe-proof`
 
-## Scope
+## Scope Result
 
-This pass was app-level globe lookdev only. The existing hero placement, initial orientation, camera/framing values, and live rotation behavior were preserved. No route arcs, aircraft, scanner, ticket, ENTER CTA, chapter cards, production homepage behavior, or waitlist behavior were added or modified.
+The live proof moved from the accepted `cityhalo` globe-only state into a broader aviation-network presentation while preserving the production homepage, waitlist behavior, scanner, ticket, ENTER CTA, and chapter cards.
 
-## Scope Checks
+Preserved intentionally:
 
-- Routes disabled: yes. The live proof route renders globe spheres/materials only; no route arcs or dashed paths are rendered.
-- Aircraft disabled: yes. No aircraft models or plane markers are rendered.
-- Scanner/ticket/ENTER CTA: not added.
-- Production homepage: untouched.
-- Waitlist behavior: untouched.
-- Step 1 background: preserved as the base cinematic plate.
+- production homepage
+- waitlist behavior
+- globe rotation behavior
+- scanner
+- ticket
+- ENTER CTA
+- chapter cards
+- no aircraft added
 
-## Files Changed
+## Files Changed In This Pass
 
 - `app/lab/live-globe-proof/page.tsx`
-- `app/lab/live-globe-proof/page.module.css`
-- `public/cinematic/previews/live-globe-proof-mobile.png`
-- `public/cinematic/previews/live-globe-proof-desktop.png`
+- `tools/cinematic/render_live_globe_routes_candidate.mjs`
+- `public/cinematic/previews/live-globe-proof-routes-baseline-desktop.png`
+- `public/cinematic/previews/live-globe-proof-routes-baseline-mobile.png`
+- `public/cinematic/previews/live-globe-proof-routes-desktop.png`
+- `public/cinematic/previews/live-globe-proof-routes-mobile.png`
+- `public/cinematic/previews/live-globe-proof-routes-comparison.png`
+- `docs/landing/live-globe-routes-correction.md`
 - `docs/landing/live-globe-proof-review.md`
 
-## Screenshots
+## Baseline And Candidate
 
-- `public/cinematic/previews/live-globe-proof-mobile.png`
-- `public/cinematic/previews/live-globe-proof-desktop.png`
+- Baseline route state: `routes=off`
+- Accepted route state: default route arcs enabled
+- Baseline desktop: `public/cinematic/previews/live-globe-proof-routes-baseline-desktop.png`
+- Baseline mobile: `public/cinematic/previews/live-globe-proof-routes-baseline-mobile.png`
+- Candidate desktop: `public/cinematic/previews/live-globe-proof-routes-desktop.png`
+- Candidate mobile: `public/cinematic/previews/live-globe-proof-routes-mobile.png`
+- Comparison sheet: `public/cinematic/previews/live-globe-proof-routes-comparison.png`
 
-Screenshots were captured with `prefers-reduced-motion: reduce` after waiting for the live globe textures to load. This keeps the proof frame deterministic without changing the live page rotation behavior for normal users.
+## Visual Assessment
 
-## Asset Source
+Accepted improvements:
 
-The runtime globe uses the existing CGTrader-derived Earth texture set:
+- The globe now reads as a real global aviation network instead of an isolated hero planet.
+- Front-facing North Atlantic routes remain the hero.
+- Additional routes now cover South America, South Africa, Texas, the US west coast, Hawaii, Japan, East Asia, India, and Australia.
+- The far side no longer feels empty.
+- Routes remain thin, luminous, and depth-aware rather than turning into thick neon tubes or flat UI scribbles.
+- Continent relief was pushed further, especially around Greenland and the northern landmass, to increase the 3D feel.
 
-- `public/cinematic/textures/cgtrader-earth-day-4k.jpg`
-- `public/cinematic/textures/cgtrader-earth-night-4k.jpg`
-- `public/cinematic/textures/cgtrader-earth-clouds-4k.jpg`
-- `public/cinematic/textures/cgtrader-earth-normal-4k.jpg`
-- `public/cinematic/textures/cgtrader-earth-specular-4k.jpg`
+Remaining risk:
 
-Raw CGTrader source files were not modified or newly exposed in this pass.
+- The route network is now intentionally denser than the original 4-6-arc target because later art direction requested a broader global system.
+- Future passes should preserve readability and avoid tipping into clutter as more aviation elements are added.
 
-## Visual Controls Changed
+## Acceptance Decision
 
-- Lowered renderer exposure slightly to reduce raw daytime Earth brightness and make the globe feel more cinematic.
-- Deepened the ocean grade in the custom shader, including a darker navy base and reduced raw satellite blue lift.
-- Added more selective ocean detail so the surface does not become a flat navy disk.
-- Warmed and shaped city-light treatment using softer halo and core thresholds, so lights feel more embedded in the globe surface.
-- Tuned land/desert/ice suppression in shader to reduce chalky Sahara and harsh polar highlights without removing recognizable geography.
-- Increased subtle cloud contribution to preserve surface richness under the darker grade.
-- Tightened the atmosphere shader to keep the rim thin and edge-based, with stronger top-edge emphasis but no cyan glass coating across the face.
-- Strengthened the small CSS top-edge glow layer while keeping it localized and separate from layout/framing.
+Accepted.
 
-## Preserved Controls
+Reason:
 
-- `INITIAL_GLOBE_ROTATION` unchanged in this pass.
-- Camera FOV, camera distance, globe scale, globe position, resize/framing logic, and rotation speed unchanged in this pass.
-- Step 1 cinematic background preserved.
-- Transparent/seamless canvas integration preserved.
+- The accepted state is visibly closer to the supplied design intent than the no-routes baseline.
+- The route network feels global, premium, and better integrated with the globe surface.
+- The right side / Pacific / Asia regions no longer feel abandoned.
+- The scene still preserves the underlying city-light, ocean, atmosphere, and no-aircraft constraints.
 
-## App-Level vs. Asset-Level
+## Validation
 
-This was app-level lookdev. No Blender files, raw CGTrader files, model exports, or texture files were edited.
+- `npm run lint`: passed
+- `npm run typecheck`: passed
+- `npm run build`: passed
 
-The live scene exposes enough control to make the globe visibly closer: darker navy oceans, warmer lights, stronger thin rim, subtler clouds, and reduced raw satellite brightness. It does not expose enough control to exactly reproduce the supplied design spec because the current render still depends on source Earth maps and runtime shader approximations.
+## Single Next Best Correction
 
-## Current Score
-
-| Criterion | Score |
-| --- | ---: |
-| Deep navy ocean richness | 4.1 / 5 |
-| City-light warmth/integration | 4.1 / 5 |
-| Atmosphere/rim quality | 3.9 / 5 |
-| Surface/cloud richness | 3.8 / 5 |
-| Premium cinematic reference match | 4.0 / 5 |
-| Background integration | 4.3 / 5 |
-
-Legacy full-pass framing/orientation scores from the original pasted task remain covered by the current proof screenshots:
-
-| Criterion | Score |
-| --- | ---: |
-| Globe orientation match | 4.1 / 5 |
-| Mobile framing match | 4.1 / 5 |
-| Desktop framing match | 4.1 / 5 |
-| Overall match to supplied design spec | 4.0 / 5 |
-
-## Remaining Gaps
-
-- The globe is darker and more cinematic, but it still reads as a shader-graded Earth texture rather than a fully authored Deadhead globe asset.
-- North America and Europe are warmer and more luminous, but the city-light network is limited by the source night map. The design spec needs custom emission density, coastline glints, and art-directed metro clusters.
-- The atmosphere is thin and edge-based now, but the reference top bloom feels physically integrated with the globe. CSS and a simple atmosphere shell can approximate it, not match it exactly.
-- Sahara, polar ice, and land color are subdued by shader masks, but a texture-authored grade would be cleaner and less fragile.
-- Clouds and surface detail are present, but the reference has more controlled depth and premium render richness.
-
-## Blender/Export Work Required Next
-
-To match the design spec exactly, the next pass should move into asset/lookdev work:
-
-- Author a Deadhead-specific globe beauty/albedo map with deep navy oceans baked into the source material.
-- Build a custom warm emission map emphasizing North America and Europe, with designed city networks, coastline glints, and selected high-intensity hotspots.
-- Create a land/desert/ice grade mask so Sahara and polar regions stay recognizable but do not dominate the hero.
-- Improve cloud treatment with a cleaner cloud-opacity/depth map or Blender-authored cloud layer.
-- Author/export a controlled atmosphere/halo asset or Blender render pass that creates the thin rim and bright top-edge bloom without a thick blue shell.
-- If the final live scene remains Three.js-driven, export those maps/halo elements separately so the runtime shader can consume purpose-built art assets instead of fighting raw satellite textures.
-
-## Recommendation
-
-Frontend controls were enough for this correction pass and the proof is visibly closer to the Deadhead design spec. The next meaningful improvement should be Blender/export texture work, not more page layout or orientation tuning.
-
-## Proposed Next Single Correction
-
-Create the Deadhead-specific asset lookdev set: a dark navy beauty/albedo map plus a warm city-emission map that emphasizes North America and Europe while suppressing Sahara/ice dominance. Swap those maps into the existing live globe shader before adding scanner, ticket, route arcs, aircraft, or any broader cinematic journey pieces.
+Add a selective endpoint-glint / landing-node pass so the strongest routes have intentional takeoff/arrival emphasis before any aircraft are introduced.

@@ -51,21 +51,11 @@
   pointer-events: none;
   background: none;
   mix-blend-mode: screen;
-  opacity: 0.9;
+  opacity: 0;
 }
 
 .topGlowLayer::before {
-  position: absolute;
-  top: clamp(44px, 6.4vw, 58px);
-  left: 50%;
-  width: clamp(120px, 18vw, 240px);
-  height: clamp(16px, 3vw, 34px);
-  content: "";
-  background:
-    radial-gradient(ellipse, rgba(248, 253, 255, 0.64), rgba(112, 209, 255, 0.32) 38%, transparent 72%),
-    linear-gradient(90deg, transparent, rgba(94, 190, 255, 0.34), rgba(245, 253, 255, 0.34), rgba(94, 190, 255, 0.34), transparent);
-  filter: blur(6px);
-  transform: translateX(-50%);
+  content: none;
 }
 
 .vignetteLayer {
@@ -114,14 +104,11 @@
 
 @media (max-width: 759px) {
   .topGlowLayer {
-    opacity: 0.78;
+    opacity: 0;
   }
 
   .topGlowLayer::before {
-    top: clamp(36px, 10vw, 46px);
-    width: clamp(112px, 38vw, 160px);
-    height: 22px;
-    filter: blur(6px);
+    content: none;
   }
 }
 
