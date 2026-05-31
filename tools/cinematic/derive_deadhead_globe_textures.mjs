@@ -23,7 +23,10 @@ const OUTPUTS = {
   oceanMask: path.join(textureDir, `deadhead-earth-ocean-mask-${version}.webp`),
   desertMask: path.join(textureDir, `deadhead-earth-desert-suppression-${version}.webp`),
   iceMask: path.join(textureDir, `deadhead-earth-ice-suppression-${version}.webp`),
-  metadata: path.join(textureDir, `deadhead-earth-lookdev-metadata-${version}.json`),
+  metadata:
+    version === "v2"
+      ? path.join(textureDir, "deadhead-earth-lookdev-metadata.json")
+      : path.join(textureDir, `deadhead-earth-lookdev-metadata-${version}.json`),
   albedoPreview: path.join(previewDir, `deadhead-earth-albedo-${version}-preview.png`),
   emissionPreview: path.join(previewDir, `deadhead-earth-emission-${version}-preview.png`),
   emissionHaloPreview: path.join(previewDir, `deadhead-earth-emission-halo-${version}-preview.png`),
@@ -162,16 +165,16 @@ async function main() {
   const desertMaskBuffer = new Uint8Array(pixelCount);
   const iceMaskBuffer = new Uint8Array(pixelCount);
 
-  const navyDeep = color("#031126");
-  const navyLift = color("#0d3968");
-  const oceanGlow = color("#2361a1");
-  const landBase = color("#171d24");
-  const landLift = color("#44535a");
-  const desertTarget = color("#3d3a40");
-  const iceTarget = color("#879caf");
+  const navyDeep = color("#020812");
+  const navyLift = color("#0a2449");
+  const oceanGlow = color("#194778");
+  const landBase = color("#141b22");
+  const landLift = color("#425057");
+  const desertTarget = color("#34343a");
+  const iceTarget = color("#71849a");
   const cloudCool = color("#d7e4f5");
-  const cityWarm = color("#c47425");
-  const cityHot = color("#ffdf9c");
+  const cityWarm = color("#d08a3b");
+  const cityHot = color("#ffebb6");
 
   const oceanSamples = [];
   const desertSamples = [];
@@ -205,15 +208,17 @@ async function main() {
     const cloudLuma = cloudR * 0.299 + cloudG * 0.587 + cloudB * 0.114;
     const specLuma = specR * 0.299 + specG * 0.587 + specB * 0.114;
 
-    const oceanMask = clamp01(Math.max(smoothstep(0.16, 0.72, specLuma), smoothstep(0.42, 0.76, dayB - dayR * 0.58)));
+    const oceanMask = clamp01(Math.max(smoothstep(0.16, 0.72, specLuma), smoothstep(0.38, 0.74, dayB - dayR * 0.54)));
     const landMask = 1 - oceanMask;
-    const warmHue = 1 - smoothstep(10, 84, hueDistanceDegrees(h, 38));
+    const warmHue = 1 - smoothstep(12, 94, hueDistanceDegrees(h, 42));
+    const desertDryness = clamp01(Math.max(0, dayR - dayB * 0.52) + Math.max(0, dayG - dayB * 0.68));
     const desertMask =
       landMask *
       warmHue *
-      smoothstep(0.18, 0.74, dayLuma) *
-      smoothstep(0.06, 0.58, s) *
-      (1 - smoothstep(0.04, 0.32, dayB));
+      smoothstep(0.16, 0.78, dayLuma) *
+      (0.52 + smoothstep(0.02, 0.34, s) * 0.48) *
+      smoothstep(0.08, 0.46, desertDryness) *
+      (1 - smoothstep(0.1, 0.42, dayB));
 
     const latitude = 90 - ((Math.floor(index / width) + 0.5) / height) * 180;
     const longitude = ((index % width) + 0.5) / width * 360 - 180;
@@ -224,21 +229,21 @@ async function main() {
       smoothstep(0.5, 0.94, l) *
       (1 - smoothstep(0.22, 0.56, s));
 
-    const cloudAlpha = Math.pow(smoothstep(0.42, 0.92, cloudLuma), 1.04) * 0.9;
-    const oceanDetail = oceanMask * (0.28 + smoothstep(0.04, 0.44, dayB) * 0.72);
+    const cloudAlpha = Math.pow(smoothstep(0.34, 0.9, cloudLuma), 1.1) * 0.78;
+    const oceanDetail = oceanMask * (0.22 + smoothstep(0.06, 0.42, dayB) * 0.78);
     const relief = landMask * smoothstep(0.08, 0.72, dayLuma) * (0.32 + s * 0.48);
     const oceanSwirl = oceanMask * smoothstep(0.08, 0.46, dayB - dayG * 0.12);
 
     let oceanColor = blend(navyDeep, navyLift, oceanDetail);
-    oceanColor = blend(oceanColor, oceanGlow, cloudAlpha * 0.12 + oceanSwirl * 0.22 + smoothstep(0.22, 0.6, dayB) * 0.06);
+    oceanColor = blend(oceanColor, oceanGlow, cloudAlpha * 0.08 + oceanSwirl * 0.16 + smoothstep(0.22, 0.56, dayB) * 0.04);
 
     let landColor = blend(landBase, landLift, relief);
-    landColor = blend(landColor, { r: dayR * 0.42, g: dayG * 0.4, b: dayB * 0.38 }, 0.34);
-    landColor = blend(landColor, desertTarget, desertMask * 0.7);
-    landColor = blend(landColor, iceTarget, iceMask * 0.68);
+    landColor = blend(landColor, { r: dayR * 0.4, g: dayG * 0.38, b: dayB * 0.34 }, 0.28);
+    landColor = blend(landColor, desertTarget, desertMask * 0.82);
+    landColor = blend(landColor, iceTarget, iceMask * 0.58);
 
     let albedoColor = blend(landColor, oceanColor, oceanMask);
-    albedoColor = blend(albedoColor, cloudCool, cloudAlpha * 0.18);
+    albedoColor = blend(albedoColor, cloudCool, cloudAlpha * 0.12);
 
     albedoBuffer[outOffsetRgb] = Math.round(clamp01(albedoColor.r) * 255);
     albedoBuffer[outOffsetRgb + 1] = Math.round(clamp01(albedoColor.g) * 255);
@@ -250,14 +255,14 @@ async function main() {
     const europeMask =
       lonLatMask(longitude, latitude, -12, 38, 34, 64, 8) +
       lonLatMask(longitude, latitude, -7, 18, 44, 58, 6) * 0.38;
-    const eastAsiaMask = lonLatMask(longitude, latitude, 104, 144, 22, 48, 10) * 0.12;
+    const eastAsiaMask = lonLatMask(longitude, latitude, 104, 144, 22, 48, 10) * 0.14;
     const cityMask = landMask * Math.pow(smoothstep(0.025, 0.62, nightLuma), 0.98);
-    const cityBoost = 1 + northAmericaMask * 0.5 + europeMask * 0.46 + eastAsiaMask * 1.2;
-    const cityCore = Math.pow(smoothstep(0.1, 0.86, nightLuma), 1.08);
+    const cityBoost = 1 + northAmericaMask * 0.66 + europeMask * 0.62 + eastAsiaMask * 1.14;
+    const cityCore = Math.pow(smoothstep(0.08, 0.84, nightLuma), 1.02);
     const cityStrength = clamp01(cityMask * cityBoost * (1 - desertMask * 0.18));
     const cityColor = blend(cityWarm, cityHot, cityCore * 0.78);
-    const cityAlpha = clamp01(cityStrength * (0.56 + cityCore * 1.18));
-    const cityHaloAlpha = clamp01(cityStrength * (0.5 + cityCore * 0.74));
+    const cityAlpha = clamp01(cityStrength * (0.62 + cityCore * 1.24));
+    const cityHaloAlpha = clamp01(cityStrength * (0.54 + cityCore * 0.82));
 
     emissionBuffer[baseOffset] = Math.round(clamp01(cityColor.r * cityStrength) * 255);
     emissionBuffer[baseOffset + 1] = Math.round(clamp01(cityColor.g * cityStrength) * 255);

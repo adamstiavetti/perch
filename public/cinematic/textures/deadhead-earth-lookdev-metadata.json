@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T20:06:12.443Z",
+  "generated_at": "2026-05-30T21:44:43.635Z",
   "inputs": {
     "day": "public/cinematic/textures/cgtrader-earth-day-4k.jpg",
     "night": "public/cinematic/textures/cgtrader-earth-night-4k.jpg",
@@ -9,6 +9,7 @@
   "outputs": {
     "albedo": "public/cinematic/textures/deadhead-earth-albedo-v2.webp",
     "emission": "public/cinematic/textures/deadhead-earth-emission-v2.webp",
+    "emissionHalo": "public/cinematic/textures/deadhead-earth-emission-halo-v2.webp",
     "clouds": "public/cinematic/textures/deadhead-earth-clouds-v2.webp",
     "oceanMask": "public/cinematic/textures/deadhead-earth-ocean-mask-v2.webp",
     "desertMask": "public/cinematic/textures/deadhead-earth-desert-suppression-v2.webp",
@@ -16,6 +17,7 @@
     "metadata": "public/cinematic/textures/deadhead-earth-lookdev-metadata.json",
     "albedoPreview": "public/cinematic/previews/deadhead-earth-albedo-v2-preview.png",
     "emissionPreview": "public/cinematic/previews/deadhead-earth-emission-v2-preview.png",
+    "emissionHaloPreview": "public/cinematic/previews/deadhead-earth-emission-halo-v2-preview.png",
     "cloudsPreview": "public/cinematic/previews/deadhead-earth-clouds-v2-preview.png"
   },
   "texture_audit": {
@@ -41,6 +43,9 @@
       "Derived from the CGTrader night map with transparent non-city areas instead of keeping the source's dark land background.",
       "Shifted lights toward amber/gold and boosted source geography selectively over North America and Europe."
     ],
+    "emission_halo": [
+      "Derived from the same CGTrader night geography, then blurred to produce broader metro and coastline glow without inventing new city locations."
+    ],
     "clouds": [
       "Derived from the CGTrader cloud texture with the low-level haze removed and the remaining cloud bodies carried in alpha."
     ],
@@ -53,27 +58,27 @@
     "ocean_mask": {
       "min": 0,
       "max": 1,
-      "mean": 0.6722
+      "mean": 0.6751
     },
     "desert_mask": {
       "min": 0,
-      "max": 0.2194,
-      "mean": 0.0011
+      "max": 0.3689,
+      "mean": 0.0116
     },
     "ice_mask": {
       "min": 0,
-      "max": 1,
-      "mean": 0.0899
+      "max": 0.9789,
+      "mean": 0.0892
     },
     "city_strength": {
       "min": 0,
       "max": 1,
-      "mean": 0.0078
+      "mean": 0.0195
     },
     "cloud_alpha": {
       "min": 0,
-      "max": 0.92,
-      "mean": 0.058
+      "max": 0.78,
+      "mean": 0.1073
     }
   },
   "procedural_supporting_maps": [

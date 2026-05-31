@@ -4,162 +4,201 @@ Date: 2026-05-30
 
 ## Scope
 
-This pass is Step 2A.1 only: derive a Deadhead-specific v2 texture set for `/lab/live-globe-proof` without changing the production homepage, waitlist behavior, globe placement, globe orientation, globe camera/framing, or the disabled scanner/ticket/routes/aircraft/ENTER sequence.
+This pass is limited to globe map and material lookdev for `/lab/live-globe-proof`.
 
-## Texture Audit Results
+Preserved intentionally:
+
+- production homepage
+- waitlist behavior
+- globe placement
+- globe orientation
+- camera/framing
+- rotation behavior
+- disabled routes
+- disabled aircraft
+- disabled scanner
+- disabled ticket
+- disabled ENTER CTA
+
+## Audit
 
 ### Current live globe route
 
 - Route: `/lab/live-globe-proof`
 - Runtime file: `app/lab/live-globe-proof/page.tsx`
+- Verification URL used in this pass: `http://127.0.0.1:3001/lab/live-globe-proof`
 
-### Current live globe asset path
+### Which model/asset is actually loaded
 
-- Runtime globe geometry: `THREE.SphereGeometry` created directly in `app/lab/live-globe-proof/page.tsx`
-- Existing generated model on disk: `public/cinematic/models/cgtrader-earth-live-proof.glb`
+- Runtime globe asset: `THREE.SphereGeometry` created directly in `app/lab/live-globe-proof/page.tsx`
+- Current runtime does **not** load a GLB, FBX, OBJ, or embedded Earth mesh
+- Generated model on disk for audit only: `public/cinematic/models/cgtrader-earth-live-proof.glb`
 
-Important audit result: the live route does **not** render the GLB at runtime. The current proof uses direct Three.js sphere geometry plus externally loaded texture files.
+Important result: the live proof route is procedural Three.js geometry with external texture inputs, not a GLB-driven runtime.
 
-### Current texture map handling
+### External vs embedded vs overridden
 
-- Albedo/base color/day surface: external image file
-- Emission/night city lights: external image file
-- Clouds: external image file
-- Ocean response/specular proxy: external image file
-- Normal/bump/displacement: external image file exists, but the active runtime shader was not consuming it
-- Atmosphere/rim: procedural shader, not asset-backed
+- External image textures: yes
+- Embedded GLB textures used by the live route: no
+- Runtime material override path available: yes
+- R3F-specific override: not applicable because this route is not React Three Fiber; it is custom Three.js running inside a client component
 
-### Current texture maps identified
+Practical conclusion: textures can be swapped cleanly in runtime code without re-exporting a model.
 
-- Albedo/day surface: `public/cinematic/textures/cgtrader-earth-day-4k.jpg`
-- Emission/night lights: `public/cinematic/textures/cgtrader-earth-night-4k.jpg`
-- Clouds: `public/cinematic/textures/cgtrader-earth-clouds-4k.jpg`
-- Normal: `public/cinematic/textures/cgtrader-earth-normal-4k.jpg`
-- Specular/ocean response source: `public/cinematic/textures/cgtrader-earth-specular-4k.jpg`
+### Exact source paths identified
 
-### Source texture provenance
+Private raw CGTrader-local source package:
 
-These current web-safe inputs were already derived from the local private CGTrader source package documented in:
+- `Globe/uploads_files_6328163_Earth.blend`
+- `Globe/uploads_files_6328163_cgtrader_optimized_Earth.fbx`
+- `Globe/uploads_files_6328163_Earth.obj`
+- `Globe/uploads_files_6328163_Earth.mtl`
+- `Globe/uploads_files_6328163_textures.zip`
 
-- `docs/landing/cgtrader-live-globe-proof.md`
-- `docs/landing/cgtrader-live-globe-asset-report.json`
+Existing web-safe source derivatives used for this pass:
 
-Raw source remained private under the ignored local `Globe/` directory.
+- `public/cinematic/textures/cgtrader-earth-day-4k.jpg`
+- `public/cinematic/textures/cgtrader-earth-night-4k.jpg`
+- `public/cinematic/textures/cgtrader-earth-clouds-4k.jpg`
+- `public/cinematic/textures/cgtrader-earth-normal-4k.jpg`
+- `public/cinematic/textures/cgtrader-earth-specular-4k.jpg`
 
-## External vs. Embedded vs. Override Findings
+### Current map controls
 
-- External image files: yes
-- Embedded inside GLB: no for the live route
-- Overridden in component code: yes
-- R3F material override: not applicable; the route is custom Three.js code, not React Three Fiber
+- Albedo/base/day surface source: `public/cinematic/textures/cgtrader-earth-day-4k.jpg`
+- Night/emission/city-light source: `public/cinematic/textures/cgtrader-earth-night-4k.jpg`
+- Cloud source: `public/cinematic/textures/cgtrader-earth-clouds-4k.jpg`
+- Normal/bump/displacement source available: `public/cinematic/textures/cgtrader-earth-normal-4k.jpg`
+- Roughness/specular/ocean response source: `public/cinematic/textures/cgtrader-earth-specular-4k.jpg`
+- Atmosphere/rim: procedural shader plus CSS glow layer; no asset-backed atmosphere texture
 
-## Derived V2 Outputs
+### Current runtime wiring after this pass
 
-### Required outputs created
+- Day/albedo: `public/cinematic/textures/deadhead-earth-albedo-v2.webp`
+- Night/emission: `public/cinematic/textures/deadhead-earth-emission-v2.webp`
+- Night halo support: `public/cinematic/textures/deadhead-earth-emission-halo-v2.webp`
+- Clouds: `public/cinematic/textures/deadhead-earth-clouds-v2.webp`
+- Ocean response helper: `public/cinematic/textures/deadhead-earth-ocean-mask-v2.webp`
+- Desert suppression helper: `public/cinematic/textures/deadhead-earth-desert-suppression-v2.webp`
+- Ice suppression helper: `public/cinematic/textures/deadhead-earth-ice-suppression-v2.webp`
+
+Normal/bump data is still identified and documented, but it is not sampled by the current live shader.
+
+## Derived Outputs
+
+### Required outputs
 
 - `public/cinematic/textures/deadhead-earth-albedo-v2.webp`
 - `public/cinematic/textures/deadhead-earth-emission-v2.webp`
 - `public/cinematic/textures/deadhead-earth-clouds-v2.webp`
 - `public/cinematic/textures/deadhead-earth-lookdev-metadata.json`
 
-### Optional supporting outputs created
+### Supporting outputs used in runtime
 
+- `public/cinematic/textures/deadhead-earth-emission-halo-v2.webp`
 - `public/cinematic/textures/deadhead-earth-ocean-mask-v2.webp`
 - `public/cinematic/textures/deadhead-earth-desert-suppression-v2.webp`
 - `public/cinematic/textures/deadhead-earth-ice-suppression-v2.webp`
 
-### Flat previews created
+### Flat previews
 
 - `public/cinematic/previews/deadhead-earth-albedo-v2-preview.png`
 - `public/cinematic/previews/deadhead-earth-emission-v2-preview.png`
 - `public/cinematic/previews/deadhead-earth-clouds-v2-preview.png`
+- `public/cinematic/previews/deadhead-earth-emission-halo-v2-preview.png`
 
-## Exact Visual Changes Made
+## Exact Visual Changes
 
 ### Albedo / beauty map
 
 - Re-derived from `cgtrader-earth-day-4k.jpg`
-- Oceans pushed toward deeper navy/blue-black using a specular-informed ocean mask
-- Sahara/desert response muted so Africa does not flare bright tan
-- Ice and snow cooled into controlled blue-gray instead of raw white
-- Land saturation reduced to avoid the daytime satellite look
-- Subtle cloud lift retained in the beauty map so the globe does not collapse into a dead black ball
+- Oceans pushed further toward deep navy and blue-black while keeping low-contrast cloud and current detail in the water
+- Land saturation reduced so the globe stops reading like a bright daytime satellite Earth
+- Sahara and adjacent desert fields darkened and neutralized so Africa stays readable without flaring tan
+- Polar and ice regions cooled into restrained blue-gray rather than raw chalk-white blobs
 
 ### Emission / city-light map
 
 - Re-derived from `cgtrader-earth-night-4k.jpg`
-- Non-city background moved to transparent black rather than keeping the source land tint
-- Light color shifted toward amber/gold
-- Source geography was preserved; no random synthetic dots were introduced
-- North America and Europe were selectively boosted in the derivation pass
+- Kept geography-shaped light clusters from source data
+- Shifted light color toward warm amber/gold
+- Boosted North America and Europe selectively
+- Preserved coastline and metro clustering instead of inventing random dots
 
 ### Cloud map
 
 - Re-derived from `cgtrader-earth-clouds-4k.jpg`
-- Low-intensity haze was suppressed
-- Stronger cloud bodies were preserved in alpha so the cloud layer stays restrained and does not milk over the whole sphere
+- Increased useful cloud alpha relative to the older v2 set
+- Removed low-value haze so the cloud layer adds richness without milking over city lights
 
-## Procedural / Supporting Map Notes
+### Runtime material follow-up
 
-No required output was invented from scratch in place of an existing source.
+- Rewired the live route from `v4` maps back to the required `v2` paths
+- Reduced overall top bloom and atmosphere thickness
+- Kept the atmosphere as a thin procedural electric-blue rim rather than a glass shell
+- Tightened city-light core versus halo balance so metro regions feel warmer and more embedded
 
-Supporting helper maps were generated because they improved selective grading and were defensibly derived from existing source inputs:
+## Procedural / Supporting Map Disclosure
 
-- `deadhead-earth-ocean-mask-v2.webp` from the specular map plus day-map blue separation
-- `deadhead-earth-desert-suppression-v2.webp` from day-map hue, saturation, and luminance cues
-- `deadhead-earth-ice-suppression-v2.webp` from day-map brightness/saturation plus latitude weighting
+Source-derived required maps:
 
-These supporting maps are explicitly procedural/derived helpers, not original CGTrader source maps.
+- `deadhead-earth-albedo-v2.webp`
+- `deadhead-earth-emission-v2.webp`
+- `deadhead-earth-clouds-v2.webp`
 
-## Runtime Wiring
+Supporting derived maps:
 
-The live route was rewired to use the v2 maps directly in `app/lab/live-globe-proof/page.tsx`.
+- `deadhead-earth-emission-halo-v2.webp`
+  - blurred from the same source night geography
+- `deadhead-earth-ocean-mask-v2.webp`
+  - derived from the source specular map plus day-map color separation
+- `deadhead-earth-desert-suppression-v2.webp`
+  - derived from source hue, luma, and dryness cues
+- `deadhead-earth-ice-suppression-v2.webp`
+  - derived from source brightness, saturation, and latitude cues
 
-Changes made there:
+No required map was replaced with invented fantasy content.
 
-- swapped day/albedo input to `deadhead-earth-albedo-v2.webp`
-- swapped city/emission input to `deadhead-earth-emission-v2.webp`
-- swapped cloud input to `deadhead-earth-clouds-v2.webp`
-- replaced raw specular-driven heuristics with dedicated ocean/desert/ice helper masks
-- kept globe placement, orientation, camera/framing, and rotation logic unchanged
-- kept atmosphere/rim procedural, but reduced its strength to avoid a stronger blue-glass read
-
-No Blender relink/export step was required because the live route already used external textures rather than embedded GLB materials.
-
-## Privacy / Asset Handling Check
+## Privacy / Asset Handling
 
 - Raw CGTrader files stayed private/local: yes
-- Raw `.blend`, `.fbx`, `.obj`, `.mtl`, or original full-resolution textures copied into `/public`: no
-- `.gitignore` already protected `Globe/`, `private-assets/`, `assets-private/`, and `local-assets/`: yes
-
-## Lab Status
-
-- Lab-only derivatives: yes
-- Production-ready claim: no
-- Production candidate value: useful lookdev candidate textures, not launch-approved globe art
+- Raw `.blend`, `.fbx`, `.obj`, `.mtl`, or original full-resolution source textures copied into `/public`: no
+- Ignored private folders already protected in `.gitignore`: yes
+- Protected entries confirmed: `Globe/`, `private-assets/`, `assets-private/`, `local-assets/`
 
 ## Before / After Notes
 
 ### Before
 
-- The live proof was structurally correct but still relied on the raw CGTrader-derived day/night/cloud/specular set.
-- Shader tuning alone had improved the globe, but the base asset inputs still pulled the render toward a brighter satellite Earth with a glassier blue-rim read.
+- The live route was using `v4` derived maps and already had the correct structural globe setup
+- The globe was directionally cinematic but still leaned a bit too realistic-Earth, with a broader top bloom and weaker v2 asset alignment than the task requested
+- Older `v2` outputs on disk lagged behind the current lookdev logic
 
 ### After
 
-- The globe now uses a dedicated Deadhead v2 albedo/emission/cloud set rather than the raw CGTrader web derivatives.
-- Oceans are darker and more premium.
-- City-light geography is cleaner and warmer.
-- Sahara and polar whites are more controlled.
-- Cloud contribution is more restrained because the new cloud map carries a cleaner alpha treatment.
+- The required `v2` outputs were regenerated from the identified CGTrader-safe web sources
+- The live route now uses the exact required `v2` texture filenames
+- Oceans are darker and richer
+- City-light density is warmer and more assertive in North America and Europe
+- Desert control is materially stronger than the old v2 outputs
+- Cloud signal is stronger but still restrained
+- The top-edge atmosphere presentation is thinner than the earlier live route state
+
+## Lab Status
+
+- Raw source stayed private: yes
+- Lab-only derivative set: yes
+- Production candidate value: yes
+- Production-ready claim: no
 
 ## Remaining Exact-Match Gaps
 
-- The atmosphere/rim is still procedural and still reads slightly thicker than the supplied premium design spec wants.
-- The dark-side surface is improved, but it still trends slightly underexposed in the live proof compared with the target art.
-- The reference has more integrated top-bloom and richer surface separation than this texture-only pass delivers.
-- The route orientation is preserved as requested, so the exact most-flattering city clusters from the design spec are not always front-and-center in the same way as the supplied reference art.
+- Greenland and other bright polar regions still catch more top light than the supplied Deadhead reference wants
+- The dark-side surface still reads as a graded Earth map, not a fully art-authored premium aviation globe
+- The route orientation is intentionally preserved, so Europe is not as dominant in the current proof frame as it is in the strongest reference art
+- Cloud richness is improved, but still below the reference’s integrated render quality
+- Atmosphere is thinner now, but the top cap still reads more like a screen-space highlight than a truly authored halo pass
 
-## Recommendation
+## Single Next Best Correction
 
-This v2 set is a worthwhile improvement over the raw CGTrader map inputs, but it does not yet close the final gap to the supplied Deadhead globe art. The single best next correction is a dedicated atmosphere/halo pass that decouples rim glow from surface brightness, so continent detail can be lifted without the globe falling back into a blue-glass look.
+Create a dedicated authored atmosphere and polar-control pass, likely as a Blender or composited halo/top-cap deliverable, so the globe can keep continent detail and warm city lights without the current broad top highlight and Greenland lift.
