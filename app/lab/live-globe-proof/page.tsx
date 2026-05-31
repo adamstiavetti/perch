@@ -652,6 +652,16 @@ export default function LiveGlobeProofPage() {
     <main className={styles.page} aria-label="Deadhead live globe proof lab">
       <div className={styles.backgroundPlate} />
       <div className={styles.wakeLayer} />
+      <div className={styles.cornerLogo} aria-hidden="true">
+        <img
+          src="/cinematic/branding/skybyrd-logo.png"
+          alt=""
+          className={styles.cornerLogoImage}
+          decoding="async"
+          loading="eager"
+          draggable={false}
+        />
+      </div>
       <LiveGlobeCanvas
         onReady={handleGlobeReady}
         textureSet={TEXTURE_SETS[textureSetName]}
@@ -659,8 +669,28 @@ export default function LiveGlobeProofPage() {
         routesEnabled={routesMode === "on"}
         aircraftEnabled={aircraftMode === "on"}
       />
+      <div className={styles.wordmark} aria-hidden="true">
+        <img
+          src="/cinematic/branding/skybyrd-wordmark-8k.png"
+          alt=""
+          className={styles.wordmarkImage}
+          decoding="async"
+          loading="eager"
+          draggable={false}
+        />
+      </div>
       <div className={styles.topGlowLayer} />
       <div className={styles.vignetteLayer} />
+      <div className={styles.scrollCue} aria-hidden="true">
+        <div className={styles.scrollCueIcon}>
+          <div className={styles.scrollCueRing} />
+          <div className={styles.scrollCueChevronTrack}>
+            <span className={styles.scrollCueChevron} />
+            <span className={`${styles.scrollCueChevron} ${styles.scrollCueChevronAlt}`} />
+          </div>
+        </div>
+        <span className={styles.scrollCueText}>SCROLL TO CONTINUE</span>
+      </div>
       <div className={`${styles.loadingLayer} ${isGlobeReady ? styles.loadingLayerReady : ""}`} aria-hidden="true">
         <div className={styles.loadingOrb} />
         <div className={styles.loadingLine} />
@@ -791,7 +821,42 @@ function LiveGlobeCanvas({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = grade.rendererExposure;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    let activePixelRatio = 1;
+    let minPixelRatio = 1;
+    let maxPixelRatio = 1;
+    let performanceSampleFrames = 0;
+    let smoothedFps = 60;
+    const getPixelRatioBounds = (width: number) => {
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      const isMobile = width < 760;
+      const max = isMobile
+        ? Math.min(Math.max(devicePixelRatio * 1.42, devicePixelRatio), 4)
+        : Math.min(Math.max(devicePixelRatio * 1.18, devicePixelRatio), 3);
+      const min = isMobile
+        ? Math.max(1.6, Math.min(devicePixelRatio, 2.4))
+        : Math.max(1.2, Math.min(devicePixelRatio * 0.9, 2.2));
+      return { min: Math.min(min, max), max };
+    };
+    const setPixelRatio = (nextPixelRatio: number) => {
+      const nextRatio = Math.round(nextPixelRatio * 100) / 100;
+      if (Math.abs(nextRatio - activePixelRatio) < 0.01) {
+        return;
+      }
+      renderer.setPixelRatio(nextRatio);
+      activePixelRatio = nextRatio;
+      performanceSampleFrames = 0;
+      smoothedFps = 60;
+    };
+    const updatePixelRatio = (width: number, preferMaxQuality = false) => {
+      const bounds = getPixelRatioBounds(width);
+      minPixelRatio = bounds.min;
+      maxPixelRatio = bounds.max;
+      const nextRatio = preferMaxQuality
+        ? maxPixelRatio
+        : THREE.MathUtils.clamp(activePixelRatio, minPixelRatio, maxPixelRatio);
+      setPixelRatio(nextRatio);
+    };
+    updatePixelRatio(mount.getBoundingClientRect().width, true);
     mount.appendChild(renderer.domElement);
 
     scene.add(globeRig);
@@ -1659,6 +1724,7 @@ function LiveGlobeCanvas({
 
     const resize = () => {
       const rect = mount.getBoundingClientRect();
+      updatePixelRatio(rect.width, true);
       renderer.setSize(rect.width, rect.height, false);
       camera.aspect = rect.width / rect.height;
       camera.updateProjectionMatrix();
@@ -1680,6 +1746,17 @@ function LiveGlobeCanvas({
     const animate = () => {
       const delta = clock.getDelta();
       const elapsed = clock.elapsedTime;
+      const fps = 1 / Math.max(delta, 1 / 240);
+      smoothedFps = THREE.MathUtils.lerp(smoothedFps, fps, 0.08);
+      performanceSampleFrames += 1;
+      if (performanceSampleFrames >= 45) {
+        performanceSampleFrames = 0;
+        if (smoothedFps < 46 && activePixelRatio > minPixelRatio + 0.01) {
+          setPixelRatio(Math.max(minPixelRatio, activePixelRatio - 0.2));
+        } else if (smoothedFps > 58 && activePixelRatio < maxPixelRatio - 0.01) {
+          setPixelRatio(Math.min(maxPixelRatio, activePixelRatio + 0.12));
+        }
+      }
       const cloudRig = globeRig.getObjectByName("cloud-rig");
       if (!prefersReducedMotion) {
         globeRig.rotation.y = INITIAL_GLOBE_ROTATION.y + elapsed * 0.0118;
@@ -1723,11 +1800,13 @@ function LiveGlobeCanvas({
 
     resize();
     window.addEventListener("resize", resize);
+    window.visualViewport?.addEventListener("resize", resize);
     animate();
 
     return () => {
       disposed = true;
       window.removeEventListener("resize", resize);
+      window.visualViewport?.removeEventListener("resize", resize);
       window.cancelAnimationFrame(frame);
       renderer.dispose();
       dayMap.dispose();

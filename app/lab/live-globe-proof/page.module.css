@@ -10,7 +10,10 @@
 
 .backgroundPlate,
 .wakeLayer,
+.cornerLogo,
 .canvasMount,
+.wordmark,
+.scrollCue,
 .topGlowLayer,
 .vignetteLayer,
 .loadingLayer {
@@ -36,6 +39,23 @@
   pointer-events: none;
 }
 
+.cornerLogo {
+  z-index: 5;
+  inset: clamp(14px, 2.8vw, 34px) auto auto clamp(14px, 2.8vw, 34px);
+  pointer-events: none;
+}
+
+.cornerLogoImage {
+  width: clamp(44px, 7.2vw, 108px);
+  height: auto;
+  display: block;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  image-rendering: auto;
+  filter: none;
+}
+
 .canvasMount {
   z-index: 2;
 }
@@ -44,6 +64,28 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.wordmark {
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  justify-content: center;
+  pointer-events: none;
+  inset: clamp(52.4%, 56.2%, 58.8%) 0 auto 0;
+}
+
+.wordmarkImage {
+  width: clamp(310px, 58vw, 980px);
+  height: auto;
+  display: block;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  image-rendering: auto;
+  filter:
+    drop-shadow(0 0 9px rgba(118, 196, 255, 0.2))
+    drop-shadow(0 0 16px rgba(60, 128, 219, 0.18));
 }
 
 .topGlowLayer {
@@ -100,9 +142,37 @@
       radial-gradient(circle at 50% 32%, transparent 24%, rgba(0, 2, 7, 0.08) 55%, rgba(0, 1, 4, 0.76) 100%),
       linear-gradient(180deg, rgba(0, 1, 6, 0.13), transparent 22%, transparent 76%, rgba(0, 1, 6, 0.3));
   }
+
+  .wordmark {
+    inset: clamp(53.4%, 57.2%, 59%) 0 auto 0;
+  }
 }
 
 @media (max-width: 759px) {
+  .cornerLogo {
+    inset: clamp(10px, 3.2vw, 16px) auto auto clamp(10px, 3.2vw, 16px);
+  }
+
+  .cornerLogoImage {
+    width: clamp(34px, 11vw, 68px);
+    filter: none;
+  }
+
+  .wordmark {
+    inset: clamp(60.8%, 64.6%, 66.9%) 0 auto 0;
+  }
+
+  .wordmarkImage {
+    width: clamp(235px, 86vw, 540px);
+    filter:
+      drop-shadow(0 0 7px rgba(118, 196, 255, 0.18))
+      drop-shadow(0 0 14px rgba(60, 128, 219, 0.16));
+  }
+
+  .scrollCue {
+    inset: auto 0 clamp(2.2vh, 4.2vh, 6.2vh) 0;
+  }
+
   .topGlowLayer {
     opacity: 0;
   }
@@ -160,6 +230,111 @@
   animation: loadingSweep 1.45s ease-in-out infinite;
 }
 
+.scrollCue {
+  z-index: 6;
+  inset: auto clamp(14px, 2.2vw, 30px) clamp(1.8vh, 3.6vh, 5.2vh) auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(4px, 0.7vw, 8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.scrollCueIcon {
+  position: relative;
+  width: clamp(14px, 1.7vw, 18px);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+}
+
+.scrollCueRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.2px dotted rgba(224, 241, 255, 0.86);
+  animation: scrollCueSpin 6.4s linear infinite;
+}
+
+.scrollCueChevronTrack {
+  position: absolute;
+  inset: 0;
+}
+
+.scrollCueChevron {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: clamp(4px, 0.4vw, 5px);
+  height: clamp(4px, 0.4vw, 5px);
+  border-right: 1.2px solid rgba(239, 247, 255, 0.96);
+  border-bottom: 1.2px solid rgba(239, 247, 255, 0.96);
+  transform: translate(-50%, -50%) rotate(45deg);
+  will-change: transform, opacity;
+  animation: scrollCueDrop 1.78s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+}
+
+.scrollCueChevronAlt {
+  animation-delay: 0.96s;
+}
+
+.scrollCueText {
+  color: rgba(233, 245, 255, 0.92);
+  font-family: "Avenir Next", "Futura", "Century Gothic", "Trebuchet MS", "Segoe UI", sans-serif;
+  font-size: clamp(0.42rem, 0.66vw, 0.58rem);
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(112, 170, 228, 0.12);
+}
+
+@keyframes scrollCueSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scrollCueDrop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -2.5px) scale(0.78) rotate(45deg);
+  }
+
+  30% {
+    opacity: 0;
+    transform: translate(-50%, -2.5px) scale(0.78) rotate(45deg);
+  }
+
+  42% {
+    opacity: 0.92;
+    transform: translate(-50%, -1px) scale(0.9) rotate(45deg);
+  }
+
+  68% {
+    opacity: 0.62;
+    transform: translate(-50%, 1.5px) scale(0.98) rotate(45deg);
+  }
+
+  82% {
+    opacity: 0.24;
+    transform: translate(-50%, 2.5px) scale(1) rotate(45deg);
+  }
+
+  92% {
+    opacity: 0.03;
+    transform: translate(-50%, 2.8px) scale(1) rotate(45deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 2.8px) scale(1) rotate(45deg);
+  }
+}
+
 @keyframes loadingSweep {
   0% {
     transform: translateX(-100%);
@@ -177,5 +352,22 @@
 
   .loadingLine::after {
     animation: none;
+  }
+
+  .scrollCueRing,
+  .scrollCueChevron,
+  .scrollCueChevronAlt {
+    animation: none;
+  }
+}
+
+@media (max-width: 759px) {
+  .scrollCue {
+    inset: auto clamp(10px, 3vw, 14px) clamp(1.6vh, 3.2vh, 4.2vh) auto;
+  }
+
+  .scrollCueText {
+    font-size: clamp(0.38rem, 2vw, 0.5rem);
+    letter-spacing: 0.04em;
   }
 }
