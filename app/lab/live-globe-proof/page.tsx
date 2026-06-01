@@ -16,6 +16,7 @@ type TextureSetName = "v2" | "v3" | "v4" | "cityrim" | "polar" | "atlantic" | "e
 type GradeName = "regressed" | "recovered" | "cityrim" | "polar" | "atlantic" | "europe" | "cityhalo";
 type RoutesMode = "on" | "off";
 type AircraftMode = "on" | "off";
+type ToggleMode = "on" | "off";
 
 type TextureSet = {
   day: string;
@@ -701,6 +702,31 @@ const WAITLIST_SCROLL_TRANSITION = {
   desktopTransitionDistance: 1.35,
 } as const;
 
+const WAITLIST_PERFORMANCE = {
+  mobileTransitionPixelRatio: 1.25,
+  desktopTransitionPixelRatio: 1.75,
+  mobileTransitionPostScale: 0.82,
+  desktopTransitionPostScale: 1,
+  mobileGlobeMinPixelRatio: 1.55,
+  mobileGlobeMaxPixelRatio: 2.15,
+  lowMobileGlobeMaxPixelRatio: 1.75,
+  desktopGlobeMinPixelRatio: 1.2,
+  desktopGlobeMaxPixelRatio: 2.4,
+  mobileSphereSegments: { width: 192, height: 112 },
+  desktopSphereSegments: { width: 192, height: 112 },
+  mobileRouteSegments: 144,
+  desktopRouteSegments: 160,
+  mobileRouteRadialSegments: 9,
+  desktopRouteRadialSegments: 10,
+  mobileHeroArcSegments: 192,
+  desktopHeroArcSegments: 220,
+  mobileHeroArcRadialSegments: 10,
+  desktopHeroArcRadialSegments: 12,
+  mobileActiveFrameRate: 45,
+  mobileIdleFrameRate: 30,
+  desktopFrameRate: 60,
+} as const;
+
 export default function LiveGlobeProofPage() {
   const [isGlobeReady, setIsGlobeReady] = useState(false);
   const [areUiAssetsReady, setAreUiAssetsReady] = useState(false);
@@ -719,7 +745,21 @@ export default function LiveGlobeProofPage() {
   const loaderStartRef = useRef<number | null>(null);
   const interactionReadyRef = useRef(false);
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
-  const { textureSetName, gradeName, routesMode, aircraftMode } = useLiveGlobeOverrides();
+  const {
+    textureSetName,
+    gradeName,
+    routesMode,
+    aircraftMode,
+    globeEnabled,
+    postprocessingEnabled,
+    starsEnabled,
+    hazeEnabled,
+    gridEnabled,
+    rotationEnabled,
+    atmosphereEnabled,
+    cityLightsEnabled,
+    diagnosticsEnabled,
+  } = useLiveGlobeOverrides();
   const isPageReady = isGlobeReady && areUiAssetsReady;
   const isInteractionReady = isHeroVisible && isScrollUnlocked;
 
@@ -904,6 +944,9 @@ export default function LiveGlobeProofPage() {
       const absorptionExit = THREE.MathUtils.smoothstep(clampedProgress, 0.58, 0.74);
       const absorbProgress = THREE.MathUtils.smoothstep(clampedProgress, 0, 0.3) * (1 - absorptionExit);
       const perspectiveProgress = 1 - Math.pow(1 - clampedProgress, 1.45);
+      const backgroundBlendProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.08, 0.78);
+      const wakeFadeProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.26, 0.82);
+      const vignetteFadeProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.62, 0.96);
       const suckedWordProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.02, 0.82);
       const particleLeadProgress = 1 - Math.pow(1 - clampedProgress, 1.3);
       const fastPullProgress = 1 - Math.pow(1 - clampedProgress, 1.25);
@@ -919,11 +962,11 @@ export default function LiveGlobeProofPage() {
       page.style.setProperty("--orb-progress", `${orbProgress}`);
       page.style.setProperty("--background-perspective-scale", `${backgroundScale}`);
       page.style.setProperty("--background-perspective-y", `${backgroundY}px`);
-      page.style.setProperty("--background-extension-opacity", `${perspectiveProgress}`);
+      page.style.setProperty("--background-extension-opacity", `${backgroundBlendProgress}`);
       page.style.setProperty("--transition-wash-phase", `${washPhase}`);
       page.style.setProperty("--transition-handoff-phase", `${handoffPhase}`);
-      page.style.setProperty("--wake-layer-opacity", `${Math.max(0, 1 - THREE.MathUtils.smoothstep(clampedProgress, 0.18, 0.7))}`);
-      page.style.setProperty("--vignette-layer-opacity", `${Math.max(0, 1 - THREE.MathUtils.smoothstep(clampedProgress, 0.58, 0.9))}`);
+      page.style.setProperty("--wake-layer-opacity", `${Math.max(0, 1 - wakeFadeProgress)}`);
+      page.style.setProperty("--vignette-layer-opacity", `${Math.max(0, 1 - vignetteFadeProgress)}`);
       page.style.setProperty("--final-background-opacity", `${THREE.MathUtils.smoothstep(clampedProgress, 0.82, 0.98)}`);
       page.style.setProperty("--wordmark-y", `${wordmarkYpx}px`);
       page.style.setProperty("--wordmark-scale", `${1 - clampedProgress * 0.1}`);
@@ -1006,7 +1049,7 @@ export default function LiveGlobeProofPage() {
         autoCompleteTriggered = true;
         autoCompleteActiveRef.current = true;
         autoCompleteStartMs = performance.now();
-        autoCompleteStartProgress = Math.max(smoothedProgress, targetProgress);
+        autoCompleteStartProgress = smoothedProgress;
       }
     };
 
@@ -1177,7 +1220,15 @@ export default function LiveGlobeProofPage() {
       <section className={styles.heroStage} aria-label="Skybyrd live globe hero">
         <div className={styles.heroContent}>
           <div className={styles.backgroundPlate}>
-            <WaitlistSceneTransition scrollProgressRef={scrollProgressRef} firstScrollIntentRef={firstScrollIntentRef} />
+            <WaitlistSceneTransition
+              scrollProgressRef={scrollProgressRef}
+              firstScrollIntentRef={firstScrollIntentRef}
+              postprocessingEnabled={postprocessingEnabled}
+              starsEnabled={starsEnabled}
+              hazeEnabled={hazeEnabled}
+              gridEnabled={gridEnabled}
+              diagnosticsEnabled={diagnosticsEnabled}
+            />
             <div className={styles.finalBackgroundImage} aria-hidden="true" />
           </div>
           <div className={styles.wakeLayer} />
@@ -1197,13 +1248,17 @@ export default function LiveGlobeProofPage() {
               onReady={handleGlobeReady}
               textureSet={TEXTURE_SETS[textureSetName]}
               grade={GRADE_CONFIGS[gradeName]}
-            routesEnabled={routesMode === "on"}
-            aircraftEnabled={aircraftMode === "on"}
-            orbProgressRef={orbProgressRef}
-            scrollProgressRef={scrollProgressRef}
-            autoCompleteActiveRef={autoCompleteActiveRef}
-            materializeSignalRef={materializeSignalRef}
-          />
+              globeEnabled={globeEnabled}
+              routesEnabled={routesMode === "on"}
+              aircraftEnabled={aircraftMode === "on"}
+              rotationEnabled={rotationEnabled}
+              atmosphereEnabled={atmosphereEnabled}
+              cityLightsEnabled={cityLightsEnabled}
+              diagnosticsEnabled={diagnosticsEnabled}
+              orbProgressRef={orbProgressRef}
+              autoCompleteActiveRef={autoCompleteActiveRef}
+              materializeSignalRef={materializeSignalRef}
+            />
           </div>
           <div className={styles.wordmark} aria-hidden="true">
             <img
@@ -1330,6 +1385,17 @@ function getAircraftMode(value: string | null): AircraftMode {
   return DEFAULT_AIRCRAFT_MODE;
 }
 
+function getToggleMode(value: string | null, defaultMode: ToggleMode = "on"): ToggleMode {
+  if (value === "off" || value === "0" || value === "false") {
+    return "off";
+  }
+  if (value === "on" || value === "1" || value === "true") {
+    return "on";
+  }
+
+  return defaultMode;
+}
+
 function useLiveGlobeOverrides() {
   const search = useSyncExternalStore(subscribeToSearchParams, getClientSearch, getServerSearch);
   const params = new URLSearchParams(search);
@@ -1339,6 +1405,15 @@ function useLiveGlobeOverrides() {
     gradeName: getGradeName(params.get("grade")),
     routesMode: getRoutesMode(params.get("routes")),
     aircraftMode: getAircraftMode(params.get("aircraft")),
+    globeEnabled: getToggleMode(params.get("globe")) === "on",
+    postprocessingEnabled: getToggleMode(params.get("post")) === "on",
+    starsEnabled: getToggleMode(params.get("stars")) === "on",
+    hazeEnabled: getToggleMode(params.get("haze")) === "on",
+    gridEnabled: getToggleMode(params.get("grid")) === "on",
+    rotationEnabled: getToggleMode(params.get("rotation")) === "on",
+    atmosphereEnabled: getToggleMode(params.get("atmosphere")) === "on",
+    cityLightsEnabled: getToggleMode(params.get("cities")) === "on",
+    diagnosticsEnabled: getToggleMode(params.get("diagnostics"), "off") === "on",
   };
 }
 
@@ -1486,9 +1561,19 @@ const CHROMATIC_ABERRATION_SHADER = {
 function WaitlistSceneTransition({
   scrollProgressRef,
   firstScrollIntentRef,
+  postprocessingEnabled,
+  starsEnabled,
+  hazeEnabled,
+  gridEnabled,
+  diagnosticsEnabled,
 }: {
   scrollProgressRef: React.MutableRefObject<number>;
   firstScrollIntentRef: React.MutableRefObject<boolean>;
+  postprocessingEnabled: boolean;
+  starsEnabled: boolean;
+  hazeEnabled: boolean;
+  gridEnabled: boolean;
+  diagnosticsEnabled: boolean;
 }) {
   const mountRef = useRef<HTMLDivElement | null>(null);
 
@@ -1527,6 +1612,9 @@ function WaitlistSceneTransition({
 
     const chromaticPass = new ShaderPass(CHROMATIC_ABERRATION_SHADER);
     composer.addPass(chromaticPass);
+    bloomPass.enabled = postprocessingEnabled;
+    frostPass.enabled = false;
+    chromaticPass.enabled = false;
 
     const scrollTriggerProgressRef = { current: 0 };
     const scrollTrigger = ScrollTrigger.create({
@@ -1583,6 +1671,7 @@ function WaitlistSceneTransition({
       blending: THREE.AdditiveBlending,
     });
     const starfield = new THREE.Points(starGeometry, starMaterial);
+    starfield.visible = starsEnabled;
     scene.add(starfield);
     disposableObjects.push(starfield);
     disposableGeometries.push(starGeometry);
@@ -1591,6 +1680,7 @@ function WaitlistSceneTransition({
     const networkGroup = new THREE.Group();
     networkGroup.position.set(0, -2.08, -6.6);
     networkGroup.rotation.x = -1.23;
+    networkGroup.visible = gridEnabled;
     scene.add(networkGroup);
     disposableObjects.push(networkGroup);
 
@@ -1693,6 +1783,7 @@ function WaitlistSceneTransition({
     const hazeGeometry = new THREE.PlaneGeometry(5.4, 8.6, 1, 1);
     const hazePlane = new THREE.Mesh(hazeGeometry, hazeMaterial);
     hazePlane.position.set(0, 0.4, -3.2);
+    hazePlane.visible = hazeEnabled;
     scene.add(hazePlane);
     disposableObjects.push(hazePlane);
     disposableGeometries.push(hazeGeometry);
@@ -1703,21 +1794,47 @@ function WaitlistSceneTransition({
     let smoothedProgress = 0;
     let lastTime = performance.now();
     let texturesReady = false;
+    let renderedOnce = false;
 
     const sizeBackgroundPlanes = () => {
       const rect = mount.getBoundingClientRect();
       const width = Math.max(rect.width, 1);
       const height = Math.max(rect.height, 1);
-      const pixelRatio = isMobileViewport() ? Math.min(window.devicePixelRatio || 1, 1.25) : Math.min(window.devicePixelRatio || 1, 1.75);
+      const pixelRatio = isMobileViewport()
+        ? Math.min(window.devicePixelRatio || 1, WAITLIST_PERFORMANCE.mobileTransitionPixelRatio)
+        : Math.min(window.devicePixelRatio || 1, WAITLIST_PERFORMANCE.desktopTransitionPixelRatio);
+      const postScale = isMobileViewport() ? WAITLIST_PERFORMANCE.mobileTransitionPostScale : WAITLIST_PERFORMANCE.desktopTransitionPostScale;
       renderer.setPixelRatio(pixelRatio);
       renderer.setSize(width, height, false);
-      composer.setPixelRatio(pixelRatio);
+      composer.setPixelRatio(pixelRatio * postScale);
       composer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       frostPass.uniforms.uResolution.value.set(width, height);
       chromaticPass.uniforms.uResolution.value.set(width, height);
       bloomPass.setSize(width, height);
+
+      if (diagnosticsEnabled) {
+        window.console.info("[waitlist-transition] renderer metrics", {
+          canvas: { width, height, pixelRatio },
+          composerPixelRatio: pixelRatio * postScale,
+          mobile: isMobileViewport(),
+          renderers: 2,
+          canvases: 2,
+          passes: {
+            render: true,
+            bloom: postprocessingEnabled,
+            frost: postprocessingEnabled,
+            chromatic: postprocessingEnabled,
+          },
+          toggles: {
+            postprocessingEnabled,
+            starsEnabled,
+            hazeEnabled,
+            gridEnabled,
+          },
+        });
+      }
 
       const distance = camera.position.z - oldPlane.position.z;
       const visibleHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov * 0.5)) * distance;
@@ -1767,6 +1884,12 @@ function WaitlistSceneTransition({
         return;
       }
 
+      if (document.hidden) {
+        lastTime = now;
+        frame = window.requestAnimationFrame(render);
+        return;
+      }
+
       const delta = THREE.MathUtils.clamp((now - lastTime) / 1000, 1 / 120, 1 / 20);
       lastTime = now;
       const sourceProgress = Math.max(scrollProgressRef.current, scrollTriggerProgressRef.current);
@@ -1779,6 +1902,7 @@ function WaitlistSceneTransition({
 
       const activation = firstScrollIntentRef.current || smoothedProgress > 0.001 ? 1 : 0;
       const p = clamp01(smoothedProgress) * activation;
+      const mobile = isMobileViewport();
       const phase1 = smoothstep(0, 0.25, p);
       const frostPeak = prefersReducedMotion ? 0 : bell(p, 0.52, 0.24);
       const chromaPeak = prefersReducedMotion ? 0 : bell(p, 0.58, 0.2);
@@ -1793,7 +1917,6 @@ function WaitlistSceneTransition({
         ? WAITLIST_SCROLL_TRANSITION.cameraStartZ
         : lerp(WAITLIST_SCROLL_TRANSITION.cameraStartZ, WAITLIST_SCROLL_TRANSITION.cameraEndZ, smoothstep(0, 1, p));
       camera.position.y = prefersReducedMotion ? 0.15 : lerp(0.15, -0.08, smoothstep(0.2, 1, p));
-      camera.updateProjectionMatrix();
 
       oldPlane.position.y = lerp(0, 0.08, phase1);
       newPlane.position.y = lerp(-0.18, 0, smoothstep(0.62, 1, p));
@@ -1803,6 +1926,9 @@ function WaitlistSceneTransition({
       cyanNodeMaterial.opacity = WAITLIST_SCROLL_TRANSITION.gridOpacity * gridOpacity;
       amberNodeMaterial.opacity = 0.62 * WAITLIST_SCROLL_TRANSITION.gridOpacity * gridOpacity;
       runwayMaterial.opacity = 0.28 + gridOpacity * 0.22;
+      starfield.visible = starsEnabled;
+      networkGroup.visible = gridEnabled;
+      hazePlane.visible = hazeEnabled;
       networkGroup.position.z = lerp(-6.6, -5.45, smoothstep(0.55, 1, p));
       networkGroup.position.y = lerp(-2.08, -1.92, smoothstep(0.7, 1, p));
       starfield.position.y = -p * 0.18;
@@ -1816,18 +1942,23 @@ function WaitlistSceneTransition({
       frostPass.uniforms.uTime.value = now / 1000;
       frostPass.uniforms.uProgress.value = p;
       frostPass.uniforms.uFrostStrength.value = frostPeak * 0.48;
-      frostPass.uniforms.uDisplacementStrength.value = frostPeak * 0.044;
+      frostPass.uniforms.uDisplacementStrength.value = frostPeak * (mobile ? 0.028 : 0.044);
       frostPass.uniforms.uNoiseScale.value = lerp(8.2, 5.8, frostPeak);
-      chromaticPass.uniforms.uStrength.value = chromaPeak * WAITLIST_SCROLL_TRANSITION.chromaticAberration;
-      bloomPass.strength = prefersReducedMotion ? 0.28 : lerp(0.35, 0.85, bell(p, 0.56, 0.34));
+      chromaticPass.uniforms.uStrength.value = chromaPeak * (mobile ? 0.0024 : WAITLIST_SCROLL_TRANSITION.chromaticAberration);
+      bloomPass.strength = prefersReducedMotion ? 0.28 : lerp(mobile ? 0.22 : 0.35, mobile ? 0.42 : 0.85, bell(p, 0.56, 0.34));
       bloomPass.radius = 0.35;
       bloomPass.threshold = 0.15;
+      frostPass.enabled = postprocessingEnabled && frostPeak > 0.018;
+      chromaticPass.enabled = postprocessingEnabled && chromaPeak > 0.018;
+      bloomPass.enabled = postprocessingEnabled && p > 0.001 && p < 0.995;
       if (scene.fog instanceof THREE.FogExp2) {
         scene.fog.density = prefersReducedMotion ? 0.008 : 0.012 + hazeOpacity * 0.028;
       }
 
-      if (texturesReady) {
+      const transitionChanging = Math.abs(smoothedProgress - targetProgress) > 0.0007 || (p > 0.001 && p < 0.999);
+      if (texturesReady && (!renderedOnce || transitionChanging)) {
         composer.render();
+        renderedOnce = true;
       }
       frame = window.requestAnimationFrame(render);
     };
@@ -1855,7 +1986,15 @@ function WaitlistSceneTransition({
       renderer.forceContextLoss();
       mount.removeChild(renderer.domElement);
     };
-  }, [scrollProgressRef, firstScrollIntentRef]);
+  }, [
+    scrollProgressRef,
+    firstScrollIntentRef,
+    postprocessingEnabled,
+    starsEnabled,
+    hazeEnabled,
+    gridEnabled,
+    diagnosticsEnabled,
+  ]);
 
   return <div ref={mountRef} className={styles.backgroundTransitionMount} aria-hidden="true" />;
 }
@@ -1864,20 +2003,28 @@ function LiveGlobeCanvas({
   onReady,
   textureSet,
   grade,
+  globeEnabled,
   routesEnabled,
   aircraftEnabled,
+  rotationEnabled,
+  atmosphereEnabled,
+  cityLightsEnabled,
+  diagnosticsEnabled,
   orbProgressRef,
-  scrollProgressRef,
   autoCompleteActiveRef,
   materializeSignalRef,
 }: {
   onReady: () => void;
   textureSet: TextureSet;
   grade: GradeConfig;
+  globeEnabled: boolean;
   routesEnabled: boolean;
   aircraftEnabled: boolean;
+  rotationEnabled: boolean;
+  atmosphereEnabled: boolean;
+  cityLightsEnabled: boolean;
+  diagnosticsEnabled: boolean;
   orbProgressRef: React.MutableRefObject<number>;
-  scrollProgressRef: React.MutableRefObject<number>;
   autoCompleteActiveRef: React.MutableRefObject<boolean>;
   materializeSignalRef: React.MutableRefObject<number>;
 }) {
@@ -1887,6 +2034,10 @@ function LiveGlobeCanvas({
     const mount = mountRef.current;
     if (!mount) {
       return;
+    }
+    if (!globeEnabled) {
+      const readyFrame = window.requestAnimationFrame(() => onReady());
+      return () => window.cancelAnimationFrame(readyFrame);
     }
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1918,6 +2069,7 @@ function LiveGlobeCanvas({
     let lastMaterializeSignal = materializeSignalRef.current;
     let materializeStartTime = -1;
     let materializeProgress = 0;
+    let constructionShellMesh: THREE.Object3D | null = null;
     let globePointerId: number | null = null;
     let globePointerLastX = 0;
     let globePointerLastY = 0;
@@ -1953,15 +2105,32 @@ function LiveGlobeCanvas({
     let maxPixelRatio = 1;
     let performanceSampleFrames = 0;
     let smoothedFps = 60;
+    let lastRenderTime = 0;
+    let visibilityPaused = false;
+    let diagnosticsLogged = false;
+    const getTargetFrameInterval = () => {
+      if (!isMobileLayout) {
+        return 1000 / WAITLIST_PERFORMANCE.desktopFrameRate;
+      }
+
+      const pointerActive = globePointerId !== null;
+      const inertialMotion = Math.abs(globeYawVelocity) > 0.0008 || Math.abs(globePitchVelocity) > 0.0008;
+      const scrollTransitionActive = currentOrbProgress > 0.002 && currentOrbProgress < 0.998;
+      const materializeActive = materializeProgress < 0.995 || materializeStartTime < 0;
+      const aircraftTransitionActive = heroFlight.mode !== "ROUTE_IDLE";
+      const active = pointerActive || inertialMotion || scrollTransitionActive || materializeActive || aircraftTransitionActive || autoCompleteActiveRef.current;
+      return 1000 / (active ? WAITLIST_PERFORMANCE.mobileActiveFrameRate : WAITLIST_PERFORMANCE.mobileIdleFrameRate);
+    };
     const getPixelRatioBounds = (width: number) => {
       const devicePixelRatio = window.devicePixelRatio || 1;
       const isMobile = width < 760;
+      const lowMobile = isMobile && (width <= 520 || devicePixelRatio > 2.6);
       const max = isMobile
-        ? Math.min(Math.max(devicePixelRatio * 1.42, devicePixelRatio), 4)
-        : Math.min(Math.max(devicePixelRatio * 1.18, devicePixelRatio), 3);
+        ? Math.min(devicePixelRatio, lowMobile ? WAITLIST_PERFORMANCE.lowMobileGlobeMaxPixelRatio : WAITLIST_PERFORMANCE.mobileGlobeMaxPixelRatio)
+        : Math.min(Math.max(devicePixelRatio * 1.08, devicePixelRatio), WAITLIST_PERFORMANCE.desktopGlobeMaxPixelRatio);
       const min = isMobile
-        ? Math.max(1.6, Math.min(devicePixelRatio, 2.4))
-        : Math.max(1.2, Math.min(devicePixelRatio * 0.9, 2.2));
+        ? Math.min(max, WAITLIST_PERFORMANCE.mobileGlobeMinPixelRatio)
+        : Math.min(max, Math.max(WAITLIST_PERFORMANCE.desktopGlobeMinPixelRatio, Math.min(devicePixelRatio * 0.88, 1.9)));
       return { min: Math.min(min, max), max };
     };
     const setPixelRatio = (nextPixelRatio: number) => {
@@ -1990,13 +2159,6 @@ function LiveGlobeCanvas({
 
       return THREE.MathUtils.clamp(orbProgressRef.current, 0, 1);
     };
-    const readScrollProgress = () => {
-      if (prefersReducedMotion) {
-        return 0;
-      }
-
-      return THREE.MathUtils.clamp(scrollProgressRef.current, 0, 1);
-    };
     const applyGlobeOrbTransform = () => {
       const progress = readOrbProgress();
       currentOrbProgress = progress;
@@ -2009,7 +2171,6 @@ function LiveGlobeCanvas({
       globeRig.scale.setScalar(baseGlobeScale * THREE.MathUtils.lerp(1, finalScale, progress));
       camera.position.z = THREE.MathUtils.lerp(cameraZ, cameraEndZ, cameraPullback);
       camera.position.y = (isMobileLayout ? 0.02 : 0.04) + THREE.MathUtils.lerp(0, isMobileLayout ? 0.08 : 0.12, cameraPullback);
-      camera.updateProjectionMatrix();
       for (const material of routeShaderMaterials) {
         material.uniforms.globeCenter.value.copy(globeRig.position);
       }
@@ -2024,6 +2185,9 @@ function LiveGlobeCanvas({
     const startMaterialize = (elapsed: number) => {
       materializeStartTime = elapsed;
       materializeProgress = 0;
+      if (constructionShellMesh) {
+        constructionShellMesh.visible = true;
+      }
     };
     const initialBounds = mount.getBoundingClientRect();
     isMobileLayout = initialBounds.width < 760;
@@ -2549,9 +2713,15 @@ function LiveGlobeCanvas({
         entry.revealOpacity = aircraftReveal;
         entry.revealScale = aircraftRevealScale;
       }
-      for (const material of constructionShellMaterials) {
-        material.uniforms.materializeProgress.value = globeReveal;
-        material.uniforms.time.value = elapsed;
+      const shellVisible = materializeProgress < 0.985;
+      if (constructionShellMesh) {
+        constructionShellMesh.visible = shellVisible;
+      }
+      if (shellVisible) {
+        for (const material of constructionShellMaterials) {
+          material.uniforms.materializeProgress.value = globeReveal;
+          material.uniforms.time.value = elapsed;
+        }
       }
       for (const material of routeShaderMaterials) {
         const baseOpacity = typeof material.userData.baseOpacity === "number" ? material.userData.baseOpacity : material.uniforms.opacity.value;
@@ -2950,6 +3120,10 @@ function LiveGlobeCanvas({
     };
 
     const ensureHeroLaunchArc = (curve: THREE.Curve<THREE.Vector3>) => {
+      const heroArcSegments = isMobileLayout ? WAITLIST_PERFORMANCE.mobileHeroArcSegments : WAITLIST_PERFORMANCE.desktopHeroArcSegments;
+      const heroArcRadialSegments = isMobileLayout
+        ? WAITLIST_PERFORMANCE.mobileHeroArcRadialSegments
+        : WAITLIST_PERFORMANCE.desktopHeroArcRadialSegments;
       if (!heroLaunchArcGlowMaterial || !heroLaunchArcCoreMaterial || !heroLaunchArcGlowMesh || !heroLaunchArcCoreMesh) {
         heroLaunchArcGlowMaterial = createRouteMaterial({
           color: 0x8fe8ff,
@@ -2966,15 +3140,21 @@ function LiveGlobeCanvas({
         routeMaterials.push(heroLaunchArcGlowMaterial, heroLaunchArcCoreMaterial);
         routeShaderMaterials.push(heroLaunchArcGlowMaterial, heroLaunchArcCoreMaterial);
 
-        heroLaunchArcGlowMesh = new THREE.Mesh(new THREE.TubeGeometry(curve, 220, 0.011, 12, false), heroLaunchArcGlowMaterial);
+        heroLaunchArcGlowMesh = new THREE.Mesh(
+          new THREE.TubeGeometry(curve, heroArcSegments, 0.011, heroArcRadialSegments, false),
+          heroLaunchArcGlowMaterial,
+        );
         heroLaunchArcGlowMesh.renderOrder = 8;
-        heroLaunchArcCoreMesh = new THREE.Mesh(new THREE.TubeGeometry(curve, 220, 0.0047, 12, false), heroLaunchArcCoreMaterial);
+        heroLaunchArcCoreMesh = new THREE.Mesh(
+          new THREE.TubeGeometry(curve, heroArcSegments, 0.0047, heroArcRadialSegments, false),
+          heroLaunchArcCoreMaterial,
+        );
         heroLaunchArcCoreMesh.renderOrder = 9;
         routeDisposables.push(heroLaunchArcGlowMesh.geometry as THREE.BufferGeometry, heroLaunchArcCoreMesh.geometry as THREE.BufferGeometry);
         heroLaunchArcRig.add(heroLaunchArcGlowMesh, heroLaunchArcCoreMesh);
       } else {
-        const nextGlowGeometry = new THREE.TubeGeometry(curve, 220, 0.011, 12, false);
-        const nextCoreGeometry = new THREE.TubeGeometry(curve, 220, 0.0047, 12, false);
+        const nextGlowGeometry = new THREE.TubeGeometry(curve, heroArcSegments, 0.011, heroArcRadialSegments, false);
+        const nextCoreGeometry = new THREE.TubeGeometry(curve, heroArcSegments, 0.0047, heroArcRadialSegments, false);
         routeDisposables.push(nextGlowGeometry, nextCoreGeometry);
         (heroLaunchArcGlowMesh.geometry as THREE.BufferGeometry).dispose();
         (heroLaunchArcCoreMesh.geometry as THREE.BufferGeometry).dispose();
@@ -3626,12 +3806,16 @@ function LiveGlobeCanvas({
       const group = new THREE.Group();
       group.name = "route-arcs";
       const routeEntries: RouteCurveEntry[] = [];
+      const routeSegments = isMobileLayout ? WAITLIST_PERFORMANCE.mobileRouteSegments : WAITLIST_PERFORMANCE.desktopRouteSegments;
+      const routeRadialSegments = isMobileLayout
+        ? WAITLIST_PERFORMANCE.mobileRouteRadialSegments
+        : WAITLIST_PERFORMANCE.desktopRouteRadialSegments;
 
       for (const [routeIndex, route] of ROUTE_ARCS.entries()) {
         const curve = createRouteCurve(route);
         routeEntries.push({ routeIndex, routeConfig: route, curve });
 
-        const glowGeometry = new THREE.TubeGeometry(curve, 160, route.glowRadius, 10, false);
+        const glowGeometry = new THREE.TubeGeometry(curve, routeSegments, route.glowRadius, routeRadialSegments, false);
         const glowMaterial = createRouteMaterial({
           color: route.glowColor,
           opacity: route.glowOpacity,
@@ -3641,7 +3825,7 @@ function LiveGlobeCanvas({
         const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
         glowMesh.renderOrder = 8;
 
-        const coreGeometry = new THREE.TubeGeometry(curve, 160, route.coreRadius, 10, false);
+        const coreGeometry = new THREE.TubeGeometry(curve, routeSegments, route.coreRadius, routeRadialSegments, false);
         const coreMaterial = createRouteMaterial({
           color: route.color,
           opacity: route.opacity,
@@ -3661,16 +3845,28 @@ function LiveGlobeCanvas({
     };
 
     const addGlobeSphere = () => {
-      const geometry = new THREE.SphereGeometry(1.42, 192, 112);
+      const sphereSegments = isMobileLayout ? WAITLIST_PERFORMANCE.mobileSphereSegments : WAITLIST_PERFORMANCE.desktopSphereSegments;
+      const geometry = new THREE.SphereGeometry(1.42, sphereSegments.width, sphereSegments.height);
       const earth = new THREE.Mesh(geometry, earthMaterial);
       const constructionShell = createGlobeConstructionShell(1.42);
-      const cities = new THREE.Mesh(new THREE.SphereGeometry(1.424, 192, 112), cityMaterial);
-      const cityHalo = new THREE.Mesh(new THREE.SphereGeometry(1.43, 192, 112), cityHaloMaterial);
+      constructionShellMesh = constructionShell;
+      const cityGeometry = new THREE.SphereGeometry(1.424, sphereSegments.width, sphereSegments.height);
+      const cityHaloGeometry = new THREE.SphereGeometry(1.43, sphereSegments.width, sphereSegments.height);
+      const cloudGeometry = new THREE.SphereGeometry(1.438, sphereSegments.width, sphereSegments.height);
+      const atmosphereGeometry = new THREE.SphereGeometry(grade.atmosphereScale, sphereSegments.width, sphereSegments.height);
+      const orbAuraGeometry = new THREE.SphereGeometry(grade.atmosphereScale * 1.018, sphereSegments.width, sphereSegments.height);
+      routeDisposables.push(geometry, cityGeometry, cityHaloGeometry, cloudGeometry, atmosphereGeometry, orbAuraGeometry);
+      const cities = new THREE.Mesh(cityGeometry, cityMaterial);
+      const cityHalo = new THREE.Mesh(cityHaloGeometry, cityHaloMaterial);
       const cloudRig = new THREE.Group();
-      const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.438, 192, 112), cloudMaterial);
+      const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
       clouds.name = "cloud-base";
-      const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(grade.atmosphereScale, 192, 112), atmosphereMaterial);
-      const orbAura = new THREE.Mesh(new THREE.SphereGeometry(grade.atmosphereScale * 1.018, 192, 112), orbAuraMaterial);
+      const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+      const orbAura = new THREE.Mesh(orbAuraGeometry, orbAuraMaterial);
+      cities.visible = cityLightsEnabled;
+      cityHalo.visible = cityLightsEnabled;
+      atmosphere.visible = atmosphereEnabled;
+      orbAura.visible = atmosphereEnabled;
       cloudRig.add(clouds);
       cloudRig.name = "cloud-rig";
       globeRig.add(constructionShell, earth, cities, cityHalo, cloudRig, atmosphere, orbAura);
@@ -3705,6 +3901,39 @@ function LiveGlobeCanvas({
       baseGlobeY = isMobileLayout ? 0.66 : 0.04;
       camera.position.set(0, isMobileLayout ? 0.02 : 0.04, cameraZ);
       applyGlobeOrbTransform();
+      if (diagnosticsEnabled && !diagnosticsLogged) {
+        diagnosticsLogged = true;
+        const routeSegments = isMobileLayout ? WAITLIST_PERFORMANCE.mobileRouteSegments : WAITLIST_PERFORMANCE.desktopRouteSegments;
+        const routeRadialSegments = isMobileLayout
+          ? WAITLIST_PERFORMANCE.mobileRouteRadialSegments
+          : WAITLIST_PERFORMANCE.desktopRouteRadialSegments;
+        const sphereSegments = isMobileLayout ? WAITLIST_PERFORMANCE.mobileSphereSegments : WAITLIST_PERFORMANCE.desktopSphereSegments;
+        window.console.info("[live-globe-proof] renderer metrics", {
+          canvas: { width: rect.width, height: rect.height, pixelRatio: activePixelRatio },
+          rendererCount: 2,
+          canvasCount: 2,
+          mobile: isMobileLayout,
+          sphereSegments,
+          routeArcs: routesEnabled ? ROUTE_ARCS.length : 0,
+          routeSegments,
+          routeRadialSegments,
+          aircraftCount: aircraftEnabled ? AIRCRAFT_TRAFFIC.length : 0,
+          textureSet,
+          toggles: {
+            globeEnabled,
+            routesEnabled,
+            aircraftEnabled,
+            rotationEnabled,
+            atmosphereEnabled,
+            cityLightsEnabled,
+          },
+          frameRates: {
+            desktop: WAITLIST_PERFORMANCE.desktopFrameRate,
+            mobileActive: WAITLIST_PERFORMANCE.mobileActiveFrameRate,
+            mobileIdle: WAITLIST_PERFORMANCE.mobileIdleFrameRate,
+          },
+        });
+      }
     };
 
     const isPointerOnGlobe = (clientX: number, clientY: number) => {
@@ -3786,19 +4015,39 @@ function LiveGlobeCanvas({
     renderer.domElement.addEventListener("pointercancel", handlePointerCancel);
     renderer.domElement.addEventListener("lostpointercapture", handlePointerCancel);
 
-    const animate = () => {
-      const delta = clock.getDelta();
+    const animate = (now = performance.now()) => {
+      if (document.hidden) {
+        clock.getDelta();
+        visibilityPaused = true;
+        frame = window.requestAnimationFrame(animate);
+        return;
+      }
+      if (visibilityPaused) {
+        visibilityPaused = false;
+        lastRenderTime = now;
+        clock.getDelta();
+      }
+      const targetFrameInterval = getTargetFrameInterval();
+      if (lastRenderTime > 0 && now - lastRenderTime < targetFrameInterval) {
+        frame = window.requestAnimationFrame(animate);
+        return;
+      }
+      lastRenderTime = now;
+      const delta = THREE.MathUtils.clamp(clock.getDelta(), 1 / 120, 1 / 20);
       const elapsed = clock.elapsedTime;
-      const scrollProgress = readScrollProgress();
       const autoCompleteActive = autoCompleteActiveRef.current;
       const fps = 1 / Math.max(delta, 1 / 240);
       smoothedFps = THREE.MathUtils.lerp(smoothedFps, fps, 0.08);
       performanceSampleFrames += 1;
       if (performanceSampleFrames >= 45) {
         performanceSampleFrames = 0;
-        if (smoothedFps < 46 && activePixelRatio > minPixelRatio + 0.01) {
+        const shouldAdaptPixelRatio =
+          !isMobileLayout || targetFrameInterval <= 1000 / WAITLIST_PERFORMANCE.mobileActiveFrameRate + 0.5;
+        const downThreshold = isMobileLayout ? WAITLIST_PERFORMANCE.mobileActiveFrameRate * 0.82 : 46;
+        const upThreshold = isMobileLayout ? WAITLIST_PERFORMANCE.mobileActiveFrameRate * 0.98 : 58;
+        if (shouldAdaptPixelRatio && smoothedFps < downThreshold && activePixelRatio > minPixelRatio + 0.01) {
           setPixelRatio(Math.max(minPixelRatio, activePixelRatio - 0.2));
-        } else if (smoothedFps > 58 && activePixelRatio < maxPixelRatio - 0.01) {
+        } else if (shouldAdaptPixelRatio && smoothedFps > upThreshold && activePixelRatio < maxPixelRatio - 0.01) {
           setPixelRatio(Math.min(maxPixelRatio, activePixelRatio + 0.12));
         }
       }
@@ -3836,14 +4085,16 @@ function LiveGlobeCanvas({
       globePitch = THREE.MathUtils.lerp(globePitch, globeTargetPitch, interactionAlpha);
       if (!prefersReducedMotion) {
         const orbSpinBoost = Math.pow(currentOrbProgress, 1.35);
-        const idleYaw = INITIAL_GLOBE_ROTATION.y + elapsed * THREE.MathUtils.lerp(0.0195, 0.092, orbSpinBoost);
-        const idlePitch = INITIAL_GLOBE_ROTATION.x + Math.sin(elapsed * THREE.MathUtils.lerp(0.28, 1.1, orbSpinBoost)) * THREE.MathUtils.lerp(0.003, 0.013, orbSpinBoost);
+        const idleYaw =
+          INITIAL_GLOBE_ROTATION.y + (rotationEnabled ? elapsed * THREE.MathUtils.lerp(0.0195, 0.092, orbSpinBoost) : 0);
+        const idlePitch =
+          INITIAL_GLOBE_ROTATION.x +
+          (rotationEnabled
+            ? Math.sin(elapsed * THREE.MathUtils.lerp(0.28, 1.1, orbSpinBoost)) * THREE.MathUtils.lerp(0.003, 0.013, orbSpinBoost)
+            : 0);
         globeRig.rotation.y = idleYaw + globeYaw;
         globeRig.rotation.x = THREE.MathUtils.clamp(idlePitch + globePitch, GLOBE_INTERACTION.minPitch, GLOBE_INTERACTION.maxPitch);
         globeRig.rotation.z = INITIAL_GLOBE_ROTATION.z;
-        for (const material of routeShaderMaterials) {
-          material.uniforms.globeCenter.value.copy(globeRig.position);
-        }
         if (heroFlight.actor && heroFlight.sourceEntry) {
           if (!autoCompleteActive && heroFlight.mode !== "ROUTE_IDLE" && heroFlight.mode !== "HERO_RETURN") {
             startHeroReturn(elapsed);
@@ -3976,13 +4227,15 @@ function LiveGlobeCanvas({
           }
         }
         for (const entry of aircraftEntries) {
-          entry.progress = THREE.MathUtils.euclideanModulo(entry.progress + entry.config.speed * delta, 1);
+          if (rotationEnabled) {
+            entry.progress = THREE.MathUtils.euclideanModulo(entry.progress + entry.config.speed * delta, 1);
+          }
           applyAircraftPose(entry, entry.progress, camera, elapsed);
           if (entry === heroFlight.sourceEntry && heroFlight.mode !== "ROUTE_IDLE") {
             hideAircraftEntry(entry);
           }
         }
-        if (cloudRig) {
+        if (cloudRig && rotationEnabled) {
           cloudRig.rotation.y = elapsed * 0.0028;
           cloudRig.rotation.x = Math.sin(elapsed * 0.09) * 0.005;
           cloudRig.rotation.z = Math.cos(elapsed * 0.07) * 0.002;
@@ -4061,9 +4314,24 @@ function LiveGlobeCanvas({
       for (const texture of aircraftGlowTextures) {
         texture.dispose();
       }
+      renderer.forceContextLoss();
       mount.removeChild(renderer.domElement);
     };
-  }, [aircraftEnabled, grade, materializeSignalRef, onReady, orbProgressRef, routesEnabled, scrollProgressRef, textureSet]);
+  }, [
+    aircraftEnabled,
+    atmosphereEnabled,
+    autoCompleteActiveRef,
+    cityLightsEnabled,
+    diagnosticsEnabled,
+    globeEnabled,
+    grade,
+    materializeSignalRef,
+    onReady,
+    orbProgressRef,
+    rotationEnabled,
+    routesEnabled,
+    textureSet,
+  ]);
 
   return <div ref={mountRef} className={styles.canvasMount} data-globe-interaction="true" aria-hidden="true" />;
 }
