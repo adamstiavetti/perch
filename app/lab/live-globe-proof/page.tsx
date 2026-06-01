@@ -658,10 +658,15 @@ export default function LiveGlobeProofPage() {
   const orbProgressRef = useRef(0);
   const materializeSignalRef = useRef(0);
   const loaderStartRef = useRef<number | null>(null);
+  const interactionReadyRef = useRef(false);
   const handleGlobeReady = useCallback(() => setIsGlobeReady(true), []);
   const { textureSetName, gradeName, routesMode, aircraftMode } = useLiveGlobeOverrides();
   const isPageReady = isGlobeReady && areUiAssetsReady;
   const isInteractionReady = isHeroVisible && isScrollUnlocked;
+
+  useEffect(() => {
+    interactionReadyRef.current = isInteractionReady;
+  }, [isInteractionReady]);
 
   useEffect(() => {
     if (loaderStartRef.current === null) {
@@ -672,8 +677,9 @@ export default function LiveGlobeProofPage() {
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
+    const isMobileViewport = window.matchMedia("(max-width: 760px)").matches;
 
-    if (isInteractionReady) {
+    if (isInteractionReady && !isMobileViewport) {
       html.style.overflow = "";
       body.style.overflow = "";
       body.style.touchAction = "";
@@ -786,15 +792,30 @@ export default function LiveGlobeProofPage() {
     let ticking = false;
     let lastTickTime = 0;
     let isMobileViewport = window.matchMedia("(max-width: 760px)").matches;
-    const getViewportHeight = () => Math.max(window.visualViewport?.height ?? window.innerHeight, 1);
+    let virtualScrollY = 0;
+    let touchLastY: number | null = null;
+    let stableViewportWidth = window.innerWidth;
+    let stableViewportHeight = Math.max(window.innerHeight, window.visualViewport?.height ?? 0, 1);
+    const getViewportHeight = () => stableViewportHeight;
+    const refreshStableViewportSize = (force = false) => {
+      const nextWidth = window.innerWidth;
+      const nextHeight = Math.max(window.innerHeight, window.visualViewport?.height ?? 0, 1);
+      const widthChanged = Math.abs(nextWidth - stableViewportWidth) > 24;
+      if (force || widthChanged || !isMobileViewport) {
+        stableViewportWidth = nextWidth;
+        stableViewportHeight = nextHeight;
+      } else {
+        stableViewportHeight = Math.max(stableViewportHeight, nextHeight);
+      }
+    };
 
     const applyProgressStyles = (rawProgress: number, viewportHeight: number) => {
       const clampedProgress = THREE.MathUtils.clamp(rawProgress, 0, 1);
       const orbProgress = 1 - Math.pow(1 - clampedProgress, 3);
       const collapseProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.02, 0.56);
       const widthCollapseProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.02, 0.58);
-      const absorbProgress = THREE.MathUtils.smoothstep(clampedProgress, 0, 0.3) * (1 - THREE.MathUtils.smoothstep(clampedProgress, 0.96, 1));
-      const wordmarkExit = THREE.MathUtils.smoothstep(clampedProgress, 0.985, 1);
+      const absorptionExit = THREE.MathUtils.smoothstep(clampedProgress, 0.58, 0.74);
+      const absorbProgress = THREE.MathUtils.smoothstep(clampedProgress, 0, 0.3) * (1 - absorptionExit);
       const suckedWordProgress = THREE.MathUtils.smoothstep(clampedProgress, 0.02, 0.82);
       const particleLeadProgress = 1 - Math.pow(1 - clampedProgress, 1.3);
       const fastPullProgress = 1 - Math.pow(1 - clampedProgress, 1.25);
@@ -809,8 +830,7 @@ export default function LiveGlobeProofPage() {
       page.style.setProperty("--wordmark-y", `${wordmarkYpx}px`);
       page.style.setProperty("--wordmark-scale", `${1 - clampedProgress * 0.1}`);
       page.style.setProperty("--wordmark-collapse-x", `${Math.max(0.045, 1 - collapseProgress * 0.955)}`);
-      page.style.setProperty("--wordmark-width", `${58 - widthCollapseProgress * 53.5}vw`);
-      page.style.setProperty("--wordmark-opacity", `${Math.max(0, 1 - wordmarkExit)}`);
+      page.style.setProperty("--wordmark-opacity", `${Math.max(0, 1 - absorptionExit)}`);
       page.style.setProperty("--absorb-opacity", `${Math.max(0, absorbProgress * 0.92)}`);
       page.style.setProperty("--absorb-y", `${absorbYpx}px`);
       page.style.setProperty("--absorb-scale-x", `${Math.max(0.06, 1 - widthCollapseProgress * 0.94)}`);
@@ -819,16 +839,21 @@ export default function LiveGlobeProofPage() {
       page.style.setProperty("--particle-lead-progress", `${particleLeadProgress}`);
       page.style.setProperty("--sucked-gap-close", `${gapCloseProgress}`);
       page.style.setProperty("--sucked-word-collapse-x", `${Math.max(0.028, 1 - widthCollapseProgress * 0.972)}`);
-      page.style.setProperty("--sucked-word-opacity", `${Math.max(0, absorbProgress * (1 - wordmarkExit * 0.95))}`);
+      page.style.setProperty("--sucked-word-opacity", `${Math.max(0, absorbProgress)}`);
       page.style.setProperty("--scroll-cue-opacity", "1");
       orbProgressRef.current = orbProgress;
     };
 
-    const computeTargetProgress = () => {
+    const getTransitionDistance = () => {
       const viewportHeight = getViewportHeight();
-      const distanceMultiplier = isMobileViewport ? 1.65 : 1.15;
-      const transitionDistance = viewportHeight * distanceMultiplier;
-      targetProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(window.scrollY / transitionDistance, 0, 1);
+      const distanceMultiplier = isMobileViewport ? 2.15 : 1.15;
+      return viewportHeight * distanceMultiplier;
+    };
+
+    const computeTargetProgress = () => {
+      const transitionDistance = getTransitionDistance();
+      const scrollSource = isMobileViewport ? virtualScrollY : window.scrollY;
+      targetProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(scrollSource / transitionDistance, 0, 1);
     };
 
     const tick = (timestamp: number) => {
@@ -863,14 +888,61 @@ export default function LiveGlobeProofPage() {
       frame = window.requestAnimationFrame(tick);
     };
 
+    const applyVirtualScrollDelta = (deltaY: number) => {
+      if (!isMobileViewport || !interactionReadyRef.current || prefersReducedMotion) {
+        return;
+      }
+      virtualScrollY = THREE.MathUtils.clamp(virtualScrollY + deltaY, 0, getTransitionDistance());
+      requestScrollProgress();
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (!isMobileViewport || event.touches.length !== 1) {
+        touchLastY = null;
+        return;
+      }
+      touchLastY = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (!isMobileViewport || event.touches.length !== 1) {
+        return;
+      }
+      event.preventDefault();
+      const nextY = event.touches[0]?.clientY ?? touchLastY;
+      if (nextY === null || touchLastY === null) {
+        touchLastY = nextY;
+        return;
+      }
+      applyVirtualScrollDelta(touchLastY - nextY);
+      touchLastY = nextY;
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (!isMobileViewport) {
+        return;
+      }
+      event.preventDefault();
+      applyVirtualScrollDelta(event.deltaY);
+    };
+
     computeTargetProgress();
     smoothedProgress = targetProgress;
     applyProgressStyles(smoothedProgress, getViewportHeight());
     window.addEventListener("scroll", requestScrollProgress, { passive: true });
-    window.addEventListener("resize", requestScrollProgress);
-    window.addEventListener("orientationchange", requestScrollProgress);
-    window.visualViewport?.addEventListener("scroll", requestScrollProgress);
-    window.visualViewport?.addEventListener("resize", requestScrollProgress);
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    const handleViewportResize = () => {
+      refreshStableViewportSize();
+      requestScrollProgress();
+    };
+    const handleOrientationChange = () => {
+      refreshStableViewportSize(true);
+      requestScrollProgress();
+    };
+    window.addEventListener("resize", handleViewportResize);
+    window.addEventListener("orientationchange", handleOrientationChange);
 
     return () => {
       if (frame !== 0) {
@@ -878,10 +950,11 @@ export default function LiveGlobeProofPage() {
       }
       ticking = false;
       window.removeEventListener("scroll", requestScrollProgress);
-      window.removeEventListener("resize", requestScrollProgress);
-      window.removeEventListener("orientationchange", requestScrollProgress);
-      window.visualViewport?.removeEventListener("scroll", requestScrollProgress);
-      window.visualViewport?.removeEventListener("resize", requestScrollProgress);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("resize", handleViewportResize);
+      window.removeEventListener("orientationchange", handleOrientationChange);
     };
   }, []);
 
@@ -2380,13 +2453,11 @@ function LiveGlobeCanvas({
 
     resize();
     window.addEventListener("resize", resize);
-    window.visualViewport?.addEventListener("resize", resize);
     animate();
 
     return () => {
       disposed = true;
       window.removeEventListener("resize", resize);
-      window.visualViewport?.removeEventListener("resize", resize);
       window.cancelAnimationFrame(frame);
       renderer.dispose();
       dayMap.dispose();
