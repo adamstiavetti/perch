@@ -789,13 +789,24 @@ export default function LiveGlobeProofPage() {
     let frame = 0;
     let targetProgress = 0;
     let smoothedProgress = 0;
+    let autoCompleteTriggered = false;
+    let autoCompleteStartMs = 0;
+    let autoCompleteStartProgress = 0;
+    let autoRewindTriggered = false;
+    let autoRewindStartMs = 0;
+    let autoRewindStartProgress = 0;
     let ticking = false;
     let lastTickTime = 0;
     let isMobileViewport = window.matchMedia("(max-width: 760px)").matches;
     let virtualScrollY = 0;
     let touchLastY: number | null = null;
+    let lastScrollSource = 0;
     let stableViewportWidth = window.innerWidth;
     let stableViewportHeight = Math.max(window.innerHeight, window.visualViewport?.height ?? 0, 1);
+    const AUTO_COMPLETE_THRESHOLD = 0.24;
+    const AUTO_COMPLETE_REWIND_PROGRESS = 0.2;
+    const AUTO_COMPLETE_DURATION_MS = 1300;
+    const AUTO_COMPLETE_REWIND_DURATION_MS = 820;
     const getViewportHeight = () => stableViewportHeight;
     const refreshStableViewportSize = (force = false) => {
       const nextWidth = window.innerWidth;
@@ -859,10 +870,51 @@ export default function LiveGlobeProofPage() {
     const computeTargetProgress = () => {
       const transitionDistance = getTransitionDistance();
       const scrollSource = isMobileViewport ? virtualScrollY : window.scrollY;
-      targetProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(scrollSource / transitionDistance, 0, 1);
+      const sourceProgress = prefersReducedMotion ? 0 : THREE.MathUtils.clamp(scrollSource / transitionDistance, 0, 1);
+      const scrollingBackward = scrollSource < lastScrollSource - 1;
+      lastScrollSource = scrollSource;
+
+      if (autoCompleteTriggered) {
+        if (scrollingBackward) {
+          autoCompleteTriggered = false;
+          autoRewindTriggered = true;
+          autoRewindStartMs = performance.now();
+          autoRewindStartProgress = smoothedProgress;
+          targetProgress = smoothedProgress;
+        }
+        return;
+      }
+
+      if (autoRewindTriggered) {
+        return;
+      }
+
+      targetProgress = sourceProgress;
+      if (!prefersReducedMotion && targetProgress >= AUTO_COMPLETE_THRESHOLD) {
+        autoCompleteTriggered = true;
+        autoCompleteStartMs = performance.now();
+        autoCompleteStartProgress = Math.max(smoothedProgress, targetProgress);
+      }
     };
 
     const tick = (timestamp: number) => {
+      if (autoCompleteTriggered) {
+        const autoProgress = THREE.MathUtils.clamp((timestamp - autoCompleteStartMs) / AUTO_COMPLETE_DURATION_MS, 0, 1);
+        const easedAutoProgress = 1 - Math.pow(1 - autoProgress, 3);
+        targetProgress = THREE.MathUtils.lerp(autoCompleteStartProgress, 1, easedAutoProgress);
+      } else if (autoRewindTriggered) {
+        const rewindProgress = THREE.MathUtils.clamp((timestamp - autoRewindStartMs) / AUTO_COMPLETE_REWIND_DURATION_MS, 0, 1);
+        const easedRewindProgress = 1 - Math.pow(1 - rewindProgress, 3);
+        targetProgress = THREE.MathUtils.lerp(autoRewindStartProgress, AUTO_COMPLETE_REWIND_PROGRESS, easedRewindProgress);
+        if (rewindProgress >= 0.999) {
+          autoRewindTriggered = false;
+          if (isMobileViewport) {
+            virtualScrollY = getTransitionDistance() * AUTO_COMPLETE_REWIND_PROGRESS;
+          } else {
+            window.scrollTo(0, getTransitionDistance() * AUTO_COMPLETE_REWIND_PROGRESS);
+          }
+        }
+      }
       const dt = lastTickTime === 0 ? 1 / 60 : THREE.MathUtils.clamp((timestamp - lastTickTime) / 1000, 1 / 180, 1 / 20);
       lastTickTime = timestamp;
       const smoothStrength = isMobileViewport ? 12 : 15;
@@ -873,7 +925,8 @@ export default function LiveGlobeProofPage() {
       }
       applyProgressStyles(smoothedProgress, getViewportHeight());
 
-      if (Math.abs(targetProgress - smoothedProgress) > 0.0006) {
+      const autoCompleting = autoCompleteTriggered && targetProgress < 0.9995;
+      if (Math.abs(targetProgress - smoothedProgress) > 0.0006 || autoCompleting || autoRewindTriggered) {
         frame = window.requestAnimationFrame(tick);
         return;
       }
@@ -896,6 +949,15 @@ export default function LiveGlobeProofPage() {
 
     const applyVirtualScrollDelta = (deltaY: number) => {
       if (!isMobileViewport || !interactionReadyRef.current || prefersReducedMotion) {
+        return;
+      }
+      if (autoCompleteTriggered && deltaY < -0.5) {
+        autoCompleteTriggered = false;
+        autoRewindTriggered = true;
+        autoRewindStartMs = performance.now();
+        autoRewindStartProgress = smoothedProgress;
+        targetProgress = smoothedProgress;
+        requestScrollProgress();
         return;
       }
       virtualScrollY = THREE.MathUtils.clamp(virtualScrollY + deltaY, 0, getTransitionDistance());
