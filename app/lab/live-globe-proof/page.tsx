@@ -2777,7 +2777,9 @@ function WaitlistSceneTransition({
       camera.position.z = prefersReducedMotion
         ? WAITLIST_SCROLL_TRANSITION.cameraStartZ
         : lerp(WAITLIST_SCROLL_TRANSITION.cameraStartZ, mobile ? WAITLIST_SCROLL_TRANSITION.cameraEndZ + 0.95 : WAITLIST_SCROLL_TRANSITION.cameraEndZ + 0.7, transitionShot.cameraTravelProgress);
-      camera.position.x = prefersReducedMotion ? 0 : transitionShot.cameraDriftX * 0.65;
+      camera.position.x = prefersReducedMotion
+        ? 0
+        : lerp(transitionShot.cameraDriftX * 0.65, 0, runwayAxisAlign);
       camera.position.y = prefersReducedMotion
         ? 0.15
         : lerp(0.18, mobile ? -0.18 : -0.12, transitionShot.cameraLiftMix);
@@ -2794,19 +2796,15 @@ function WaitlistSceneTransition({
       starfield.visible = starsEnabled;
       networkGroup.visible = gridEnabled;
       hazePlane.visible = hazeEnabled;
-      networkGroup.position.x = lerp(
-        transitionShot.cameraDriftX * -0.42,
-        mobile ? 0.01 : 0.03,
-        runwayAxisAlign,
-      );
+      networkGroup.position.x = lerp(transitionShot.cameraDriftX * -0.42, 0, runwayAxisAlign);
       networkGroup.position.z = lerp(-7.4, -5.35, underlayReveal);
       networkGroup.position.y = lerp(-2.28, -1.94, smoothstep(0.7, 1, p));
       networkGroup.rotation.x = lerp(-1.28, -1.18, runwayAxisAlign);
       starfield.position.y = -transitionShot.cameraTravelProgress * 0.32;
       starfield.position.z = transitionShot.cameraTravelProgress * 1.08;
       oldPlane.position.x = transitionShot.cameraDriftX * -0.08;
-      newPlane.position.x = lerp(transitionShot.cameraDriftX * -0.16, mobile ? 0.01 : 0.02, runwayAxisAlign);
-      runwayPlane.position.x = lerp(0, mobile ? 0.03 : 0.05, runwayAxisAlign);
+      newPlane.position.x = lerp(transitionShot.cameraDriftX * -0.16, 0, runwayAxisAlign);
+      runwayPlane.position.x = 0;
       runwayPlane.position.y = lerp(0, -0.04, runwayAxisAlign);
       runwayPlane.scale.set(
         lerp(0.86, 1, underlayReveal),
@@ -4187,11 +4185,7 @@ function LiveGlobeCanvas({
           recoveryPath.reentryTopPoint.y,
           recoveryPath.reentryTopPoint.z,
         );
-        launchTargetPoint.x = THREE.MathUtils.lerp(
-          launchTargetPoint.x,
-          isMobileLayout ? 0.02 : 0.04,
-          isMobileLayout ? 0.58 : 0.46,
-        );
+        launchTargetPoint.x = THREE.MathUtils.lerp(launchTargetPoint.x, 0, 0.72);
         launchTargetPoint.y += isMobileLayout ? 0.03 : 0.02;
         launchTargetPoint.z += isMobileLayout ? 0.04 : 0.03;
         return launchTargetPoint;
