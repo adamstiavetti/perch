@@ -1,7 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { getGlassCardTransitionState } from "../../src/lib/scroll/glassCardTransition.ts";
+import {
+  getGlassCardFinalTransform,
+  getGlassCardTransitionState,
+} from "../../src/lib/scroll/glassCardTransition.ts";
 
 test("glass card stays effectively hidden through most of the atmospheric transition", () => {
   const earlyState = getGlassCardTransitionState({
@@ -27,4 +30,12 @@ test("glass card only becomes materially present near the late reveal window", (
   assert.ok(midState.y < -0.5);
   assert.ok(lateState.presence > 0.9);
   assert.ok(lateState.settleProgress > 0.9);
+});
+
+test("glass card reveal keeps its final cut offset to the left of center", () => {
+  const desktopFinal = getGlassCardFinalTransform({ isMobileLayout: false });
+  const mobileFinal = getGlassCardFinalTransform({ isMobileLayout: true });
+
+  assert.ok(desktopFinal.x < -0.04);
+  assert.ok(mobileFinal.x < -0.03);
 });
