@@ -10,6 +10,10 @@ Supplemental epoch-specific ticket packs:
 
 - [Epoch 02: Private App Foundation Ticket Pack](epochs/epoch-02-private-app-foundation-tickets.md)
 
+Documentation hygiene reminder:
+
+- Future tickets should identify documentation impact and include docs-update acceptance criteria when applicable. See `PRODUCT_DELIVERY_OPERATING_MODEL.md`.
+
 ## Required First Implementation Sequence
 
 Use this order when implementation begins:

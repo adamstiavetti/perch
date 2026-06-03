@@ -201,7 +201,22 @@ No hidden feature expansion is allowed. If implementation uncovers a needed feat
 - Do not rewrite or revert user changes unless explicitly requested.
 - Final Codex reports must include branch, commit hash, status, files changed, checks run, and confirmation that scope boundaries were respected.
 
-## 8. Codex Plan/Goals Usage
+## 8. Documentation Hygiene
+
+Keep documentation updates proportional, but intentional.
+
+Rules:
+
+- Every ticket must identify documentation impact.
+- Every implementation report or review report must state whether docs were updated or why no docs update was needed.
+- Route, product, architecture, policy, and scope decisions must be captured in repo docs, not only in chat.
+- Behavior changes should update the relevant roadmap, epoch, architecture, policy, or review doc when applicable.
+- Trivial code-only fixes do not require forced documentation churn, but "no doc impact" must be stated explicitly.
+- Acceptance criteria for future tickets should include docs updated when applicable.
+
+This is a lightweight discipline rule, not a new documentation-heavy process. The goal is to keep repo truth current without overproducing docs for minor work.
+
+## 9. Codex Plan/Goals Usage
 
 Codex must use Plan/Goals for:
 
@@ -215,7 +230,7 @@ Codex must use Plan/Goals for:
 
 Plan items should be updated as work progresses. Final reports should explicitly state which goals completed and which, if any, did not.
 
-## 9. User Story Intake Rules
+## 10. User Story Intake Rules
 
 Future features should become user stories only after discovery or beta evidence. A story without evidence belongs in an assumption register or backlog note, not in an implementation sprint.
 
@@ -247,7 +262,7 @@ Story rules:
 - No story can rely on airline portal credentials, schedule scraping, public nearby tracking, dating/swiping, exact crew hotel exposure, flight-load requests, native mobile, full marketplace payments, or employment/payroll API dependency in V1.
 - Anonymous posting stories must include internal accountability and moderation dependencies.
 
-## 10. MVP Build Order
+## 11. MVP Build Order
 
 Once implementation is explicitly approved, use this order:
 
