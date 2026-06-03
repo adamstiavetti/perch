@@ -9,6 +9,7 @@ Labels used: docs, product, foundation, auth, verification, community, moderatio
 Supplemental epoch-specific ticket packs:
 
 - [Epoch 02: Private App Foundation Ticket Pack](epochs/epoch-02-private-app-foundation-tickets.md)
+- [Epoch 03: Auth, Profiles, and Beta Access Ticket Pack](epochs/epoch-03-auth-account-beta-access-tickets.md)
 
 Documentation hygiene reminder:
 
