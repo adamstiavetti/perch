@@ -244,6 +244,7 @@ Define the structural layout contract for the private app shell so later epochs 
 **Likely Files Or Areas Affected**
 
 - `docs/epochs/epoch-02-private-app-foundation-tickets.md`
+- `docs/epochs/epoch-02-private-shell-layout-contract.md`
 
 **Validation Steps**
 
