@@ -2,15 +2,23 @@
 
 ## Purpose
 
-This implementation note records the completed `E02-T03` slice for the app repo.
+This implementation note records the implemented private shell behavior for the app repo during Epoch 02.
 
 ## Route Implemented
 
 - `/app`
+- `/app/home`
+- `/app/base`
+- `/app/layovers`
+- `/app/rooms`
+- `/app/profile`
+- `/app/verification`
+- `/app/admin`
 
 ## What Was Implemented
 
 - A locked private shell landing state for `/app`
+- Locked private child-route placeholder behavior for future private surfaces under `/app`
 - A mobile-first placeholder shell with:
   - Skybyrd branding
   - disabled future-surface navigation labels

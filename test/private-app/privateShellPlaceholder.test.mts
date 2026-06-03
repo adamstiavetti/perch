@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  PRIVATE_SHELL_CHILD_ROUTE_RECORD,
   PRIVATE_SHELL_MESSAGE,
   PRIVATE_SHELL_NAV_ITEMS,
   PRIVATE_SHELL_ROUTE,
+  getPrivateShellChildRoute,
 } from "../../src/lib/privateApp/privateShellPlaceholder.ts";
 
 test("private shell route stays anchored to /app", () => {
@@ -42,4 +44,27 @@ test("private shell exposes only disabled placeholder nav items", () => {
     assert.equal(item.disabled, true);
     assert.ok(item.description.length > 0);
   }
+});
+
+test("private child routes are defined as locked placeholders only", () => {
+  assert.deepEqual(Object.keys(PRIVATE_SHELL_CHILD_ROUTE_RECORD), [
+    "home",
+    "base",
+    "layovers",
+    "rooms",
+    "profile",
+    "verification",
+    "admin",
+  ]);
+
+  const layovers = getPrivateShellChildRoute("layovers");
+
+  assert.equal(layovers?.path, "/app/layovers");
+  assert.equal(layovers?.navLabel, "Layover Boards");
+  assert.match(layovers?.title ?? "", /not available yet/i);
+  assert.match(layovers?.detail ?? "", /login and verification come later/i);
+});
+
+test("unknown private child routes are not treated as placeholders", () => {
+  assert.equal(getPrivateShellChildRoute("unknown"), null);
 });
