@@ -419,6 +419,10 @@ Define the set of future MVP route surfaces that may exist as placeholders only 
 - Cross-check placeholder labels with MVP planning docs.
 - Confirm placeholders stay descriptive rather than functional.
 
+**Status Note**
+
+- Satisfied by the merged `E02-T04` locked private route behavior work, which implemented the placeholder surfaces for `/app/home`, `/app/base`, `/app/layovers`, `/app/rooms`, `/app/profile`, `/app/verification`, and `/app/admin` without turning on feature behavior.
+
 **Risk Notes**
 
 - Risk: placeholder routes overpromise future scope.  
