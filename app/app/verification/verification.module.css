@@ -57,10 +57,9 @@
   font-size: 0.92rem;
 }
 
-.disabledForm {
+.form {
   display: grid;
   gap: 12px;
-  opacity: 0.75;
 }
 
 .field {
@@ -90,7 +89,7 @@
   background: linear-gradient(135deg, #d5e5f6 0%, #8cb8e3 100%);
   color: #071018;
   font-weight: 700;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 .muted {

@@ -69,6 +69,22 @@ test("verification surface summary shows approved state when approved claims exi
   );
 });
 
+test("verification surface summary can show a rejected request state", () => {
+  assert.deepEqual(
+    getVerificationSurfaceSummary({
+      requests: [{ status: "rejected" }],
+      claims: [],
+      evidence: [],
+    }),
+    {
+      state: "rejected",
+      title: "Verification request was rejected",
+      description:
+        "A prior verification request was rejected, so this page should guide your next safe verification step instead of implying approval.",
+    },
+  );
+});
+
 test("work-email surface state explains unavailable or deferred self-serve submission", () => {
   assert.deepEqual(
     getWorkEmailSurfaceState({ approvedDomainCount: 0 }),
@@ -83,10 +99,10 @@ test("work-email surface state explains unavailable or deferred self-serve submi
   assert.deepEqual(
     getWorkEmailSurfaceState({ approvedDomainCount: 2 }),
     {
-      kind: "deferred",
-      title: "Work-email verification is a supported path",
+      kind: "available",
+      title: "Work-email verification is available for supported domains",
       description:
-        "Approved domains can support a later work-email verification flow, but this ticket keeps self-serve request creation deferred until the request/evidence submission flow is wired more fully.",
+        "Approved domains can start a work-email verification request here, but this ticket still stops short of email delivery, automatic approval, or claim issuance.",
     },
   );
 });
@@ -101,12 +117,14 @@ test("/app/verification copy stays bounded to status and guidance only", () => {
   assert.match(source, /work email may be different from your login email/i);
   assert.match(source, /approved airline-controlled domain/i);
   assert.match(source, /work email is not public/i);
+  assert.match(source, /only approved domains are currently supported/i);
+  assert.match(source, /submit work-email verification request/i);
   assert.match(source, /no employer-system lookup/i);
   assert.match(source, /employee IDs/i);
   assert.match(source, /badge numbers/i);
   assert.match(source, /barcodes/i);
   assert.match(source, /QR codes/i);
   assert.match(source, /crew hotel info/i);
-  assert.match(source, /coming next|not live yet|deferred/i);
-  assert.doesNotMatch(source, /type="file"|supabase storage|upload proof now|automatic claim issuance/i);
+  assert.match(source, /coming next|not live yet/i);
+  assert.doesNotMatch(source, /type="file"|supabase storage|upload proof now|automatic claim issuance|send a work-email verification message yet and does not issue claims automatically/i);
 });

@@ -480,6 +480,9 @@ Build the first bounded `/app/verification` submission and status surface.
 **Title**  
 Implement Verification Request And Evidence Metadata Flows
 
+**Status**
+Complete for implementation. See [Epoch 04 Verification Request Evidence Flows Implementation](epoch-04-verification-request-evidence-flows-implementation.md).
+
 **Objective**  
 Implement server-side creation/update flows for verification requests and evidence metadata.
 

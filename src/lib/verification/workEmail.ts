@@ -158,18 +158,15 @@ export function buildWorkEmailEvidenceMetadata({
   } | null;
 }) {
   const emailDomain = extractWorkEmailDomain(workEmail);
-  const normalizedLoginEmail = normalizeWorkEmail(loginEmail);
-  const normalizedWorkEmail = normalizeWorkEmail(workEmail);
+  const support = matchedDomain ? "supported_domain" : "unsupported_domain";
+  void loginEmail;
 
   return {
     email_domain: emailDomain,
     airline: matchedDomain?.airline ?? null,
-    login_email_separate:
-      Boolean(normalizedLoginEmail) &&
-      Boolean(normalizedWorkEmail) &&
-      normalizedLoginEmail !== normalizedWorkEmail,
-    supported_domain: Boolean(matchedDomain),
     verification_method: WORK_EMAIL_VERIFICATION_METHOD,
+    source: "user_submitted_work_email_domain",
+    support_result: support,
   };
 }
 

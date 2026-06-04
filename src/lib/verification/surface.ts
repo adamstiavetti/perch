@@ -37,6 +37,11 @@ export type VerificationSurfaceSummary =
       state: "approved";
       title: string;
       description: string;
+    }
+  | {
+      state: "rejected";
+      title: string;
+      description: string;
     };
 
 export type WorkEmailSurfaceState =
@@ -46,7 +51,7 @@ export type WorkEmailSurfaceState =
       description: string;
     }
   | {
-      kind: "deferred";
+      kind: "available";
       title: string;
       description: string;
     };
@@ -77,6 +82,15 @@ export function getVerificationSurfaceSummary({
       title: "Verification claim is approved",
       description:
         "At least one verification claim has been approved. Airline, role, and base claims may still remain separate or arrive later.",
+    };
+  }
+
+  if (requestStatuses.includes("rejected")) {
+    return {
+      state: "rejected",
+      title: "Verification request was rejected",
+      description:
+        "A prior verification request was rejected, so this page should guide your next safe verification step instead of implying approval.",
     };
   }
 
@@ -112,10 +126,10 @@ export function getWorkEmailSurfaceState({
   }
 
   return {
-    kind: "deferred",
-    title: "Work-email verification is a supported path",
+    kind: "available",
+    title: "Work-email verification is available for supported domains",
     description:
-      "Approved domains can support a later work-email verification flow, but this ticket keeps self-serve request creation deferred until the request/evidence submission flow is wired more fully.",
+      "Approved domains can start a work-email verification request here, but this ticket still stops short of email delivery, automatic approval, or claim issuance.",
   };
 }
 

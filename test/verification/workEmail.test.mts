@@ -95,9 +95,9 @@ test("safe work-email evidence metadata preserves domain-only guidance and not t
     {
       email_domain: "airline.test",
       airline: "Test Air",
-      login_email_separate: true,
-      supported_domain: true,
       verification_method: "work_email",
+      source: "user_submitted_work_email_domain",
+      support_result: "supported_domain",
     },
   );
 });
@@ -130,9 +130,9 @@ test("work-email verification draft stays metadata-only and does not issue claim
     metadata: {
       email_domain: "airline.test",
       airline: "Test Air",
-      login_email_separate: true,
-      supported_domain: true,
       verification_method: "work_email",
+      source: "user_submitted_work_email_domain",
+      support_result: "supported_domain",
     },
   });
 

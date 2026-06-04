@@ -11,6 +11,7 @@ import {
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
+import { submitWorkEmailVerificationAction } from "../../../src/lib/verification/actions";
 import { getCurrentVerificationSurfaceContext } from "../../../src/lib/verification/server";
 import {
   formatClaimDisplayValue,
@@ -19,8 +20,19 @@ import {
   getWorkEmailSurfaceState,
 } from "../../../src/lib/verification/surface";
 
-export default async function VerificationPage() {
+type VerificationPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function getValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function VerificationPage({ searchParams }: VerificationPageProps) {
+  const params = await searchParams;
   const env = getSupabaseBrowserEnv();
+  const searchError = getValue(params.error);
+  const message = getValue(params.message);
 
   if (!env.enabled) {
     return (
@@ -76,7 +88,8 @@ export default async function VerificationPage() {
       eyebrow="Epoch 04 Verification"
       title="Verification status and method guidance"
       description="Verification is separate from signup, profile completion, and beta access. This page shows your verification status and the currently supported verification paths."
-      error={verificationContext.loadError ?? undefined}
+      error={searchError ?? verificationContext.loadError ?? undefined}
+      message={message}
       footer={
         <p className={authStyles.hint}>
           jmpseat uses no employer-system lookup and does not ask reviewers to
@@ -153,8 +166,13 @@ export default async function VerificationPage() {
             an airline-specific claim later. Role and base claims remain
             separate and are not proven by work email alone.
           </p>
+          <p className={styles.sectionText}>
+            Only approved domains are currently supported. Work-email request
+            creation does not send a custom verification email yet and does not
+            issue claims automatically.
+          </p>
           <p className={styles.sectionText}>{workEmailState.description}</p>
-          <form className={styles.disabledForm}>
+          <form className={styles.form} action={submitWorkEmailVerificationAction}>
             <div className={styles.field}>
               <label className={styles.label} htmlFor="work-email">
                 Work email
@@ -165,16 +183,17 @@ export default async function VerificationPage() {
                 name="work_email"
                 type="email"
                 placeholder="crew.member@airline.example"
-                disabled
+                autoComplete="email"
+                required
               />
             </div>
-            <button className={styles.button} type="button" disabled>
-              Coming next: submission opens in a later verification flow
+            <button className={styles.button} type="submit">
+              Submit work-email verification request
             </button>
           </form>
           <p className={styles.muted}>
-            This page does not send a work-email verification message yet and
-            does not issue claims automatically.
+            This page stores only metadata needed to start the request. It does
+            not store your raw work email in verification evidence metadata.
           </p>
         </section>
 
