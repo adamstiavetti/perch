@@ -38,7 +38,10 @@ type QueryReviewEvidenceRow = {
   id: string;
   request_id: string;
   evidence_type: string;
+  redaction_acknowledged: boolean;
   status: string;
+  uploaded_at: string | null;
+  delete_after: string | null;
   metadata: Record<string, unknown>;
   created_at: string;
 };
@@ -147,7 +150,7 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
     requestIds.length > 0
       ? await supabase
           .from("verification_evidence")
-          .select("id, request_id, evidence_type, status, metadata, created_at")
+          .select("id, request_id, evidence_type, redaction_acknowledged, status, uploaded_at, delete_after, metadata, created_at")
           .in("request_id", requestIds)
           .order("created_at", { ascending: true })
           .returns<QueryReviewEvidenceRow[]>()

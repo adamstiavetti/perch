@@ -11,7 +11,10 @@ import {
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
-import { submitWorkEmailVerificationAction } from "../../../src/lib/verification/actions";
+import {
+  submitRedactedProofVerificationAction,
+  submitWorkEmailVerificationAction,
+} from "../../../src/lib/verification/actions";
 import { getCurrentVerificationSurfaceContext } from "../../../src/lib/verification/server";
 import {
   formatClaimDisplayValue,
@@ -94,8 +97,8 @@ export default async function VerificationPage({ searchParams }: VerificationPag
         <p className={authStyles.hint}>
           jmpseat uses no employer-system lookup and does not ask reviewers to
           use employer systems or internal directories. Work email is not
-          public, and redacted proof will require short retention and strict
-          redaction when that upload path opens later.
+          public, and redacted proof stays private with short retention and
+          strict redaction rules in this bounded upload slice.
         </p>
       }
     >
@@ -202,8 +205,54 @@ export default async function VerificationPage({ searchParams }: VerificationPag
             Redacted badge or proof
           </h2>
           <p className={styles.sectionText}>
-            Redacted proof is the next verification method, but upload is not live yet in this ticket. When it opens, proof will require private storage, short retention, and strict redaction rules.
+            Redacted proof is now a bounded upload path for human review. It
+            does not guarantee approval, does not issue claims automatically,
+            and does not use any employer-system lookup.
           </p>
+          <p className={styles.sectionText}>
+            Upload only a redacted JPEG or PNG under 5 MB. Raw proof stays
+            private, is intended for short retention, and is reviewed by humans
+            rather than AI.
+          </p>
+          <form
+            className={styles.form}
+            action={submitRedactedProofVerificationAction}
+            encType="multipart/form-data"
+          >
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="proof-file">
+                Redacted proof image
+              </label>
+              <input
+                className={styles.input}
+                id="proof-file"
+                name="proof_file"
+                type="file"
+                accept="image/jpeg,image/png"
+                required
+              />
+            </div>
+            <div className={styles.checkboxField}>
+              <input
+                id="redaction-acknowledged"
+                name="redaction_acknowledged"
+                type="checkbox"
+                required
+              />
+              <label
+                className={styles.checkboxLabel}
+                htmlFor="redaction-acknowledged"
+              >
+                I confirm I redacted employee IDs, badge numbers, barcodes, QR
+                codes, badge backsides, security/access markings, passenger or
+                customer information, trip or schedule screenshots, and crew
+                hotel information before uploading.
+              </label>
+            </div>
+            <button className={styles.button} type="submit">
+              Upload redacted proof for review
+            </button>
+          </form>
           <ul className={styles.list}>
             <li className={styles.listItem}>Redact employee IDs.</li>
             <li className={styles.listItem}>Redact badge numbers.</li>
@@ -214,8 +263,8 @@ export default async function VerificationPage({ searchParams }: VerificationPag
             <li className={styles.listItem}>Do not upload crew hotel info.</li>
           </ul>
           <p className={styles.muted}>
-            Role and base claims remain separate or later steps. This page does
-            not contain a proof upload input yet.
+            Reviewer proof viewing, signed downloads, and image previews remain
+            deferred. Role and base claims also remain separate or later steps.
           </p>
         </section>
       </div>

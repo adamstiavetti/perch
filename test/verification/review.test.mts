@@ -314,8 +314,10 @@ test("human review foundation source does not add storage, upload, ai, or employ
   );
   assert.match(routeSource, /verification review queue/i);
   assert.match(routeSource, /must not use employer systems/i);
+  assert.match(routeSource, /redaction acknowledged/i);
+  assert.match(routeSource, /delete after/i);
   assert.doesNotMatch(
     routeSource,
-    /type="file"|supabase storage|full admin dashboard|user management|beta access admin/i,
+    /type="file"|signed url|public url|download button|image preview|full admin dashboard|user management|beta access admin|storage_path/i,
   );
 });

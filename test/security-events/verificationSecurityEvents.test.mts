@@ -26,6 +26,7 @@ test("verification security event sanitizer strips unsafe verification metadata 
       ocr_text: "full extracted text",
       proof_text: "badge text",
       storage_path: "user/request/evidence.png",
+      filename: "badge.png",
       passenger_data: "passenger",
       trip_data: "trip",
       crew_hotel_information: "hotel",
@@ -97,6 +98,7 @@ test("verification request and review actions record bounded security events wit
   assert.match(requestActionSource, /getVerificationRequestEventType/);
   assert.match(requestActionSource, /submissionKind: submission\.kind/);
   assert.match(requestActionSource, /verification_evidence\.created/);
+  assert.match(requestActionSource, /verification_evidence\.uploaded/);
 
   assert.match(reviewActionSource, /getVerificationReviewEventType/);
   assert.match(reviewActionSource, /outcome: plan\.kind/);
@@ -131,4 +133,14 @@ test("verification security-events migration extends the event-type constraint f
   assert.match(sql, /verification_review\.unauthorized_attempt/i);
   assert.match(sql, /verification_review\.self_review_blocked/i);
   assert.match(sql, /verification_claim\.issued/i);
+});
+
+test("proof-upload migration extends the event-type constraint for bounded upload events", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260604210259_create_verification_proofs_bucket.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
+  assert.match(sql, /verification_evidence\.uploaded/i);
 });

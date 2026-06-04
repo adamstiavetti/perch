@@ -67,6 +67,19 @@
   gap: 8px;
 }
 
+.checkboxField {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.checkboxLabel {
+  color: #d9e3ef;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
 .label {
   font-size: 0.95rem;
   color: #d9e3ef;

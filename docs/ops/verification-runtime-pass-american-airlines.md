@@ -202,3 +202,15 @@ This post-transactional runtime proof confirms:
 - approval succeeds through the transactional RPC-backed path
 - bounded claim issuance still works
 - security-event recording remains intact and sanitized
+
+## Next Runtime Path
+
+This American Airlines runtime proof covers the work-email verification path only.
+
+It does not cover the later redacted-proof upload/storage path.
+
+That proof-upload runtime path should be validated separately after:
+
+- the `verification-proofs` bucket migration is pushed
+- remote upload policies are live
+- the bounded redacted-proof upload surface is merged

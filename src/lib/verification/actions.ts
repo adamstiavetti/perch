@@ -9,6 +9,13 @@ import {
 import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
 import { createClient } from "../supabase/server";
+import {
+  buildRedactedProofVerificationDraft,
+  buildVerificationProofStoragePath,
+  getActiveRedactedProofRequest,
+  validateRedactedProofUpload,
+  VERIFICATION_PROOFS_BUCKET,
+} from "./proofUpload";
 import { planWorkEmailVerificationSubmission } from "./requestFlow";
 
 const VERIFICATION_ROUTE = "/app/verification";
@@ -28,6 +35,13 @@ type QueryApprovedEmailDomainRow = {
   domain: string;
   airline: string | null;
   status: string;
+};
+
+type CreateRedactedProofVerificationSubmissionResult = {
+  request_id: string;
+  evidence_id: string;
+  request_status: string;
+  evidence_status: string;
 };
 
 function getString(formData: FormData, key: string) {
@@ -260,6 +274,228 @@ export async function submitWorkEmailVerificationAction(formData: FormData) {
   redirect(
     buildRedirect(VERIFICATION_ROUTE, {
       message: submission.message,
+    }),
+  );
+}
+
+function getUploadedFile(formData: FormData, key: string) {
+  const value = formData.get(key);
+  return value instanceof File ? value : null;
+}
+
+async function cleanupUploadedVerificationProof(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  storagePath: string,
+) {
+  try {
+    await supabase.storage
+      .from(VERIFICATION_PROOFS_BUCKET)
+      .remove([storagePath]);
+  } catch {
+    // Cleanup is best-effort because storage rollback must not mask the original failure.
+  }
+}
+
+export async function submitRedactedProofVerificationAction(formData: FormData) {
+  const env = getSupabaseBrowserEnv();
+
+  if (!env.enabled) {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error:
+          "Supabase auth is not configured yet. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+      }),
+    );
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    redirect(
+      buildRedirect(AUTH_ROUTES.login, {
+        next: VERIFICATION_ROUTE,
+      }),
+    );
+  }
+
+  const proofFile = getUploadedFile(formData, "proof_file");
+  const redactionAcknowledged =
+    formData.get("redaction_acknowledged") === "on";
+  const validation = validateRedactedProofUpload({
+    file: proofFile,
+    redactionAcknowledged,
+  });
+
+  if (validation.kind !== "valid") {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error: validation.message,
+      }),
+    );
+  }
+
+  if (!proofFile) {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error: "Choose a JPEG or PNG proof image before submitting.",
+      }),
+    );
+  }
+
+  const requestsResult = await supabase
+    .from("verification_requests")
+    .select("id, method, status")
+    .eq("user_id", user.id)
+    .returns<QueryVerificationRequestRow[]>();
+
+  if (requestsResult.error) {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error:
+          "Verification request storage is not ready yet. Try again after the verification foundation is available in this environment.",
+      }),
+    );
+  }
+
+  const activeProofRequest = getActiveRedactedProofRequest(
+    requestsResult.data ?? [],
+  );
+
+  if (activeProofRequest) {
+    await recordSecurityEvent({
+      userId: user.id,
+      eventType: "verification_request.duplicate_active",
+      route: VERIFICATION_ROUTE,
+      result: "duplicate_active",
+      metadata: {
+        verification_request_id: activeProofRequest.id,
+        verification_method: "redacted_badge_or_proof",
+        status: activeProofRequest.status,
+      },
+    });
+
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        message:
+          "A redacted proof verification request is already active for your account. Wait for review or a resubmission request before uploading again.",
+      }),
+    );
+  }
+
+  const requestId = crypto.randomUUID();
+  const evidenceId = crypto.randomUUID();
+  const storagePath = buildVerificationProofStoragePath({
+    userId: user.id,
+    requestId,
+    evidenceId,
+    extension: validation.storageExtension,
+  });
+  const nowIso = new Date().toISOString();
+  const draft = buildRedactedProofVerificationDraft({
+    userId: user.id,
+    requestId,
+    evidenceId,
+    storagePath,
+    fileSizeBytes: validation.fileSizeBytes,
+    mimeType: validation.mimeType,
+    originalExtension: validation.originalExtension,
+    nowIso,
+  });
+
+  const uploadResult = await supabase.storage
+    .from(VERIFICATION_PROOFS_BUCKET)
+    .upload(storagePath, proofFile, {
+      contentType: validation.mimeType,
+      upsert: false,
+    });
+
+  if (uploadResult.error) {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error:
+          "The redacted proof file could not be uploaded safely. Confirm it is a JPEG or PNG under 5 MB and try again.",
+      }),
+    );
+  }
+
+  const submissionResult = await supabase.rpc(
+    "create_redacted_proof_verification_submission",
+    {
+      p_request_id: draft.request.id,
+      p_evidence_id: draft.evidence.id,
+      p_storage_bucket: draft.evidence.storage_bucket,
+      p_storage_path: draft.evidence.storage_path,
+      p_file_size_bytes: draft.evidence.metadata.file_size_bytes,
+      p_mime_type: draft.evidence.metadata.mime_type,
+      p_original_extension: draft.evidence.metadata.original_extension,
+      p_upload_client: draft.evidence.metadata.upload_client,
+      p_redaction_acknowledged: draft.evidence.redaction_acknowledged,
+      p_submitted_at: draft.request.submitted_at,
+      p_delete_after: draft.evidence.delete_after,
+    },
+  );
+
+  if (submissionResult.error || !submissionResult.data) {
+    await cleanupUploadedVerificationProof(supabase, storagePath);
+
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error:
+          "The redacted proof upload completed, but the verification request metadata could not be stored safely. The upload was rolled back where possible. Try again.",
+      }),
+    );
+  }
+
+  const createdSubmission =
+    submissionResult.data as CreateRedactedProofVerificationSubmissionResult;
+
+  await recordSecurityEvent({
+    userId: user.id,
+    eventType: "verification_request.submitted",
+    route: VERIFICATION_ROUTE,
+    result: createdSubmission.request_status,
+    metadata: {
+      verification_request_id: createdSubmission.request_id,
+      verification_method: draft.request.method,
+      status: createdSubmission.request_status,
+    },
+  });
+
+  await recordSecurityEvent({
+    userId: user.id,
+    eventType: "verification_evidence.created",
+    route: VERIFICATION_ROUTE,
+    result: createdSubmission.evidence_status,
+    metadata: {
+      verification_request_id: createdSubmission.request_id,
+      verification_evidence_id: createdSubmission.evidence_id,
+      evidence_type: draft.evidence.evidence_type,
+      redaction_acknowledged: true,
+    },
+  });
+
+  await recordSecurityEvent({
+    userId: user.id,
+    eventType: "verification_evidence.uploaded",
+    route: VERIFICATION_ROUTE,
+    result: "uploaded",
+    metadata: {
+      verification_request_id: createdSubmission.request_id,
+      verification_evidence_id: createdSubmission.evidence_id,
+      evidence_type: draft.evidence.evidence_type,
+      file_size_bytes: draft.evidence.metadata.file_size_bytes,
+      mime_type: draft.evidence.metadata.mime_type,
+    },
+  });
+
+  redirect(
+    buildRedirect(VERIFICATION_ROUTE, {
+      message:
+        "Redacted proof uploaded. This starts human review only and does not guarantee approval or claim issuance.",
     }),
   );
 }

@@ -107,7 +107,7 @@ test("work-email surface state explains unavailable or deferred self-serve submi
   );
 });
 
-test("/app/verification copy stays bounded to status and guidance only", () => {
+test("/app/verification copy stays bounded to status, work-email guidance, and redacted proof upload rules", () => {
   const source = readFileSync(
     new URL("../../app/app/verification/page.tsx", import.meta.url),
     "utf8",
@@ -120,11 +120,16 @@ test("/app/verification copy stays bounded to status and guidance only", () => {
   assert.match(source, /only approved domains are currently supported/i);
   assert.match(source, /submit work-email verification request/i);
   assert.match(source, /no employer-system lookup/i);
+  assert.match(source, /Upload redacted proof for review/i);
+  assert.match(source, /type="file"/i);
+  assert.match(source, /accept="image\/jpeg,image\/png"/i);
+  assert.match(source, /reviewed by humans\s+rather than AI/i);
+  assert.match(source, /does not guarantee approval/i);
+  assert.match(source, /short retention/i);
   assert.match(source, /employee IDs/i);
   assert.match(source, /badge numbers/i);
   assert.match(source, /barcodes/i);
   assert.match(source, /QR codes/i);
   assert.match(source, /crew hotel info/i);
-  assert.match(source, /coming next|not live yet/i);
-  assert.doesNotMatch(source, /type="file"|supabase storage|upload proof now|automatic claim issuance|send a work-email verification message yet and does not issue claims automatically/i);
+  assert.doesNotMatch(source, /public url|download button|automatic approval|openai|ai pre-check/i);
 });
