@@ -351,6 +351,9 @@ Implement real account creation, login, logout, and session handling for the pri
 **Title**  
 Implement Account And Profile Foundation
 
+**Status**  
+Implemented for the bounded account/profile foundation slice. See [Epoch 03 Account Profile Foundation Implementation](epoch-03-account-profile-foundation-implementation.md).
+
 **Goal**  
 Create the minimum account/profile model needed for private-beta identity and later verification/community routing.
 
@@ -685,7 +688,7 @@ Close Epoch 03 with validation evidence and a clean handoff to the verification 
 - [ ] Auth approach is explicitly confirmed.
 - [ ] Auth routes and account-state map are documented.
 - [ ] Users can sign up, verify email, log in, and log out.
-- [ ] Account/profile foundation is implemented.
+- [x] Account/profile foundation is implemented.
 - [ ] Public handle is distinct from private identity.
 - [ ] Invite and beta-access state exist.
 - [ ] Invited users can enter the private app.

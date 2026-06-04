@@ -15,7 +15,7 @@ test("private shell route stays anchored to /app", () => {
 });
 
 test("private shell message stays honest about locked beta access", () => {
-  assert.equal(PRIVATE_SHELL_MESSAGE.eyebrow, "Skybyrd Private Beta");
+  assert.equal(PRIVATE_SHELL_MESSAGE.eyebrow, "jmpseat Private Beta");
   assert.equal(PRIVATE_SHELL_MESSAGE.title, "Access is not open yet.");
   assert.match(
     PRIVATE_SHELL_MESSAGE.description,
@@ -23,7 +23,7 @@ test("private shell message stays honest about locked beta access", () => {
   );
   assert.match(
     PRIVATE_SHELL_MESSAGE.detail,
-    /verification and login are coming in a later epoch/i,
+    /account login and profile setup exist now/i,
   );
 });
 
@@ -63,7 +63,7 @@ test("private child routes are defined as locked placeholders only", () => {
   assert.equal(layovers?.path, "/app/layovers");
   assert.equal(layovers?.navLabel, "Layover Boards");
   assert.match(layovers?.title ?? "", /not available yet/i);
-  assert.match(layovers?.detail ?? "", /login and verification come later/i);
+  assert.match(layovers?.detail ?? "", /beta approval and worker verification still come later/i);
   assert.match(layovers?.message.disclaimer ?? "", /not a real security boundary/i);
 });
 

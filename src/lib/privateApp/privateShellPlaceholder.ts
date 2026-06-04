@@ -25,13 +25,14 @@ export type PrivateShellChildRoute = {
 };
 
 export const PRIVATE_SHELL_MESSAGE: PrivateShellMessage = {
-  eyebrow: "Skybyrd Private Beta",
+  eyebrow: "jmpseat Private Beta",
   title: "Access is not open yet.",
   description:
     "This private app area is reserved for verified airline-worker beta access.",
-  detail: "Verification and login are coming in a later epoch.",
+  detail:
+    "Account login and profile setup exist now, but beta approval and worker verification still come later.",
   disclaimer:
-    "This locked placeholder is product scaffolding only. It is not a real security boundary or sign-in system.",
+    "This locked placeholder is product scaffolding only. It is not beta approval, worker verification, or a real community access grant.",
 };
 
 export const PRIVATE_SHELL_NAV_ITEMS: readonly PrivateShellNavItem[] = [
@@ -81,11 +82,11 @@ export const PRIVATE_SHELL_NAV_ITEMS: readonly PrivateShellNavItem[] = [
 
 function createChildRouteMessage(label: string, routeContext: string): PrivateShellMessage {
   return {
-    eyebrow: "Skybyrd Private Beta",
+    eyebrow: "jmpseat Private Beta",
     title: `${label} is not available yet.`,
     description: `${routeContext} is reserved for a later private-beta epoch and is not open through this placeholder route.`,
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but beta approval and worker verification still come later, and this route does not grant real private-community access yet.",
     disclaimer:
       "This route-level placeholder is scaffolding only. It is not a real security boundary or a working product surface.",
   };
@@ -98,7 +99,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Home Base",
     title: "Home Base is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but beta approval and worker verification still come later, and this route does not grant real private-community access yet.",
     message: createChildRouteMessage(
       "Home Base",
       "The future private app home surface",
@@ -110,7 +111,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Base Boards",
     title: "Base Boards is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but beta approval and worker verification still come later, and this route does not grant real private-community access yet.",
     message: createChildRouteMessage(
       "Base Boards",
       "Base-specific knowledge and commuting guidance",
@@ -122,7 +123,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Layover Boards",
     title: "Layover Boards is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but beta approval and worker verification still come later, and this route does not grant real private-community access yet.",
     message: createChildRouteMessage(
       "Layover Boards",
       "Layover and city-intel guidance",
@@ -134,7 +135,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Verified Rooms",
     title: "Verified Rooms is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but beta approval and worker verification still come later, and this route does not grant real private-community access yet.",
     message: createChildRouteMessage(
       "Verified Rooms",
       "Gated discussion areas",
@@ -146,7 +147,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Profile",
     title: "Profile is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "The dedicated profile completion flow now exists at /app/profile, but this placeholder route config still does not grant beta access, worker verification, or community access.",
     message: createChildRouteMessage(
       "Profile",
       "Account and public-handle setup",
@@ -158,7 +159,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Verification",
     title: "Verification is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but worker verification still comes in a later epoch and this route remains a placeholder only.",
     message: createChildRouteMessage(
       "Verification",
       "Aviation-worker verification",
@@ -170,7 +171,7 @@ export const PRIVATE_SHELL_CHILD_ROUTE_RECORD: Record<string, PrivateShellChildR
     navLabel: "Admin",
     title: "Admin is not available yet.",
     detail:
-      "Real login and verification come later, and this route does not enforce actual account or access control yet.",
+      "Account login and profile setup exist now, but admin access and real private-community controls still come later.",
     message: createChildRouteMessage(
       "Admin",
       "Admin-only operational tooling",

@@ -20,7 +20,7 @@ export function PrivateShellPlaceholder({
       <div className={styles.frame}>
         <header className={styles.header}>
           <div className={styles.brandBlock}>
-            <p className={styles.brand}>Skybyrd</p>
+            <p className={styles.brand}>jmpseat</p>
             <span className={styles.subbrand}>{subbrand}</span>
           </div>
           <div className={styles.statusPill}>Locked Placeholder</div>
@@ -74,8 +74,8 @@ export function PrivateShellPlaceholder({
           <footer className={styles.footer}>
             <span>Public waitlist access stays on the marketing entry route.</span>
             <span>
-              Real login, verification, and beta-access gates belong to later
-              epochs.
+              Real beta-access, worker-verification, and community gates belong
+              to later epochs.
             </span>
           </footer>
         </section>

@@ -13,6 +13,20 @@ export function resolvePostAuthPath(next?: string | null) {
   return sanitizeNextPath(next) ?? AUTH_ROUTES.app;
 }
 
+export function resolveAuthenticatedAppPath({
+  next,
+  hasCompletedProfile,
+}: {
+  next?: string | null;
+  hasCompletedProfile: boolean;
+}) {
+  if (!hasCompletedProfile) {
+    return AUTH_ROUTES.profile;
+  }
+
+  return resolvePostAuthPath(next);
+}
+
 export function sanitizeNextPath(next?: string | null) {
   if (!next) {
     return null;
