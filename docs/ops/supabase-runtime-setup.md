@@ -8,6 +8,10 @@ This runbook covers the post-Epoch 03 operator setup required to make the merged
 
 This document is operational only. It does not add product features.
 
+Related operational doc:
+
+- [Supabase CLI Migration Workflow](supabase-cli-migration-workflow.md)
+
 ## 1. Required Supabase Project Setup
 
 Create or confirm a Supabase project for jmpseat that will back:

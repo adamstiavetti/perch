@@ -21,6 +21,7 @@ Supplemental epoch-specific ticket packs:
 - [Epoch 04: Worker Verification Foundation Ticket Pack](epochs/epoch-04-worker-verification-foundation-tickets.md)
 - [Epoch 04: Verification Claim Lifecycle Decision](epochs/epoch-04-verification-claim-lifecycle-decision.md)
 - [Supabase Runtime Setup](ops/supabase-runtime-setup.md)
+- [Supabase CLI Migration Workflow](ops/supabase-cli-migration-workflow.md)
 - [Verification Method Decision](VERIFICATION_METHOD_DECISION.md)
 
 Documentation hygiene reminder:
