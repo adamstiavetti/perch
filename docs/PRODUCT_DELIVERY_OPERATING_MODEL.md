@@ -184,6 +184,7 @@ Codex may move from docs/planning into app implementation only when all of these
 - The task states whether app code, config, package files, database work, API routes, UI, or deployment files are allowed.
 - V1-excluded features remain out of scope.
 - Security, privacy, accessibility, authorization, verification, moderation, AI, and policy constraints are included when relevant.
+- Future implementation tickets touching auth, data, storage, search, moderation, admin, or community features must also state scalability impact, access-control approach, pagination/indexing expectations, and whether new private or sensitive data is introduced.
 - The final report includes branch, commits, files changed, checks run, and scope boundary confirmation.
 
 No hidden feature expansion is allowed. If implementation uncovers a needed feature outside scope, document it as a follow-up instead of building it.

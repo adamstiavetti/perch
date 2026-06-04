@@ -6,6 +6,12 @@ Working name note: "Deadhead Club" is a working product name pending legal and t
 
 Deadhead Club should start with a pragmatic web architecture that supports fast iteration, strong privacy controls, and admin moderation from day one.
 
+Scale-readiness rule:
+
+- Future implementation must follow `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`.
+- jmpseat should be built for tens of thousands of registered users with scale-ready but not overbuilt architecture.
+- Simplicity is still the MVP goal, but future auth, data, storage, authorization, moderation, and search decisions should not assume tiny data volume forever.
+
 Recommended stack:
 
 - Frontend: Next.js / React.
@@ -118,6 +124,7 @@ Database notes:
 - Avoid storing raw secrets, tokens, portal credentials, or unnecessary government IDs.
 - Use database constraints for invariants that must never rely only on application code.
 - Avoid modeling schedules, flight loads, live locations, marketplace payments, and roster integrations in V1.
+- Follow the indexing, pagination, ownership, moderation-state, and soft-delete guidance in `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`.
 
 ## Auth
 

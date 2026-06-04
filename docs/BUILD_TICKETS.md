@@ -15,6 +15,10 @@ Documentation hygiene reminder:
 
 - Future tickets should identify documentation impact and include docs-update acceptance criteria when applicable. See `PRODUCT_DELIVERY_OPERATING_MODEL.md`.
 
+Scalability guardrail:
+
+- Future auth, database, community, moderation, storage, search, admin, and AI tickets should follow `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`.
+
 ## Required First Implementation Sequence
 
 Use this order when implementation begins:

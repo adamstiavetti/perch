@@ -38,6 +38,7 @@ The public splash page remains safe and public. The private app must remain inac
 - Data minimization applies from the first private-app slice.
 - Public copy must not imply airline affiliation, employer endorsement, or legal/trademark clearance.
 - V1-excluded features stay out of scope unless a later reviewed milestone reopens them.
+- Future auth and DB implementation must follow `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md` so private-app foundations remain scale-ready without premature infrastructure complexity.
 
 V1 exclusions remain:
 
@@ -115,6 +116,12 @@ Auth/account states:
 - `suspended`
 
 Auth alone is not aviation verification. A user can authenticate and still be unverified, not invited, restricted, denied, or blocked from private community surfaces.
+
+Auth/data separation requirements:
+
+- Auth identity, profile, beta access, verification state, and authorization rules must remain separate concerns.
+- Private access cannot rely on client-only gates.
+- Auth-provider metadata should not become the only source of truth for core application state.
 
 ## 7. Beta Access Control Model
 

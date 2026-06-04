@@ -4,6 +4,19 @@ Working name note: "Deadhead Club" is a working product name pending legal and t
 
 This is a first-pass implementation-ready model. It is intentionally moderate in complexity and should be refined during technical design.
 
+## Scale-Readiness Requirement
+
+Future schema work must follow `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`.
+
+That means future tables and schema revisions should account for:
+
+- indexing on high-growth tables
+- pagination on user/community/admin-facing lists
+- ownership and access-control fields
+- moderation/report/review state where relevant
+- soft-delete or status-based removal where audit history matters
+- separation between auth identity, profile data, beta access, verification state, and admin/moderation state
+
 ## User
 
 Auth-level account.

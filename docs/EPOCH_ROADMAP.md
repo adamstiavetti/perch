@@ -28,6 +28,7 @@ Future Codex tasks must declare which epoch they belong to. Work that does not m
 - FA expert interview remains pending.
 - First trusted aviation contact outreach remains pending.
 - Current production deployment is recorded in `DEPLOYMENT_RECORD_001.md`.
+- Future private-app implementation should follow `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md` so auth, data, moderation, storage, and search decisions remain scale-ready without overbuilding.
 
 ## 3. Epoch Status Legend
 
@@ -46,10 +47,10 @@ Future Codex tasks must declare which epoch they belong to. Work that does not m
 | 00 | Discovery & Problem/Solution Validation | Active / partially complete | Validate problem, audience, wedge, trust concerns, and first beta community. | `DISCOVERY_RESEARCH_PLAN.md`, `DISCOVERY_RESEARCH_REPORT_001.md`, `PROBLEM_SOLUTION_VALIDATION_MATRIX.md`, `M0_VALIDATION_OPERATING_PACKET.md`, `PRODUCT_DELIVERY_OPERATING_MODEL.md` | FA expert interview completed, 3-5 trusted aviation contacts review live site, feedback captured, matrix updated, no major safety contradiction found. | FA expert interview, user feedback, trusted contact outreach, and first-community evidence are pending. | Start trusted-contact outreach and record feedback. |
 | 01 | Public Splash + Waitlist | Complete / live | Make concept publicly viewable and capture waitlist interest. | `APP_FOUNDATION_NOTES.md`, `LANDING_PAGE_WAITLIST_PLAN.md`, `DEPLOYMENT_AND_WAITLIST_READINESS.md`, `DEPLOYMENT_RECORD_001.md` | Production loads, CTA opens Tally, fallback removed, Tally test response submitted, mobile page reviewed. | Test response and mobile UX review are not yet recorded. | Submit/verify a Tally test response and review mobile. |
 | 02 | Private App Foundation | Pending | Create locked private app shell behind splash page. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `NAMING_AND_INFORMATION_ARCHITECTURE.md`, `MILESTONE_EXECUTION_PLAN.md`, `TECHNICAL_ARCHITECTURE.md` | Private shell exists, route structure defined, no unauthorized access, no real community functionality. | Explicit approval required; M0 validation signal preferred first. | Decide after Epoch 00 feedback whether M1B is justified. |
-| 03 | Auth, Profiles, and Beta Access | Pending | Establish login, profile, invite-only beta access, and access gates. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `DATA_MODEL.md`, `TECHNICAL_ARCHITECTURE.md`, `BETA_READINESS_CHECKLIST.md` | Auth implemented, beta access state exists, invited users can enter, non-invited users are blocked, auth remains separate from aviation verification. | Backend/Auth ADR and explicit implementation approval required. | Prepare Supabase/Auth ADR only if Epoch 02 is approved. |
-| 04 | Verification System | Pending | Implement aviation verification state and review workflow. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `TRUST_AND_SAFETY.md`, `DATA_MODEL.md` | Verification state machine exists, non-upload manual review supported first, upload flow blocked until controls exist, AI cannot approve verification. | Verification consent, artifact retention, and upload acceptability decisions remain open. | Resolve non-upload manual verification flow before upload design. |
-| 05 | Community Structure | Pending | Implement Base Boards, Layover Boards, and verified/role rooms structurally. | `MVP_SCOPE.md`, `BUILD_TICKETS.md`, `FEATURE_ROADMAP.md`, `DISCOVERY_RESEARCH_REPORT_001.md` | Board/room structures exist, content can be seeded/read-only first, no real anonymous posting until moderation/admin gates are complete. | Requires auth/access and verification state before real member access. | Wait until Epochs 03-04 are underway. |
-| 06 | Moderation, Reporting, and Admin | Pending | Implement safety foundation before real anonymous posting. | `TRUST_AND_SAFETY.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `BETA_READINESS_CHECKLIST.md`, `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md` | Report flow, moderation queue, admin actions, emergency escalation, and audit/security events exist. | Must precede real anonymous posting and beta UGC. | Design admin/moderation slice before enabling posting. |
+| 03 | Auth, Profiles, and Beta Access | Pending | Establish login, profile, invite-only beta access, and access gates. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `DATA_MODEL.md`, `TECHNICAL_ARCHITECTURE.md`, `BETA_READINESS_CHECKLIST.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md` | Auth implemented, beta access state exists, invited users can enter, non-invited users are blocked, auth remains separate from aviation verification. | Backend/Auth ADR and explicit implementation approval required. | Prepare Supabase/Auth ADR only if Epoch 02 is approved. |
+| 04 | Verification System | Pending | Implement aviation verification state and review workflow. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `TRUST_AND_SAFETY.md`, `DATA_MODEL.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md` | Verification state machine exists, non-upload manual review supported first, upload flow blocked until controls exist, AI cannot approve verification. | Verification consent, artifact retention, and upload acceptability decisions remain open. | Resolve non-upload manual verification flow before upload design. |
+| 05 | Community Structure | Pending | Implement Base Boards, Layover Boards, and verified/role rooms structurally. | `MVP_SCOPE.md`, `BUILD_TICKETS.md`, `FEATURE_ROADMAP.md`, `DISCOVERY_RESEARCH_REPORT_001.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md` | Board/room structures exist, content can be seeded/read-only first, no real anonymous posting until moderation/admin gates are complete. | Requires auth/access and verification state before real member access. | Wait until Epochs 03-04 are underway. |
+| 06 | Moderation, Reporting, and Admin | Pending | Implement safety foundation before real anonymous posting. | `TRUST_AND_SAFETY.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `BETA_READINESS_CHECKLIST.md`, `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md` | Report flow, moderation queue, admin actions, emergency escalation, and audit/security events exist. | Must precede real anonymous posting and beta UGC. | Design admin/moderation slice before enabling posting. |
 | 07 | Limited Private Beta | Pending | Invite controlled users and validate product behavior. | `PRIVATE_BETA_OPERATING_PLAN.md`, `BETA_READINESS_CHECKLIST.md`, `M0_VALIDATION_OPERATING_PACKET.md` | First beta community selected, first users invited, ambassadors identified, moderation coverage exists, activation/retention/contribution measured. | First community, first 50, policy minimums, verification, moderation, and admin controls not ready. | Continue Epoch 00 validation and policy readiness. |
 | 08 | Jumpseat Brief / AI Utility | Deferred | Introduce AI-assisted layover planning after safety and community context are ready. | `TECHNICAL_ARCHITECTURE.md`, `TRUST_AND_SAFETY.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `DISCOVERY_RESEARCH_REPORT_001.md` | Server-side AI only, structured outputs where practical, no sensitive aviation/security output, no AI final moderation or verification decisions, user feedback supports usefulness. | AI is not core wedge and needs safety gates plus user evidence. | Defer until core utility and safety foundation exist. |
 | 09 | Monetization / Deals Layer | Deferred | Add crew-friendly deals and monetization only after user value is proven. | `MONETIZATION.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `FEATURE_ROADMAP.md` | Sponsored/affiliate disclosure path exists, admin vendor review exists, no full marketplace payments unless approved, user demand supports deals. | User value and trust not proven yet. | Defer monetization beyond validation/core MVP. |
@@ -194,6 +195,7 @@ Primary docs:
 - `DATA_MODEL.md`
 - `TECHNICAL_ARCHITECTURE.md`
 - `BETA_READINESS_CHECKLIST.md`
+- `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`
 
 Exit criteria:
 
@@ -202,6 +204,7 @@ Exit criteria:
 - Invited users can enter.
 - Non-invited users are blocked.
 - Auth remains separate from aviation verification.
+- Auth, profile, beta-access, authorization, pagination, indexing, and private-data handling choices remain scale-ready for tens of thousands of registered users without unnecessary overengineering.
 
 ### Epoch 04 - Verification System
 
@@ -217,6 +220,7 @@ Primary docs:
 - `LEGAL_POLICY_REQUIREMENTS.md`
 - `TRUST_AND_SAFETY.md`
 - `DATA_MODEL.md`
+- `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`
 
 Exit criteria:
 
@@ -239,12 +243,14 @@ Primary docs:
 - `BUILD_TICKETS.md`
 - `FEATURE_ROADMAP.md`
 - `DISCOVERY_RESEARCH_REPORT_001.md`
+- `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`
 
 Exit criteria:
 
 - Board/room structures exist.
 - Content may be seeded/read-only first.
 - No real anonymous posting until moderation/admin gates are complete.
+- Pagination, indexing, filtering, and access-control plans exist before boards/rooms become real user-facing data surfaces.
 
 ### Epoch 06 - Moderation, Reporting, and Admin
 
@@ -260,6 +266,7 @@ Primary docs:
 - `LEGAL_POLICY_REQUIREMENTS.md`
 - `BETA_READINESS_CHECKLIST.md`
 - `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`
+- `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`
 
 Exit criteria:
 
@@ -268,6 +275,7 @@ Exit criteria:
 - Admin actions exist.
 - Emergency escalation path exists.
 - Audit/security events exist.
+- Moderation/admin data structures are auditable and designed for queue growth rather than single-admin manual state only.
 
 ### Epoch 07 - Limited Private Beta
 
