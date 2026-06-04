@@ -189,10 +189,28 @@ Fix:
 
 - `20260604223611_include_requested_airline_in_reviewer_routing.sql`
 
+## Controlled Reviewer Proof Viewing Status
+
+Controlled reviewer proof viewing is now implemented in app code as a bounded server-authorized short-lived signed-URL flow.
+
+However, this artifact does not claim live runtime proof for that viewing path yet.
+
+Runtime validation is still needed after:
+
+- the reviewed proof-view security-events migration is pushed remotely
+- the runtime environment includes the server-only `SUPABASE_SERVICE_ROLE_KEY`
+
+Until that runtime pass is complete, this document should still be read as proof of:
+
+- upload and storage correctness
+- routing-context persistence
+- reviewer-routing correctness
+- metadata-only queue behavior outside active proof retrieval
+
 ## Remaining Limitations
 
 - no reviewer proof viewing yet
-- no signed proof retrieval yet
+- no runtime-proven signed proof retrieval yet
 - no proof retention automation yet
 - no AI
 - no automatic approval
@@ -211,3 +229,4 @@ Fix:
 The controlled proof-viewing design for that next slice is documented in:
 
 - [Controlled Reviewer Proof Viewing Design](../epochs/controlled-reviewer-proof-viewing-design.md)
+- [Controlled Reviewer Proof Viewing Foundation](../epochs/controlled-reviewer-proof-viewing-foundation.md)

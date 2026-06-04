@@ -80,6 +80,21 @@ test("airline-scoped reviewers can see redacted proof requests by requested airl
   );
 });
 
+test("reviewer queue UI exposes a bounded proof-view action without proof file details", () => {
+  const source = readFileSync(
+    new URL("../../app/app/admin/verification/page.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /View proof/);
+  assert.match(source, /short-lived/i);
+  assert.match(source, /audited/i);
+  assert.match(source, /do not use employer systems/i);
+  assert.match(source, /does not approve the request/i);
+  assert.doesNotMatch(source, /storage path|storage bucket|signed url|public url|preview|download button/i);
+  assert.doesNotMatch(source, /jmpseatapp@gmail\.com|founder/i);
+});
+
 test("review planning blocks unauthorized and self-review attempts", () => {
   const request = {
     id: "req-1",

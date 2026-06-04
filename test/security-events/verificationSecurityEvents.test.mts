@@ -144,3 +144,27 @@ test("proof-upload migration extends the event-type constraint for bounded uploa
   assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
   assert.match(sql, /verification_evidence\.uploaded/i);
 });
+
+test("proof-view migration extends the event-type constraint for bounded proof-view audit events", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260604231332_extend_security_events_for_proof_viewing.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
+  assert.match(sql, /verification_evidence\.view_requested/i);
+  assert.match(sql, /verification_evidence\.view_granted/i);
+  assert.match(sql, /verification_evidence\.view_denied/i);
+});
+
+test("proof access implementation records bounded proof-view audit events without logging URLs or storage paths", () => {
+  const source = readFileSync(
+    new URL("../../src/lib/verification/proofAccess.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /verification_evidence\.view_requested/);
+  assert.match(source, /verification_evidence\.view_granted/);
+  assert.match(source, /verification_evidence\.view_denied/);
+  assert.doesNotMatch(source, /employer system lookup|ai pre-check/i);
+});

@@ -12,6 +12,7 @@ import {
 import { getPrivateAccessEventType } from "../../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../../src/lib/supabase/config";
+import { viewVerificationProofAction } from "../../../../src/lib/verification/proofAccess";
 import { submitVerificationReviewAction } from "../../../../src/lib/verification/reviewActions";
 import { getCurrentVerificationReviewContext } from "../../../../src/lib/verification/reviewServer";
 
@@ -84,9 +85,9 @@ export default async function VerificationReviewQueuePage({
       message={message}
       footer={
         <p className={authStyles.hint}>
-          This route does not expose proof files, upload tools, storage access,
-          or broader admin controls. It is limited to queue review decisions
-          for approved verification requests.
+          This route keeps reviewer access bounded to queue metadata and
+          short-lived, audited proof viewing only. It does not expose storage
+          paths, persistent links, upload tools, or broader admin controls.
         </p>
       }
     >
@@ -168,6 +169,19 @@ export default async function VerificationReviewQueuePage({
                           <div className={styles.meta}>
                             file size: {typeof evidence.metadata.file_size_bytes === "number" ? evidence.metadata.file_size_bytes : "none"}
                           </div>
+                          {evidence.evidence_type === "redacted_badge_or_proof" ? (
+                            <form className={styles.proofAccessForm} action={viewVerificationProofAction}>
+                              <input type="hidden" name="request_id" value={entry.request.id} />
+                              <input type="hidden" name="evidence_id" value={evidence.id} />
+                              <button className={styles.buttonView} type="submit">
+                                View proof
+                              </button>
+                              <p className={styles.proofAccessNote}>
+                                Access is short-lived and audited. Do not use employer systems.
+                                Viewing proof does not approve the request.
+                              </p>
+                            </form>
+                          ) : null}
                         </li>
                       ))}
                     </ul>

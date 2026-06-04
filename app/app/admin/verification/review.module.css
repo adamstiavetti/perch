@@ -72,9 +72,23 @@
   gap: 10px;
 }
 
+.proofAccessForm {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.proofAccessNote {
+  margin: 0;
+  color: #96a7ba;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .buttonApprove,
 .buttonReject,
-.buttonResubmit {
+.buttonResubmit,
+.buttonView {
   border: 0;
   border-radius: 999px;
   padding: 11px 16px;
@@ -93,4 +107,9 @@
 
 .buttonResubmit {
   background: linear-gradient(135deg, #d8e8fb 0%, #8db8e1 100%);
+}
+
+.buttonView {
+  width: fit-content;
+  background: linear-gradient(135deg, #f6e6bd 0%, #d7b56e 100%);
 }

@@ -11,6 +11,11 @@ This design defines how authorized reviewers should view submitted proof files s
 
 The goal is to preserve the existing privacy boundary around `verification-proofs` while enabling a bounded reviewer-only viewing step later.
 
+Implementation note:
+
+- the first implementation slice is now documented in:
+  - [Controlled Reviewer Proof Viewing Foundation](controlled-reviewer-proof-viewing-foundation.md)
+
 ## Current State
 
 Current runtime-proven state:
@@ -25,11 +30,11 @@ Current runtime-proven state:
 
 Current non-features:
 
-- no proof viewing exists
-- no signed URLs exist
+- no reviewer proof preview exists in the queue
+- no persistent proof URL exists
 - no reviewer storage read policy exists
-- no reviewer proof download exists
-- no preview exists
+- no reviewer proof download button exists
+- no inline proof embedding exists
 
 ## Hard Requirements
 
@@ -206,6 +211,11 @@ Recommended future event types:
 - `verification_evidence.view_requested`
 - `verification_evidence.view_granted`
 - `verification_evidence.view_denied`
+
+Implementation status:
+
+- implemented in the first bounded proof-viewing foundation slice
+- runtime validation still needs to be rerun after reviewed migration push and server-only env setup
 
 Event metadata must not include:
 
