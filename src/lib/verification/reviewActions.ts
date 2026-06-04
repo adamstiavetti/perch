@@ -32,6 +32,17 @@ type QueryReviewEvidenceRow = {
   metadata: Record<string, unknown>;
 };
 
+type ApplyVerificationReviewDecisionResult = {
+  request_id: string;
+  final_request_status: string;
+  action: "approve" | "reject" | "request_resubmission";
+  issued_claims: Array<{
+    id: string;
+    claim_type: string;
+    claim_value: string | null;
+  }>;
+};
+
 function getString(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -150,58 +161,23 @@ export async function submitVerificationReviewAction(formData: FormData) {
     );
   }
 
-  let insertedClaims:
-    | Array<{ id: string; claim_type: string; claim_value: string | null }>
-    | null = null;
+  const reviewDecisionResult = await supabase.rpc("apply_verification_review_decision", {
+    p_request_id: requestId,
+    p_action: action,
+    p_reason: null,
+  });
 
-  if (plan.claimsToInsert.length > 0) {
-    const { data: claimRows, error: claimsError } = await supabase
-      .from("verification_claims")
-      .insert(plan.claimsToInsert)
-      .select("id, claim_type, claim_value");
-
-    if (claimsError) {
-      redirect(
-        buildRedirect(REVIEW_ROUTE, {
-          error:
-            "The review decision could not issue the supported verification claims. Try again.",
-        }),
-      );
-    }
-
-    insertedClaims = claimRows ?? [];
-  }
-
-  const { error: requestUpdateError } = await supabase
-    .from("verification_requests")
-    .update(plan.requestUpdate)
-    .eq("id", requestId);
-
-  if (requestUpdateError) {
+  if (reviewDecisionResult.error || !reviewDecisionResult.data) {
     redirect(
       buildRedirect(REVIEW_ROUTE, {
         error:
-          "The verification request could not be updated with the review decision. Try again.",
+          "The verification review decision could not be applied atomically. Try again.",
       }),
     );
   }
 
-  const { error: reviewActionError } = await supabase
-    .from("verification_review_actions")
-    .insert({
-      request_id: requestId,
-      claim_id: null,
-      ...plan.reviewActionInsert,
-    });
-
-  if (reviewActionError) {
-    redirect(
-      buildRedirect(REVIEW_ROUTE, {
-        error:
-          "The review action audit row could not be recorded. The request status may already be updated.",
-      }),
-    );
-  }
+  const appliedReview =
+    reviewDecisionResult.data as ApplyVerificationReviewDecisionResult;
 
   await recordSecurityEvent({
     userId: user.id,
@@ -209,16 +185,16 @@ export async function submitVerificationReviewAction(formData: FormData) {
       action: action as "approve" | "reject" | "request_resubmission",
     }),
     route: REVIEW_ROUTE,
-    result: plan.requestUpdate.status,
+    result: appliedReview.final_request_status,
     metadata: {
       verification_request_id: requestId,
       review_action: action,
-      status: plan.requestUpdate.status,
+      status: appliedReview.final_request_status,
       verification_method: requestResult.data.method,
     },
   });
 
-  for (const claim of insertedClaims ?? []) {
+  for (const claim of appliedReview.issued_claims ?? []) {
     await recordSecurityEvent({
       userId: user.id,
       eventType: "verification_claim.issued",
@@ -237,9 +213,9 @@ export async function submitVerificationReviewAction(formData: FormData) {
   redirect(
     buildRedirect(REVIEW_ROUTE, {
       message:
-        action === "approve"
+        appliedReview.action === "approve"
           ? "Verification request approved."
-          : action === "reject"
+          : appliedReview.action === "reject"
             ? "Verification request rejected."
             : "Verification request marked for resubmission.",
     }),

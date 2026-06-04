@@ -255,6 +255,49 @@ test("review migration adds reviewer scopes, RLS, and no-self-review reviewer po
   );
 });
 
+test("transactional review migration adds a bounded authenticated RPC for atomic review decisions", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260604195441_create_apply_verification_review_decision.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /create or replace function public\.apply_verification_review_decision/i);
+  assert.match(sql, /security definer/i);
+  assert.match(sql, /set search_path = public/i);
+  assert.match(sql, /v_reviewer_id uuid := auth\.uid\(\)/i);
+  assert.match(sql, /p_action not in \('approve', 'reject', 'request_resubmission'\)/i);
+  assert.match(sql, /v_request\.user_id = v_reviewer_id/i);
+  assert.match(sql, /public\.can_review_verification_request\(v_reviewer_id, v_request\.user_id, v_request\.id\)/i);
+  assert.match(sql, /v_request\.status not in \('submitted', 'pending_review'\)/i);
+  assert.match(sql, /insert into public\.verification_review_actions/i);
+  assert.match(sql, /update public\.verification_requests/i);
+  assert.match(sql, /insert into public\.verification_claims/i);
+  assert.match(sql, /'airline_worker'/i);
+  assert.match(sql, /'airline'/i);
+  assert.doesNotMatch(sql, /'role'[\s\S]*insert into public\.verification_claims/i);
+  assert.doesNotMatch(sql, /'base'[\s\S]*insert into public\.verification_claims/i);
+  assert.doesNotMatch(sql, /claimed_airline|claimed_role|claimed_base/i);
+  assert.match(sql, /revoke all on function public\.apply_verification_review_decision\(uuid, text, text\) from public/i);
+  assert.match(sql, /grant execute on function public\.apply_verification_review_decision\(uuid, text, text\) to authenticated/i);
+  assert.doesNotMatch(sql, /storage_bucket|storage_path|employer system lookup|openai|ai pre-check/i);
+});
+
+test("review action source uses the transactional RPC and keeps security events fail-soft", () => {
+  const source = readFileSync(
+    new URL("../../src/lib/verification/reviewActions.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /rpc\("apply_verification_review_decision"/);
+  assert.match(source, /The verification review decision could not be applied atomically/i);
+  assert.match(source, /await recordSecurityEvent\(/);
+  assert.match(source, /verification_claim\.issued/);
+  assert.doesNotMatch(source, /\.from\("verification_claims"\)\s*\.insert/i);
+  assert.doesNotMatch(source, /\.from\("verification_requests"\)\s*\.update/i);
+  assert.doesNotMatch(source, /\.from\("verification_review_actions"\)\s*\.insert/i);
+  assert.doesNotMatch(source, /supabase storage|type="file"|upload proof|employer system lookup|openai|ai pre-check/i);
+});
+
 test("human review foundation source does not add storage, upload, ai, or employer-system lookup", () => {
   const reviewSource = readFileSync(
     new URL("../../src/lib/verification/review.ts", import.meta.url),
