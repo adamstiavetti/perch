@@ -95,7 +95,11 @@ function entrySupportsScope(entry: ReviewQueueEntry, scope: ReviewerScope) {
   const metadataValues = entry.evidence.flatMap((evidence) => {
     if (scope.scope_type === "airline") {
       const airline = evidence.metadata.airline;
-      return typeof airline === "string" ? [airline] : [];
+      const requestedAirline = evidence.metadata.requested_airline;
+      return [
+        ...(typeof airline === "string" ? [airline] : []),
+        ...(typeof requestedAirline === "string" ? [requestedAirline] : []),
+      ];
     }
 
     if (scope.scope_type === "role") {

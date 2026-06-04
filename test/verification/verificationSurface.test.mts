@@ -123,6 +123,9 @@ test("/app/verification copy stays bounded to status, work-email guidance, and r
   assert.match(source, /Upload redacted proof for review/i);
   assert.match(source, /type="file"/i);
   assert.match(source, /accept="image\/jpeg,image\/png"/i);
+  assert.match(source, /Requested airline for reviewer routing/i);
+  assert.match(source, /self-declared review context only/i);
+  assert.match(source, /not treated as a verified claim/i);
   assert.match(source, /reviewed by humans\s+rather than AI/i);
   assert.match(source, /does not guarantee approval/i);
   assert.match(source, /short retention/i);

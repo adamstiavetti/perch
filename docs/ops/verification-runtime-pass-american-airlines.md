@@ -214,3 +214,46 @@ That proof-upload runtime path should be validated separately after:
 - the `verification-proofs` bucket migration is pushed
 - remote upload policies are live
 - the bounded redacted-proof upload surface is merged
+
+## Redacted Proof Runtime Gap And Fix
+
+The later redacted-proof upload/storage runtime validation found one bounded reviewer-routing gap after upload/storage itself succeeded.
+
+Observed runtime result:
+
+- redacted proof upload succeeded
+- private storage object creation succeeded
+- request and evidence metadata were created safely
+- no claim was issued from upload
+- security events were sanitized
+- but an airline-scoped reviewer could not see the proof request in `/app/admin/verification`
+
+Why that happened:
+
+- the reviewer had scope:
+  - `scope_type = airline`
+  - `scope_value = American Airlines`
+- the proof request carried no airline routing metadata
+- airline-scoped reviewer filtering therefore had nothing to match
+
+Temporary runtime workaround used during validation:
+
+- a temporary global reviewer scope was granted
+- reviewer queue UI safety was verified
+- the temporary global scope was then removed
+
+Follow-up fix:
+
+- [Redacted Proof Reviewer Routing Context Fix](../epochs/redacted-proof-reviewer-routing-context-fix.md)
+
+Fix posture:
+
+- proof uploads now carry bounded self-declared reviewer-routing context
+- that context may include:
+  - `requested_airline`
+  - `routing_context_source`
+- routing context is used only for reviewer queue routing
+- routing context is not treated as verified proof
+- routing context is not a claim
+- routing context does not grant protected access
+- no proof viewing, signed URLs, downloads, AI, or employer-system lookup were added by the fix

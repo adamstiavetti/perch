@@ -45,6 +45,41 @@ test("review queue filtering only exposes requests allowed by active reviewer sc
   );
 });
 
+test("airline-scoped reviewers can see redacted proof requests by requested airline routing context only", () => {
+  const queue = [
+    {
+      request: { id: "req-proof-match", user_id: "user-1" },
+      evidence: [
+        {
+          metadata: {
+            requested_airline: "American Airlines",
+            routing_context_source: "self_declared",
+          },
+        },
+      ],
+    },
+    {
+      request: { id: "req-proof-other", user_id: "user-2" },
+      evidence: [
+        {
+          metadata: {
+            requested_airline: "Delta Air Lines",
+            routing_context_source: "self_declared",
+          },
+        },
+      ],
+    },
+  ];
+
+  assert.deepEqual(
+    filterReviewQueueByScopes({
+      queue,
+      scopes: [{ scope_type: "airline", scope_value: "American Airlines", status: "active" }],
+    }).map((entry) => entry.request.id),
+    ["req-proof-match"],
+  );
+});
+
 test("review planning blocks unauthorized and self-review attempts", () => {
   const request = {
     id: "req-1",
@@ -227,6 +262,38 @@ test("approve is blocked when work-email evidence cannot support any issuable cl
   );
 });
 
+test("redacted proof routing context does not turn self-declared airline into an issuable claim", () => {
+  assert.deepEqual(
+    planVerificationReviewDecision({
+      reviewerId: "reviewer-9",
+      reviewerScopes: [{ scope_type: "global", scope_value: null, status: "active" }],
+      request: {
+        id: "req-proof-1",
+        user_id: "user-4",
+        method: "redacted_badge_or_proof",
+        status: "submitted",
+        requested_claim_types: ["airline_worker", "airline"],
+      },
+      evidence: [
+        {
+          evidence_type: "redacted_badge_or_proof",
+          metadata: {
+            requested_airline: "American Airlines",
+            routing_context_source: "profile_claimed_airline",
+          },
+        },
+      ],
+      action: "approve",
+      nowIso: "2026-06-04T18:00:00.000Z",
+    }),
+    {
+      kind: "unsupported_evidence",
+      message:
+        "This verification request does not contain enough approved evidence metadata to issue any supported claims.",
+    },
+  );
+});
+
 test("review migration adds reviewer scopes, RLS, and no-self-review reviewer policies", () => {
   const sql = readFileSync(
     new URL("../../supabase/migrations/20260604165541_create_verification_reviewer_scopes.sql", import.meta.url),
@@ -316,6 +383,8 @@ test("human review foundation source does not add storage, upload, ai, or employ
   assert.match(routeSource, /must not use employer systems/i);
   assert.match(routeSource, /redaction acknowledged/i);
   assert.match(routeSource, /delete after/i);
+  assert.match(routeSource, /requested airline/i);
+  assert.match(routeSource, /routing context source/i);
   assert.doesNotMatch(
     routeSource,
     /type="file"|signed url|public url|download button|image preview|full admin dashboard|user management|beta access admin|storage_path/i,

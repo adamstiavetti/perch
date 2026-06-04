@@ -13,6 +13,7 @@ import {
   buildRedactedProofVerificationDraft,
   buildVerificationProofStoragePath,
   getActiveRedactedProofRequest,
+  resolveProofReviewRoutingContext,
   validateRedactedProofUpload,
   VERIFICATION_PROOFS_BUCKET,
 } from "./proofUpload";
@@ -35,6 +36,10 @@ type QueryApprovedEmailDomainRow = {
   domain: string;
   airline: string | null;
   status: string;
+};
+
+type QueryProfileRoutingRow = {
+  claimed_airline: string | null;
 };
 
 type CreateRedactedProofVerificationSubmissionResult = {
@@ -325,6 +330,7 @@ export async function submitRedactedProofVerificationAction(formData: FormData) 
   const proofFile = getUploadedFile(formData, "proof_file");
   const redactionAcknowledged =
     formData.get("redaction_acknowledged") === "on";
+  const requestedAirline = getString(formData, "requested_airline");
   const validation = validateRedactedProofUpload({
     file: proofFile,
     redactionAcknowledged,
@@ -342,6 +348,34 @@ export async function submitRedactedProofVerificationAction(formData: FormData) 
     redirect(
       buildRedirect(VERIFICATION_ROUTE, {
         error: "Choose a JPEG or PNG proof image before submitting.",
+      }),
+    );
+  }
+
+  const profileResult = await supabase
+    .from("profiles")
+    .select("claimed_airline")
+    .eq("id", user.id)
+    .maybeSingle<QueryProfileRoutingRow>();
+
+  if (profileResult.error) {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error:
+          "Profile routing context is not available yet. Save a profile or try again after profile storage is ready.",
+      }),
+    );
+  }
+
+  const routingContext = resolveProofReviewRoutingContext({
+    requestedAirline,
+    profileClaimedAirline: profileResult.data?.claimed_airline,
+  });
+
+  if (routingContext.kind !== "valid") {
+    redirect(
+      buildRedirect(VERIFICATION_ROUTE, {
+        error: routingContext.message,
       }),
     );
   }
@@ -403,6 +437,8 @@ export async function submitRedactedProofVerificationAction(formData: FormData) 
     fileSizeBytes: validation.fileSizeBytes,
     mimeType: validation.mimeType,
     originalExtension: validation.originalExtension,
+    requestedAirline: routingContext.requestedAirline,
+    routingContextSource: routingContext.routingContextSource,
     nowIso,
   });
 

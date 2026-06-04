@@ -9,7 +9,9 @@ import {
   buildVerificationProofStoragePath,
   getActiveRedactedProofRequest,
   isSafeVerificationProofStoragePath,
+  resolveProofReviewRoutingContext,
   validateRedactedProofUpload,
+  PROOF_REVIEW_ROUTING_CONTEXT_SOURCES,
   VERIFICATION_PROOF_ALLOWED_MIME_TYPES,
   VERIFICATION_PROOF_MAX_FILE_SIZE_BYTES,
   VERIFICATION_PROOFS_BUCKET,
@@ -26,6 +28,10 @@ test("proof upload constants stay bounded to a private JPEG/PNG-only first slice
     "submitted",
     "pending_review",
     "needs_resubmission",
+  ]);
+  assert.deepEqual(PROOF_REVIEW_ROUTING_CONTEXT_SOURCES, [
+    "self_declared",
+    "profile_claimed_airline",
   ]);
 });
 
@@ -111,6 +117,8 @@ test("proof draft stores safe metadata only and does not issue claims automatica
     fileSizeBytes: 4096,
     mimeType: "image/png",
     originalExtension: "png",
+    requestedAirline: "American Airlines",
+    routingContextSource: "profile_claimed_airline",
     nowIso: "2026-06-04T21:15:00.000Z",
   });
 
@@ -142,9 +150,49 @@ test("proof draft stores safe metadata only and does not issue claims automatica
       upload_client: "web",
       redaction_acknowledged: true,
       evidence_method: "redacted_badge_or_proof",
+      requested_airline: "American Airlines",
+      routing_context_source: "profile_claimed_airline",
     },
   });
   assert.equal("claim" in draft, false);
+});
+
+test("proof review routing context requires an airline label and marks it as unverified routing-only context", () => {
+  assert.deepEqual(
+    resolveProofReviewRoutingContext({
+      requestedAirline: "",
+      profileClaimedAirline: "American Airlines",
+    }),
+    {
+      kind: "invalid",
+      message:
+        "Provide the airline name reviewers should use for routing. This is self-declared review context only and not a verified claim.",
+    },
+  );
+
+  assert.deepEqual(
+    resolveProofReviewRoutingContext({
+      requestedAirline: "American Airlines",
+      profileClaimedAirline: "American Airlines",
+    }),
+    {
+      kind: "valid",
+      requestedAirline: "American Airlines",
+      routingContextSource: "profile_claimed_airline",
+    },
+  );
+
+  assert.deepEqual(
+    resolveProofReviewRoutingContext({
+      requestedAirline: "Delta Air Lines",
+      profileClaimedAirline: "American Airlines",
+    }),
+    {
+      kind: "valid",
+      requestedAirline: "Delta Air Lines",
+      routingContextSource: "self_declared",
+    },
+  );
 });
 
 test("proof upload helper can detect an active proof request for duplicate prevention", () => {
@@ -199,6 +247,8 @@ test("proof upload action uses bounded server validation, private storage, rollb
   assert.match(source, /storage[\s\S]*?from\(VERIFICATION_PROOFS_BUCKET\)[\s\S]*?\.upload/);
   assert.match(source, /create_redacted_proof_verification_submission/);
   assert.match(source, /cleanupUploadedVerificationProof/);
+  assert.match(source, /requested_airline/);
+  assert.match(source, /resolveProofReviewRoutingContext/);
   assert.match(source, /verification_evidence\.uploaded/);
   assert.doesNotMatch(source, /service_role|SUPABASE_SERVICE_ROLE_KEY|signed url|download button|openai|ai pre-check/i);
   assert.doesNotMatch(source, /aa\.com|american airlines/i);
@@ -210,6 +260,8 @@ test("proof upload metadata builder never stores filenames, storage paths, or pr
       fileSizeBytes: 1024,
       mimeType: "image/png",
       originalExtension: "png",
+      requestedAirline: "American Airlines",
+      routingContextSource: "self_declared",
     }),
     {
       file_size_bytes: 1024,
@@ -218,6 +270,8 @@ test("proof upload metadata builder never stores filenames, storage paths, or pr
       upload_client: "web",
       redaction_acknowledged: true,
       evidence_method: "redacted_badge_or_proof",
+      requested_airline: "American Airlines",
+      routing_context_source: "self_declared",
     },
   );
 });

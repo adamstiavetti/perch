@@ -47,6 +47,10 @@ type QueryApprovedEmailDomainRow = {
   domain: string;
 };
 
+type QueryProfileRow = {
+  claimed_airline: string | null;
+};
+
 export type CurrentVerificationSurfaceContext = {
   authConfigured: boolean;
   user: User | null;
@@ -54,6 +58,7 @@ export type CurrentVerificationSurfaceContext = {
   claims: QueryVerificationClaimRow[];
   evidence: QueryVerificationEvidenceRow[];
   approvedDomainCount: number;
+  proofRoutingAirline: string | null;
   loadError: string | null;
 };
 
@@ -68,6 +73,7 @@ export async function getCurrentVerificationSurfaceContext(): Promise<CurrentVer
       claims: [],
       evidence: [],
       approvedDomainCount: 0,
+      proofRoutingAirline: null,
       loadError: null,
     };
   }
@@ -86,6 +92,7 @@ export async function getCurrentVerificationSurfaceContext(): Promise<CurrentVer
       claims: [],
       evidence: [],
       approvedDomainCount: 0,
+      proofRoutingAirline: null,
       loadError: userError?.message ?? null,
     };
   }
@@ -95,6 +102,7 @@ export async function getCurrentVerificationSurfaceContext(): Promise<CurrentVer
     claimsResult,
     evidenceResult,
     domainsResult,
+    profileResult,
   ] = await Promise.all([
     supabase
       .from("verification_requests")
@@ -119,6 +127,11 @@ export async function getCurrentVerificationSurfaceContext(): Promise<CurrentVer
       .select("domain")
       .eq("status", "active")
       .returns<QueryApprovedEmailDomainRow[]>(),
+    supabase
+      .from("profiles")
+      .select("claimed_airline")
+      .eq("id", user.id)
+      .maybeSingle<QueryProfileRow>(),
   ]);
 
   if (requestsResult.error || claimsResult.error || evidenceResult.error) {
@@ -129,6 +142,7 @@ export async function getCurrentVerificationSurfaceContext(): Promise<CurrentVer
       claims: [],
       evidence: [],
       approvedDomainCount: 0,
+      proofRoutingAirline: null,
       loadError: VERIFICATION_STORAGE_NOT_READY_MESSAGE,
     };
   }
@@ -140,6 +154,7 @@ export async function getCurrentVerificationSurfaceContext(): Promise<CurrentVer
     claims: claimsResult.data ?? [],
     evidence: evidenceResult.data ?? [],
     approvedDomainCount: domainsResult.error ? 0 : (domainsResult.data?.length ?? 0),
+    proofRoutingAirline: profileResult.error ? null : (profileResult.data?.claimed_airline ?? null),
     loadError: null,
   };
 }

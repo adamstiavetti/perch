@@ -23,6 +23,14 @@ type RedactedProofFileLike = {
   type: string;
 };
 
+export const PROOF_REVIEW_ROUTING_CONTEXT_SOURCES = [
+  "self_declared",
+  "profile_claimed_airline",
+] as const;
+
+type ProofReviewRoutingContextSource =
+  (typeof PROOF_REVIEW_ROUTING_CONTEXT_SOURCES)[number];
+
 type VerificationRequestFlowRequest = {
   id: string;
   method: string | null | undefined;
@@ -59,6 +67,11 @@ function normalizeMimeType(type: string | null | undefined) {
   return VERIFICATION_PROOF_ALLOWED_MIME_TYPES.find(
     (candidate) => candidate === normalized,
   ) ?? null;
+}
+
+function normalizeRequestedAirline(value: string | null | undefined) {
+  const normalized = value?.trim().replace(/\s+/g, " ") ?? "";
+  return normalized.length > 0 ? normalized : null;
 }
 
 function isUuidLike(value: string) {
@@ -180,6 +193,8 @@ export function buildRedactedProofEvidenceMetadata(input: {
   fileSizeBytes: number;
   mimeType: AllowedProofMimeType;
   originalExtension: "jpg" | "jpeg" | "png";
+  requestedAirline: string;
+  routingContextSource: ProofReviewRoutingContextSource;
   uploadClient?: "web";
 }) {
   return {
@@ -189,6 +204,38 @@ export function buildRedactedProofEvidenceMetadata(input: {
     upload_client: input.uploadClient ?? "web",
     redaction_acknowledged: true,
     evidence_method: REDACTED_PROOF_VERIFICATION_METHOD,
+    requested_airline: input.requestedAirline,
+    routing_context_source: input.routingContextSource,
+  };
+}
+
+export function resolveProofReviewRoutingContext(input: {
+  requestedAirline: string | null | undefined;
+  profileClaimedAirline: string | null | undefined;
+}) {
+  const requestedAirline = normalizeRequestedAirline(input.requestedAirline);
+
+  if (!requestedAirline) {
+    return {
+      kind: "invalid" as const,
+      message:
+        "Provide the airline name reviewers should use for routing. This is self-declared review context only and not a verified claim.",
+    };
+  }
+
+  const profileClaimedAirline = normalizeRequestedAirline(input.profileClaimedAirline);
+  const routingContextSource: ProofReviewRoutingContextSource =
+    profileClaimedAirline &&
+    requestedAirline.localeCompare(profileClaimedAirline, undefined, {
+      sensitivity: "accent",
+    }) === 0
+      ? "profile_claimed_airline"
+      : "self_declared";
+
+  return {
+    kind: "valid" as const,
+    requestedAirline,
+    routingContextSource,
   };
 }
 
@@ -200,6 +247,8 @@ export function buildRedactedProofVerificationDraft(input: {
   fileSizeBytes: number;
   mimeType: AllowedProofMimeType;
   originalExtension: "jpg" | "jpeg" | "png";
+  requestedAirline: string;
+  routingContextSource: ProofReviewRoutingContextSource;
   nowIso?: string;
 }) {
   const nowIso = input.nowIso ?? new Date().toISOString();
@@ -228,6 +277,8 @@ export function buildRedactedProofVerificationDraft(input: {
         fileSizeBytes: input.fileSizeBytes,
         mimeType: input.mimeType,
         originalExtension: input.originalExtension,
+        requestedAirline: input.requestedAirline,
+        routingContextSource: input.routingContextSource,
       }),
     },
   };

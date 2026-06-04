@@ -214,6 +214,12 @@ export default async function VerificationPage({ searchParams }: VerificationPag
             private, is intended for short retention, and is reviewed by humans
             rather than AI.
           </p>
+          <p className={styles.sectionText}>
+            Include the airline name reviewers should use for routing. That
+            airline value is self-declared review context only. It is not proof
+            by itself, is not treated as a verified claim, and does not grant
+            protected access.
+          </p>
           <form
             className={styles.form}
             action={submitRedactedProofVerificationAction}
@@ -231,6 +237,25 @@ export default async function VerificationPage({ searchParams }: VerificationPag
                 accept="image/jpeg,image/png"
                 required
               />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="requested-airline">
+                Requested airline for reviewer routing
+              </label>
+              <input
+                className={styles.input}
+                id="requested-airline"
+                name="requested_airline"
+                type="text"
+                placeholder="American Airlines"
+                defaultValue={verificationContext.proofRoutingAirline ?? ""}
+                required
+              />
+              <p className={styles.muted}>
+                This value may be prefilled from your profile claimed airline.
+                You can edit it here. It stays self-declared and unverified
+                unless a reviewer later approves a separate claim.
+              </p>
             </div>
             <div className={styles.checkboxField}>
               <input

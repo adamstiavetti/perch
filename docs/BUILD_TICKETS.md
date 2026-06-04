@@ -31,6 +31,7 @@ Supplemental epoch-specific ticket packs:
 - [Epoch 04: Approved Email Domain Read Policy Fix](epochs/epoch-04-approved-email-domain-read-policy-fix.md)
 - [Verification Transactional Review Action Hardening](epochs/verification-transactional-review-action-hardening.md)
 - [Redacted Proof Upload Storage Foundation](epochs/redacted-proof-upload-storage-foundation.md)
+- [Redacted Proof Reviewer Routing Context Fix](epochs/redacted-proof-reviewer-routing-context-fix.md)
 - [Verification Runtime Pass: American Airlines Test](ops/verification-runtime-pass-american-airlines.md)
 - [Supabase Runtime Setup](ops/supabase-runtime-setup.md)
 - [Supabase CLI Migration Workflow](ops/supabase-cli-migration-workflow.md)
