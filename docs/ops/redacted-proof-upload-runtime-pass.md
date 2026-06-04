@@ -207,3 +207,7 @@ Fix:
 2. Retention and deletion automation.
 3. Operator tooling for approved domains and reviewer scopes.
 4. Custom Supabase auth templates and custom SMTP before any real public work-email delivery rollout.
+
+The controlled proof-viewing design for that next slice is documented in:
+
+- [Controlled Reviewer Proof Viewing Design](../epochs/controlled-reviewer-proof-viewing-design.md)

@@ -34,6 +34,7 @@ Supplemental epoch-specific ticket packs:
 - [Redacted Proof Reviewer Routing Context Fix](epochs/redacted-proof-reviewer-routing-context-fix.md)
 - [Proof Routing Context RPC Persistence Fix](epochs/proof-routing-context-rpc-persistence-fix.md)
 - [Proof Request Reviewer RLS Routing Fix](epochs/proof-request-reviewer-rls-routing-fix.md)
+- [Controlled Reviewer Proof Viewing Design](epochs/controlled-reviewer-proof-viewing-design.md)
 - [Verification Runtime Pass: American Airlines Test](ops/verification-runtime-pass-american-airlines.md)
 - [Redacted Proof Upload Runtime Pass](ops/redacted-proof-upload-runtime-pass.md)
 - [Supabase Runtime Setup](ops/supabase-runtime-setup.md)
