@@ -32,6 +32,13 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 
 No service-role or secret key was added to browser-accessible code.
 
+Local build, test, and docs workflows may leave these unset.
+
+Any production deployment that expects working auth or `/app` protection must
+set both values and configure the matching Supabase redirect URLs. Missing
+values are intentionally tolerated for local/test validation, but protected
+`/app` requests fail closed in production instead of silently disabling auth.
+
 ## Routes Created
 
 - `/login`
@@ -55,6 +62,8 @@ Purpose:
 - server client creation
 - cookie/session refresh plumbing
 - bounded signed-out redirect support for `/app` paths when auth is configured
+- production guardrails so protected `/app` auth does not silently no-op when
+  Supabase env is missing
 
 ## Callback Behavior
 

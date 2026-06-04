@@ -9,6 +9,16 @@ export type SupabaseBrowserEnv = {
   publishableKey: string;
 };
 
+export function isSupabaseEnvRequired(
+  source: Record<string, string | undefined> = process.env,
+) {
+  return source.NODE_ENV === "production";
+}
+
+export function getSupabaseMissingEnvMessage() {
+  return `Supabase auth is not configured. Set ${SUPABASE_ENV_KEYS.join(" and ")}.`;
+}
+
 export function getSupabaseBrowserEnv(
   source: Record<string, string | undefined> = process.env,
 ): SupabaseBrowserEnv {
@@ -32,7 +42,5 @@ export function requireSupabaseBrowserEnv(
     return env;
   }
 
-  throw new Error(
-    `Supabase auth is not configured. Set ${SUPABASE_ENV_KEYS.join(" and ")}.`,
-  );
+  throw new Error(getSupabaseMissingEnvMessage());
 }

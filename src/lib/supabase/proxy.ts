@@ -2,7 +2,11 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { AUTH_ROUTES } from "../auth/routes";
-import { getSupabaseBrowserEnv } from "./config";
+import {
+  getSupabaseBrowserEnv,
+  getSupabaseMissingEnvMessage,
+  isSupabaseEnvRequired,
+} from "./config";
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
@@ -12,6 +16,21 @@ export async function updateSession(request: NextRequest) {
   const env = getSupabaseBrowserEnv();
 
   if (!env.enabled) {
+    if (
+      isSupabaseEnvRequired() &&
+      request.nextUrl.pathname.startsWith(AUTH_ROUTES.app)
+    ) {
+      return new NextResponse(
+        `${getSupabaseMissingEnvMessage()} Protected /app auth cannot run in production without these values.`,
+        {
+          status: 503,
+          headers: {
+            "content-type": "text/plain; charset=utf-8",
+          },
+        },
+      );
+    }
+
     return response;
   }
 
