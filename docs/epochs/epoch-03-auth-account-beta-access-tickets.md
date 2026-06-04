@@ -216,6 +216,9 @@ Lock the real auth/backend approach for Epoch 03 before implementation starts.
 **Title**  
 Define Auth Route And Account-State Map
 
+**Status**  
+Complete for planning. See [Epoch 03 Auth Route Account State Map](epoch-03-auth-route-account-state-map.md).
+
 **Goal**  
 Define the real route and state transitions needed for auth, onboarding, and blocked/invited access handling.
 
@@ -256,7 +259,7 @@ Define the real route and state transitions needed for auth, onboarding, and blo
 **Likely Files Or Areas Affected**
 
 - `docs/epochs/epoch-03-auth-account-beta-access-tickets.md`
-- route-flow or state-flow docs if needed
+- `docs/epochs/epoch-03-auth-route-account-state-map.md`
 
 **Validation Steps**
 
