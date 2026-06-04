@@ -66,12 +66,12 @@ The migration adds:
 - reviewer insert access to approved verification claims
 - reviewer insert access to verification review actions
 
-Important limitation:
+Reviewer read/write access is scoped in two layers:
 
-- the database policies currently allow any authenticated user with an active reviewer scope to read verification review rows broadly
-- finer reviewer scope filtering is enforced in server-side helpers for this slice
+- database policies use reviewer-scope-aware helper functions
+- server-side helpers still apply scope filtering before rendering the queue
 
-That limitation is intentional and documented. It keeps the RLS posture bounded without pretending per-airline/per-role/per-base queue slicing is fully enforced at the database layer yet.
+This slice now avoids broad active-reviewer read access at the RLS layer while still keeping the implementation bounded.
 
 ## What Review Actions Are Supported
 

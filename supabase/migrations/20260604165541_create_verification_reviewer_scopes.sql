@@ -49,6 +49,72 @@ as $$
   );
 $$;
 
+create or replace function public.has_matching_verification_reviewer_scope(
+  actor_id uuid,
+  airline_value text,
+  role_value text,
+  base_value text
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.verification_reviewer_scopes
+    where reviewer_id = actor_id
+      and status = 'active'
+      and (
+        scope_type = 'global'
+        or (scope_type = 'airline' and lower(coalesce(scope_value, '')) = lower(coalesce(airline_value, '')))
+        or (scope_type = 'role' and lower(coalesce(scope_value, '')) = lower(coalesce(role_value, '')))
+        or (scope_type = 'base' and lower(coalesce(scope_value, '')) = lower(coalesce(base_value, '')))
+      )
+  );
+$$;
+
+create or replace function public.can_review_verification_request(
+  actor_id uuid,
+  request_owner_id uuid,
+  request_id uuid
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    (
+      actor_id is not null
+      and actor_id <> request_owner_id
+      and exists (
+        select 1
+        from public.verification_reviewer_scopes
+        where reviewer_id = actor_id
+          and status = 'active'
+          and scope_type = 'global'
+      )
+    )
+    or (
+      actor_id is not null
+      and actor_id <> request_owner_id
+      and exists (
+        select 1
+        from public.verification_evidence
+        where request_id = can_review_verification_request.request_id
+          and public.has_matching_verification_reviewer_scope(
+            actor_id,
+            metadata ->> 'airline',
+            metadata ->> 'role',
+            metadata ->> 'base'
+          )
+      )
+    );
+$$;
+
 create policy "users can read their own reviewer scopes"
 on public.verification_reviewer_scopes
 for select
@@ -59,19 +125,17 @@ create policy "reviewers can read verification requests"
 on public.verification_requests
 for select
 to authenticated
-using (public.has_active_verification_reviewer_scope(auth.uid()));
+using (public.can_review_verification_request(auth.uid(), user_id, id));
 
 create policy "reviewers can update verification requests"
 on public.verification_requests
 for update
 to authenticated
 using (
-  public.has_active_verification_reviewer_scope(auth.uid())
-  and auth.uid() <> user_id
+  public.can_review_verification_request(auth.uid(), user_id, id)
 )
 with check (
-  public.has_active_verification_reviewer_scope(auth.uid())
-  and auth.uid() <> user_id
+  public.can_review_verification_request(auth.uid(), user_id, id)
   and reviewed_by = auth.uid()
   and status in ('approved', 'rejected', 'needs_resubmission')
 );
@@ -80,24 +144,37 @@ create policy "reviewers can read verification evidence metadata"
 on public.verification_evidence
 for select
 to authenticated
-using (public.has_active_verification_reviewer_scope(auth.uid()));
+using (
+  exists (
+    select 1
+    from public.verification_requests
+    where verification_requests.id = verification_evidence.request_id
+      and public.can_review_verification_request(
+        auth.uid(),
+        verification_requests.user_id,
+        verification_requests.id
+      )
+  )
+);
 
 create policy "reviewers can read verification claims"
 on public.verification_claims
 for select
 to authenticated
-using (public.has_active_verification_reviewer_scope(auth.uid()));
+using (
+  request_id is not null
+  and public.can_review_verification_request(auth.uid(), user_id, request_id)
+);
 
 create policy "reviewers can insert approved verification claims"
 on public.verification_claims
 for insert
 to authenticated
 with check (
-  public.has_active_verification_reviewer_scope(auth.uid())
+  public.can_review_verification_request(auth.uid(), user_id, request_id)
   and approved_by = auth.uid()
   and status = 'approved'
   and request_id is not null
-  and auth.uid() <> user_id
   and exists (
     select 1
     from public.verification_requests
@@ -111,20 +188,34 @@ create policy "reviewers can read verification review actions"
 on public.verification_review_actions
 for select
 to authenticated
-using (public.has_active_verification_reviewer_scope(auth.uid()));
+using (
+  exists (
+    select 1
+    from public.verification_requests
+    where verification_requests.id = verification_review_actions.request_id
+      and public.can_review_verification_request(
+        auth.uid(),
+        verification_requests.user_id,
+        verification_requests.id
+      )
+  )
+);
 
 create policy "reviewers can create verification review actions"
 on public.verification_review_actions
 for insert
 to authenticated
 with check (
-  public.has_active_verification_reviewer_scope(auth.uid())
   and reviewer_id = auth.uid()
   and action in ('approve', 'reject', 'request_resubmission')
   and exists (
     select 1
     from public.verification_requests
     where verification_requests.id = request_id
-      and auth.uid() <> user_id
+      and public.can_review_verification_request(
+        auth.uid(),
+        verification_requests.user_id,
+        verification_requests.id
+      )
   )
 );

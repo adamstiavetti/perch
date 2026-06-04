@@ -243,8 +243,15 @@ test("review migration adds reviewer scopes, RLS, and no-self-review reviewer po
   assert.match(sql, /reviewers can insert approved verification claims/i);
   assert.match(sql, /reviewers can read verification review actions/i);
   assert.match(sql, /reviewers can create verification review actions/i);
-  assert.match(sql, /auth\.uid\(\) <> user_id/i);
+  assert.match(sql, /create or replace function public\.has_matching_verification_reviewer_scope/i);
+  assert.match(sql, /create or replace function public\.can_review_verification_request/i);
+  assert.match(sql, /public\.can_review_verification_request\(auth\.uid\(\), user_id, id\)/i);
+  assert.match(sql, /metadata ->> 'airline'/i);
   assert.doesNotMatch(sql, /public read|for select using \(true\)|for all/i);
+  assert.doesNotMatch(
+    sql,
+    /create policy "reviewers can read verification requests"[\s\S]*using \(public\.has_active_verification_reviewer_scope\(auth\.uid\(\)\)\)/i,
+  );
 });
 
 test("human review foundation source does not add storage, upload, ai, or employer-system lookup", () => {
