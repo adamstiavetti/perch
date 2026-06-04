@@ -135,6 +135,9 @@ Verification data, status, evidence metadata, claims, retention policy, and auth
 **Title**  
 Lock Verification Claim And Lifecycle Decision
 
+**Status**
+Complete for planning. See [Epoch 04 Verification Claim Lifecycle Decision](epoch-04-verification-claim-lifecycle-decision.md).
+
 **Objective**  
 Define the verification claim model and lifecycle before implementation begins.
 
@@ -781,4 +784,3 @@ Epoch 04 is complete when:
 - retention/deletion/privacy controls are documented and implemented for the approved slice
 - no employer-system lookup is introduced
 - no AI final approval exists
-
