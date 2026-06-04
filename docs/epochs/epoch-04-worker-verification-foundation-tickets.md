@@ -282,6 +282,9 @@ Create the database foundation for verification requests, claims, and evidence m
 **Title**  
 Define Airline Work-Email Verification Foundation
 
+**Status**
+Complete for implementation. See [Epoch 04 Work Email Verification Foundation Implementation](epoch-04-work-email-verification-foundation-implementation.md).
+
 **Objective**  
 Define the approved-domain model and work-email verification flow boundary.
 
