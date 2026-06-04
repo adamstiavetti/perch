@@ -235,6 +235,29 @@ test("proof upload migration creates a private bucket, bounded storage policies,
   assert.doesNotMatch(sql, /for select|public url|signed url|download button|openai|ai pre-check|employer system lookup/i);
 });
 
+test("proof routing-context persistence migration updates the RPC to store routing metadata safely", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260604220401_persist_proof_routing_context_metadata.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /create or replace function public\.create_redacted_proof_verification_submission/i);
+  assert.match(sql, /p_requested_airline text/i);
+  assert.match(sql, /p_routing_context_source text/i);
+  assert.match(sql, /v_requested_airline text := nullif\(regexp_replace/i);
+  assert.match(sql, /v_routing_context_source text := lower\(trim/i);
+  assert.match(sql, /v_routing_context_source not in \('profile_claimed_airline', 'self_declared'\)/i);
+  assert.match(sql, /'requested_airline', v_requested_airline/i);
+  assert.match(sql, /'routing_context_source', v_routing_context_source/i);
+  assert.match(sql, /array\['airline_worker'\]::text\[\]/i);
+  assert.match(sql, /'redacted_badge_or_proof'/i);
+  assert.match(sql, /auth\.uid\(\)/i);
+  assert.match(sql, /security definer/i);
+  assert.match(sql, /set search_path = public/i);
+  assert.match(sql, /grant execute on function public\.create_redacted_proof_verification_submission/i);
+  assert.doesNotMatch(sql, /storage_path'.*metadata|filename|ocr_text|proof_text|employee_id|badge_number|barcode|qr_content|raw_work_email|email_local_part/i);
+});
+
 test("proof upload action uses bounded server validation, private storage, rollback cleanup, and no service-role client", () => {
   const source = readFileSync(
     new URL("../../src/lib/verification/actions.ts", import.meta.url),
@@ -249,6 +272,8 @@ test("proof upload action uses bounded server validation, private storage, rollb
   assert.match(source, /cleanupUploadedVerificationProof/);
   assert.match(source, /requested_airline/);
   assert.match(source, /resolveProofReviewRoutingContext/);
+  assert.match(source, /p_requested_airline: draft\.evidence\.metadata\.requested_airline/);
+  assert.match(source, /p_routing_context_source: draft\.evidence\.metadata\.routing_context_source/);
   assert.match(source, /verification_evidence\.uploaded/);
   assert.doesNotMatch(source, /service_role|SUPABASE_SERVICE_ROLE_KEY|signed url|download button|openai|ai pre-check/i);
   assert.doesNotMatch(source, /aa\.com|american airlines/i);

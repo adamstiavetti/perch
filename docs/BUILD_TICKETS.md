@@ -32,6 +32,7 @@ Supplemental epoch-specific ticket packs:
 - [Verification Transactional Review Action Hardening](epochs/verification-transactional-review-action-hardening.md)
 - [Redacted Proof Upload Storage Foundation](epochs/redacted-proof-upload-storage-foundation.md)
 - [Redacted Proof Reviewer Routing Context Fix](epochs/redacted-proof-reviewer-routing-context-fix.md)
+- [Proof Routing Context RPC Persistence Fix](epochs/proof-routing-context-rpc-persistence-fix.md)
 - [Verification Runtime Pass: American Airlines Test](ops/verification-runtime-pass-american-airlines.md)
 - [Supabase Runtime Setup](ops/supabase-runtime-setup.md)
 - [Supabase CLI Migration Workflow](ops/supabase-cli-migration-workflow.md)

@@ -246,6 +246,24 @@ Follow-up fix:
 
 - [Redacted Proof Reviewer Routing Context Fix](../epochs/redacted-proof-reviewer-routing-context-fix.md)
 
+Later runtime bug found in that first routing-context fix:
+
+- the proof upload UI captured requested airline routing context
+- the app draft metadata included:
+  - `requested_airline`
+  - `routing_context_source`
+- but the RPC-backed proof submission path did not persist those fields into `verification_evidence.metadata`
+
+Root cause:
+
+- the app-side routing-context work landed first
+- `public.create_redacted_proof_verification_submission(...)` still used the older metadata shape
+- routing context was therefore lost inside the RPC write path
+
+Persistence fix:
+
+- [Proof Routing Context RPC Persistence Fix](../epochs/proof-routing-context-rpc-persistence-fix.md)
+
 Fix posture:
 
 - proof uploads now carry bounded self-declared reviewer-routing context

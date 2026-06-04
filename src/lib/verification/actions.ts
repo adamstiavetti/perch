@@ -468,6 +468,8 @@ export async function submitRedactedProofVerificationAction(formData: FormData) 
       p_file_size_bytes: draft.evidence.metadata.file_size_bytes,
       p_mime_type: draft.evidence.metadata.mime_type,
       p_original_extension: draft.evidence.metadata.original_extension,
+      p_requested_airline: draft.evidence.metadata.requested_airline,
+      p_routing_context_source: draft.evidence.metadata.routing_context_source,
       p_upload_client: draft.evidence.metadata.upload_client,
       p_redaction_acknowledged: draft.evidence.redaction_acknowledged,
       p_submitted_at: draft.request.submitted_at,

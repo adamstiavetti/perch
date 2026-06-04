@@ -17,6 +17,12 @@ Why:
 - airline-scoped reviewer filtering depended on evidence metadata
 - proof requests were therefore invisible unless a reviewer had a temporary global scope
 
+Important later runtime finding:
+
+- the first app-side routing-context change updated proof draft metadata and reviewer filtering
+- but the existing proof-submission RPC did not persist `requested_airline` or `routing_context_source`
+- that meant the first routing-context fix was incomplete until the RPC persistence bug was fixed
+
 ## Fix Summary
 
 The proof-upload path now carries a bounded airline routing hint in evidence metadata:
@@ -133,11 +139,13 @@ Security-event logging remains sanitized and does not log:
 
 `requested_airline` remains queue-visible self-declared routing context, but this fix does not newly log it in security-event metadata.
 
-## Migration Status
+## RPC Persistence Follow-Up
 
-- No migration was needed.
-- Existing JSONB evidence metadata was sufficient.
-- No remote `db push` is required for this fix.
+The completed persistence fix is documented separately in:
+
+- [Proof Routing Context RPC Persistence Fix](proof-routing-context-rpc-persistence-fix.md)
+
+That follow-up adds the required RPC-level metadata persistence so the routing context actually reaches `verification_evidence.metadata`.
 
 ## Runtime Follow-Up
 
