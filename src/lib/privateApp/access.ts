@@ -95,3 +95,28 @@ export function getPrivateAppGateResult({
 }
 
 export type { PrivateRouteKind, PrivateRouteContext, PrivateAppGateResult };
+
+export function getPrivateRouteAuditResult(
+  gate: PrivateAppGateResult,
+  context: PrivateRouteContext,
+) {
+  if (gate.kind === "allow") {
+    return context.betaLoadError || context.profileLoadError
+      ? "storage_not_ready"
+      : "allowed";
+  }
+
+  if (gate.path.startsWith(PRIVATE_APP_ROUTES.login)) {
+    return "redirect_login";
+  }
+
+  if (gate.path.startsWith(PRIVATE_APP_ROUTES.profile)) {
+    return context.profileLoadError ? "storage_not_ready" : "redirect_profile";
+  }
+
+  if (gate.path.startsWith(PRIVATE_APP_ROUTES.accessHold)) {
+    return context.betaLoadError ? "storage_not_ready" : "redirect_access_hold";
+  }
+
+  return "redirect";
+}

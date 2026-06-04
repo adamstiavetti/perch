@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 
 import { AUTH_ROUTES } from "../auth/routes";
+import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
 import { createClient } from "../supabase/server";
 import {
@@ -63,9 +64,29 @@ export async function saveProfileAction(formData: FormData) {
     claimed_base: getString(formData, "claimed_base"),
   });
 
+  await recordSecurityEvent({
+    userId: user.id,
+    eventType: "profile.upsert_attempt",
+    route: AUTH_ROUTES.profile,
+    result: "attempt",
+    metadata: {
+      profile_field_count: Object.values(profile).filter(Boolean).length,
+      has_handle: Boolean(profile.handle),
+    },
+  });
+
   const completion = getProfileCompletionState(profile);
 
   if (!completion.isComplete) {
+    await recordSecurityEvent({
+      userId: user.id,
+      eventType: "profile.upsert_failed",
+      route: AUTH_ROUTES.profile,
+      result: "incomplete",
+      metadata: {
+        missing_fields: completion.missingFields,
+      },
+    });
     redirect(
       buildRedirect(AUTH_ROUTES.profile, {
         error: "Complete all required profile fields before continuing.",
@@ -91,12 +112,31 @@ export async function saveProfileAction(formData: FormData) {
   );
 
   if (error) {
+    await recordSecurityEvent({
+      userId: user.id,
+      eventType: "profile.upsert_failed",
+      route: AUTH_ROUTES.profile,
+      result: "storage_failed",
+      metadata: {
+        reason: getProfileSaveErrorMessage(error),
+      },
+    });
     redirect(
       buildRedirect(AUTH_ROUTES.profile, {
         error: getProfileSaveErrorMessage(error),
       }),
     );
   }
+
+  await recordSecurityEvent({
+    userId: user.id,
+    eventType: "profile.upsert_success",
+    route: AUTH_ROUTES.profile,
+    result: "success",
+    metadata: {
+      profile_completed: true,
+    },
+  });
 
   redirect(
     buildRedirect(AUTH_ROUTES.app, {

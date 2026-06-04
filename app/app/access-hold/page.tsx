@@ -8,7 +8,12 @@ import {
   type BetaAccessStatus,
 } from "../../../src/lib/betaAccess/betaAccess";
 import { getCurrentAppAccessContext } from "../../../src/lib/betaAccess/server";
-import { getPrivateAppGateResult } from "../../../src/lib/privateApp/access";
+import {
+  getPrivateAppGateResult,
+  getPrivateRouteAuditResult,
+} from "../../../src/lib/privateApp/access";
+import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
+import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
 
 type AccessHoldPageProps = {
@@ -67,6 +72,17 @@ export default async function AccessHoldPage({
     routeKind: "access-hold",
     nextPath: AUTH_ROUTES.accessHold,
     context,
+  });
+
+  await recordSecurityEvent({
+    userId: context.user?.id,
+    eventType: getPrivateAccessEventType(gate),
+    route: AUTH_ROUTES.accessHold,
+    result: getPrivateRouteAuditResult(gate, context),
+    metadata: {
+      route_kind: "access-hold",
+      beta_status: context.betaStatus,
+    },
   });
 
   if (gate.kind === "redirect") {

@@ -5,7 +5,12 @@ import styles from "../../../src/components/auth/auth.module.css";
 import { AUTH_ROUTES } from "../../../src/lib/auth/routes";
 import { getCurrentAppAccessContext } from "../../../src/lib/betaAccess/server";
 import { saveProfileAction } from "../../../src/lib/profile/actions";
-import { getPrivateAppGateResult } from "../../../src/lib/privateApp/access";
+import {
+  getPrivateAppGateResult,
+  getPrivateRouteAuditResult,
+} from "../../../src/lib/privateApp/access";
+import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
+import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
 
 type ProfilePageProps = {
@@ -43,6 +48,16 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
     routeKind: "profile",
     nextPath: AUTH_ROUTES.profile,
     context,
+  });
+
+  await recordSecurityEvent({
+    userId: context.user?.id,
+    eventType: getPrivateAccessEventType(gate),
+    route: AUTH_ROUTES.profile,
+    result: getPrivateRouteAuditResult(gate, context),
+    metadata: {
+      route_kind: "profile",
+    },
   });
 
   if (gate.kind === "redirect") {

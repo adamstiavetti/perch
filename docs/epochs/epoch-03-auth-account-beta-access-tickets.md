@@ -552,6 +552,9 @@ Replace Epoch 02 placeholder-only private entry behavior with real access-gated 
 **Title**  
 Establish Authorization Baseline And Security Events
 
+**Status**  
+Implemented for the bounded authorization-baseline and security-event slice. See [Epoch 03 Authorization Security Events Implementation](epoch-03-authorization-security-events-implementation.md).
+
 **Goal**  
 Create the initial authorization model and security-event logging baseline needed before verification and community features expand the risk surface.
 

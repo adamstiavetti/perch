@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { AUTH_ROUTES, resolvePostAuthPath, sanitizeNextPath } from "./routes";
+import { getEmailDomain } from "../securityEvents/securityEvents";
+import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
 import { createClient } from "../supabase/server";
 
@@ -53,6 +55,17 @@ export async function signInAction(formData: FormData) {
   const email = getString(formData, "email");
   const password = getString(formData, "password");
   const next = sanitizeNextPath(getString(formData, "next"));
+  const emailDomain = getEmailDomain(email);
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_in_attempt",
+    route: AUTH_ROUTES.login,
+    result: "attempt",
+    metadata: {
+      email_domain: emailDomain,
+      next_path: next,
+    },
+  });
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({
@@ -61,6 +74,14 @@ export async function signInAction(formData: FormData) {
   });
 
   if (error) {
+    await recordSecurityEvent({
+      eventType: "auth.sign_in_failed",
+      route: AUTH_ROUTES.login,
+      result: "failed",
+      metadata: {
+        email_domain: emailDomain,
+      },
+    });
     redirect(
       buildRedirect(AUTH_ROUTES.login, {
         error: toMessage(error),
@@ -68,6 +89,16 @@ export async function signInAction(formData: FormData) {
       }),
     );
   }
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_in_success",
+    route: AUTH_ROUTES.login,
+    result: "success",
+    metadata: {
+      email_domain: emailDomain,
+      next_path: next,
+    },
+  });
 
   redirect(resolvePostAuthPath(next));
 }
@@ -88,6 +119,16 @@ export async function signUpAction(formData: FormData) {
   const password = getString(formData, "password");
   const origin = await getAuthOrigin();
   const emailRedirectTo = new URL(AUTH_ROUTES.callback, origin).toString();
+  const emailDomain = getEmailDomain(email);
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_up_attempt",
+    route: AUTH_ROUTES.signup,
+    result: "attempt",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
@@ -99,12 +140,29 @@ export async function signUpAction(formData: FormData) {
   });
 
   if (error) {
+    await recordSecurityEvent({
+      eventType: "auth.sign_up_failed",
+      route: AUTH_ROUTES.signup,
+      result: "failed",
+      metadata: {
+        email_domain: emailDomain,
+      },
+    });
     redirect(
       buildRedirect(AUTH_ROUTES.signup, {
         error: toMessage(error),
       }),
     );
   }
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_up_success",
+    route: AUTH_ROUTES.signup,
+    result: "success",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
 
   redirect(
     buildRedirect(AUTH_ROUTES.signup, {
@@ -128,10 +186,20 @@ export async function requestPasswordResetAction(formData: FormData) {
 
   const email = getString(formData, "email");
   const origin = await getAuthOrigin();
+  const emailDomain = getEmailDomain(email);
   const redirectTo = new URL(
     `${AUTH_ROUTES.callback}?next=${encodeURIComponent(AUTH_ROUTES.resetPassword)}&mode=update`,
     origin,
   ).toString();
+
+  await recordSecurityEvent({
+    eventType: "auth.password_reset_requested",
+    route: AUTH_ROUTES.resetPassword,
+    result: "attempt",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -139,12 +207,29 @@ export async function requestPasswordResetAction(formData: FormData) {
   });
 
   if (error) {
+    await recordSecurityEvent({
+      eventType: "auth.password_reset_request_failed",
+      route: AUTH_ROUTES.resetPassword,
+      result: "failed",
+      metadata: {
+        email_domain: emailDomain,
+      },
+    });
     redirect(
       buildRedirect(AUTH_ROUTES.resetPassword, {
         error: toMessage(error),
       }),
     );
   }
+
+  await recordSecurityEvent({
+    eventType: "auth.password_reset_requested",
+    route: AUTH_ROUTES.resetPassword,
+    result: "success",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
 
   redirect(
     buildRedirect(AUTH_ROUTES.resetPassword, {

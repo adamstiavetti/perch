@@ -1,8 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import { PrivateShellPlaceholder } from "../../../src/components/privateApp/PrivateShellPlaceholder";
 import { getCurrentAppAccessContext } from "../../../src/lib/betaAccess/server";
-import { getPrivateAppGateResult } from "../../../src/lib/privateApp/access";
+import {
+  getPrivateAppGateResult,
+  getPrivateRouteAuditResult,
+} from "../../../src/lib/privateApp/access";
 import { getPrivateShellChildRoute } from "../../../src/lib/privateApp/privateShellPlaceholder";
+import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
+import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 
 type PrivateRoutePlaceholderPageProps = {
   params: Promise<{
@@ -25,6 +30,17 @@ export default async function PrivateRoutePlaceholderPage({
     routeKind: "private-child",
     nextPath: route.path,
     context,
+  });
+
+  await recordSecurityEvent({
+    userId: context.user?.id,
+    eventType: getPrivateAccessEventType(gate),
+    route: route.path,
+    result: getPrivateRouteAuditResult(gate, context),
+    metadata: {
+      route_kind: "private-child",
+      section,
+    },
   });
 
   if (gate.kind === "redirect") {

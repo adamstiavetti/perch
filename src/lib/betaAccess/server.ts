@@ -2,6 +2,7 @@ import type { User } from "@supabase/supabase-js";
 
 import { AUTH_ROUTES } from "../auth/routes";
 import { getProfileCompletionState, type AppProfileRecord } from "../profile/profile";
+import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
 import { createClient } from "../supabase/server";
 import {
@@ -169,6 +170,17 @@ export async function resolveCurrentUserAppPath(next?: string | null) {
       next: next ?? AUTH_ROUTES.app,
     });
   }
+
+  await recordSecurityEvent({
+    userId: context.user.id,
+    eventType: "beta_access.checked",
+    route: AUTH_ROUTES.app,
+    result: context.betaStatus,
+    metadata: {
+      has_completed_profile: context.hasCompletedProfile,
+      next_path: next ?? AUTH_ROUTES.app,
+    },
+  });
 
   if (context.profileLoadError) {
     return buildPath(AUTH_ROUTES.profile, { error: context.profileLoadError });
