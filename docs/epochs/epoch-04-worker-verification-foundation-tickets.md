@@ -215,6 +215,9 @@ Define the verification claim model and lifecycle before implementation begins.
 **Title**  
 Implement Verification Data Model Foundation
 
+**Status**
+Complete for implementation. See [Epoch 04 Verification Data Model Implementation](epoch-04-verification-data-model-implementation.md).
+
 **Objective**  
 Create the database foundation for verification requests, claims, and evidence metadata.
 
