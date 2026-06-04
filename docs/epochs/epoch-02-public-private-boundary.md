@@ -38,9 +38,10 @@ Unknown `/app/[section]` slugs still fall through to `notFound()`, which prevent
 - Public waitlist files were touched only to restore the canonical root route and its matching styles.
 - No waitlist behavior was redesigned.
 - No Tally logic was changed beyond reconnecting the existing root page to its prior waitlist CTA behavior.
-- No cinematic, globe, or Three.js files were modified.
-- This restored page should be treated as the safe Epoch 02 baseline public surface on `main`.
-- Any more advanced Skybyrd cinematic or globe-driven public landing work must be reconciled later from the correct dedicated branch or worktree, not through E02-T07.
+- No cinematic, globe, or Three.js files were modified in the original E02-T07 boundary pass.
+- That restored page was the safe Epoch 02 baseline public surface on `main`.
+- As a later public-route decision, the older cinematic/globe waitlist direction was canceled and replaced by a simpler static `jmpseat.` waitlist direction.
+- The public/private boundary remains the same: `/` is the public waitlist entry and `/app` remains the separate private shell namespace.
 
 ## Private App Impact
 
