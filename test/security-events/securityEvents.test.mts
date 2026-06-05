@@ -53,6 +53,10 @@ test("security event taxonomy stays aligned with the bounded verification audit 
     "operator_access.granted",
     "operator_access.revoked",
     "operator_access.unauthorized_attempt",
+    "approved_email_domain.created",
+    "approved_email_domain.updated",
+    "approved_email_domain.disabled",
+    "approved_email_domain.unauthorized_attempt",
   ]);
 });
 

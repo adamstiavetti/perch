@@ -70,6 +70,9 @@ export default async function AdminHomePage() {
     reviewerAuthorized: reviewerContext.reviewerAuthorized,
     operatorScopes: operatorContext.scopes,
   });
+  const implementedOperatorToolVisible = navigation.some(
+    (item) => item.key !== "verification_review" && item.status === "available",
+  );
 
   return (
     <AdminShell
@@ -83,7 +86,9 @@ export default async function AdminHomePage() {
         reviewerContext.reviewerAuthorized
           ? "Your account can reach the existing verification reviewer queue through reviewer scope."
           : operatorContext.operatorGranted
-            ? "Your account has explicit operator grants, but future operator tools remain unavailable until their routes are built."
+            ? implementedOperatorToolVisible
+              ? "Your account has explicit operator grants. Matching implemented operator tools appear in navigation, and other granted scopes may still point to future tools that are not built yet."
+              : "Your account has explicit operator grants, but the scopes on this account currently map only to future operator tools that are not built yet."
             : "Operator-only sections stay unavailable until your account receives explicit active operator grants."
       }
       footer={
@@ -107,9 +112,10 @@ export default async function AdminHomePage() {
             authorization for a specific tool exists.
           </p>
           <p className={styles.sectionText}>
-            The existing verification reviewer queue remains the only bounded
-            admin-adjacent tool available today, and only for accounts with an
-            active reviewer scope.
+            Approved-domain management is now available only to accounts with
+            the explicit operator scope required for that tooling. The existing
+            verification reviewer queue remains separate and only available for
+            accounts with an active reviewer scope.
           </p>
         </section>
 

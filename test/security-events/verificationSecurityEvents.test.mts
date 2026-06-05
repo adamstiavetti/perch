@@ -181,6 +181,19 @@ test("operator grants migration extends the event-type constraint for bounded op
   assert.match(sql, /operator_access\.unauthorized_attempt/i);
 });
 
+test("approved-domain management migration extends the event-type constraint for bounded domain audit events", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260605184500_add_operator_managed_approved_email_domains.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
+  assert.match(sql, /approved_email_domain\.created/i);
+  assert.match(sql, /approved_email_domain\.updated/i);
+  assert.match(sql, /approved_email_domain\.disabled/i);
+  assert.match(sql, /approved_email_domain\.unauthorized_attempt/i);
+});
+
 test("proof retention implementation records deletion audit events without logging paths or proof data", () => {
   const source = readFileSync(
     new URL("../../src/lib/verification/proofRetentionCore.ts", import.meta.url),

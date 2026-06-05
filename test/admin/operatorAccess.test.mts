@@ -136,7 +136,7 @@ test("admin nav operator sections remain unavailable without explicit grants", (
   assert.ok(operatorItems.every((item) => item.status === "disabled"));
 });
 
-test("admin nav operator sections remain disabled until their routes are implemented", () => {
+test("admin nav only enables implemented operator sections for matching scopes", () => {
   const navigation = buildAdminNavigation({
     reviewerAuthorized: false,
     operatorScopes: [
@@ -148,12 +148,14 @@ test("admin nav operator sections remain disabled until their routes are impleme
     ],
   });
 
-  for (const key of [
-    "approved_domains",
-    "reviewer_scopes",
-    "audit_inspection",
-    "proof_cleanup",
-  ] as const) {
+  const approvedDomains = navigation.find(
+    (entry) => entry.key === "approved_domains",
+  );
+
+  assert.equal(approvedDomains?.status, "available");
+  assert.equal(approvedDomains?.availabilityLabel, "Available now");
+
+  for (const key of ["reviewer_scopes", "audit_inspection", "proof_cleanup"] as const) {
     const item = navigation.find((entry) => entry.key === key);
 
     assert.equal(item?.status, "disabled");

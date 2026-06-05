@@ -33,6 +33,7 @@ Supplemental epoch-specific ticket packs:
 - [E05-T01: Operator Access Model Decision](epochs/e05-operator-access-model-decision.md)
 - [E05-T02: Admin Shell And Navigation Foundation](epochs/e05-admin-shell-navigation-foundation.md)
 - [E05 Operator Grants Foundation](epochs/e05-operator-grants-foundation.md) - explicit operator grants plus a one-time protected bootstrap route for the zero-grant state.
+- [E05-T03: Approved Email Domain Management](epochs/e05-approved-domain-management.md) - operator-managed approved work-email domains with audited create/update/disable flows.
 - [Epoch 04: Approved Email Domain Read Policy Fix](epochs/epoch-04-approved-email-domain-read-policy-fix.md)
 - [Verification Transactional Review Action Hardening](epochs/verification-transactional-review-action-hardening.md)
 - [Redacted Proof Upload Storage Foundation](epochs/redacted-proof-upload-storage-foundation.md)

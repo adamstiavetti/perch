@@ -78,6 +78,18 @@ test("/app/admin landing uses explicit operator grants for operator nav and avoi
   assert.doesNotMatch(source, /signed_url|public_url|storage_path/i);
 });
 
+test("admin landing copy distinguishes operator grants from implemented-tool availability", () => {
+  const source = readFileSync(
+    new URL("../../app/app/admin/page.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /implementedOperatorToolVisible/);
+  assert.match(source, /Matching implemented operator tools appear in navigation/i);
+  assert.match(source, /currently map only to future operator tools that are not built yet/i);
+  assert.doesNotMatch(source, /Implemented operator tools appear in the navigation, and future tools remain unavailable until their routes are built\./);
+});
+
 test("admin shell nav keeps unimplemented operator sections disabled even with matching explicit grants", () => {
   const navigation = buildAdminNavigation({
     reviewerAuthorized: false,
@@ -91,16 +103,13 @@ test("admin shell nav keeps unimplemented operator sections disabled even with m
     (item) => item.key === "audit_inspection",
   );
 
-  assert.equal(approvedDomains?.status, "disabled");
-  assert.equal(
-    approvedDomains?.availabilityLabel,
-    "Authorized, not built yet",
-  );
-  assert.match(approvedDomains?.reason ?? "", /not implemented yet/i);
+  assert.equal(approvedDomains?.status, "available");
+  assert.equal(approvedDomains?.availabilityLabel, "Available now");
+  assert.match(approvedDomains?.reason ?? "", /operator\.manage_approved_domains/i);
   assert.equal(auditInspection?.status, "disabled");
 });
 
-test("admin shell nav does not link to unimplemented operator routes for scoped operators", () => {
+test("admin shell nav links only to implemented operator routes for scoped operators", () => {
   const navigation = buildAdminNavigation({
     reviewerAuthorized: true,
     operatorScopes: [
@@ -116,9 +125,12 @@ test("admin shell nav does not link to unimplemented operator routes for scoped 
     navigation.find((item) => item.path === ADMIN_ROUTES.verification)?.status,
     "available",
   );
+  assert.equal(
+    navigation.find((item) => item.path === ADMIN_ROUTES.approvedDomains)?.status,
+    "available",
+  );
 
   for (const path of [
-    ADMIN_ROUTES.approvedDomains,
     ADMIN_ROUTES.reviewerScopes,
     ADMIN_ROUTES.auditInspection,
     ADMIN_ROUTES.proofCleanup,

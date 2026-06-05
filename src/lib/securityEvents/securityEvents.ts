@@ -38,6 +38,10 @@ export const SECURITY_EVENT_TYPES = [
   "operator_access.granted",
   "operator_access.revoked",
   "operator_access.unauthorized_attempt",
+  "approved_email_domain.created",
+  "approved_email_domain.updated",
+  "approved_email_domain.disabled",
+  "approved_email_domain.unauthorized_attempt",
 ] as const;
 
 export type SecurityEventType = (typeof SECURITY_EVENT_TYPES)[number];

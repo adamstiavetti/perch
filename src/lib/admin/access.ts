@@ -190,6 +190,39 @@ function buildOperatorUnavailableItem(input: {
   };
 }
 
+function buildOperatorNavigationItem(input: {
+  key: AdminNavigationItem["key"];
+  label: string;
+  path: string;
+  description: string;
+  requiredScopes: readonly OperatorScope[];
+  grantedScopes: readonly string[] | null | undefined;
+  implemented: boolean;
+}) {
+  if (!input.implemented) {
+    return buildOperatorUnavailableItem(input);
+  }
+
+  const authorized = hasAnyOperatorScope({
+    scopes: input.grantedScopes,
+    requiredScopes: input.requiredScopes,
+  });
+
+  const requiredScopeLabel =
+    input.requiredScopes.length === 1
+      ? input.requiredScopes[0]
+      : input.requiredScopes.join(" or ");
+
+  return {
+    ...input,
+    status: authorized ? ("available" as const) : ("disabled" as const),
+    availabilityLabel: authorized ? "Available now" : "Requires operator scope",
+    reason: authorized
+      ? `Available through explicit active operator grant for ${requiredScopeLabel}.`
+      : `Requires ${requiredScopeLabel}. Reviewer scope, beta access, verification claims, and profile text do not activate operator sections.`,
+  };
+}
+
 export function buildAdminNavigation(input: {
   reviewerAuthorized: boolean;
   operatorScopes?: readonly string[] | null;
@@ -218,13 +251,14 @@ export function buildAdminNavigation(input: {
 
   return [
     verificationReviewItem,
-    buildOperatorUnavailableItem({
+    buildOperatorNavigationItem({
       key: "approved_domains",
       label: "Approved Domains",
       path: ADMIN_ROUTES.approvedDomains,
-      description: "Future operator management for approved work-email domains.",
+      description: "Operator management for approved work-email domains and soft-disable status changes.",
       requiredScopes: ["operator.manage_approved_domains"],
       grantedScopes: input.operatorScopes,
+      implemented: true,
     }),
     buildOperatorUnavailableItem({
       key: "reviewer_scopes",

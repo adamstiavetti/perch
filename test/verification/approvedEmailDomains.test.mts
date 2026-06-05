@@ -54,3 +54,28 @@ test("approved email domain read-policy fix is runtime-only and does not seed do
   assert.doesNotMatch(serverSource, /service_role|service-role/i);
   assert.doesNotMatch(workEmailSource, /service_role|service-role/i);
 });
+
+test("approved-domain operator-management migration preserves the active-domain read path for normal verification", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260605184500_add_operator_managed_approved_email_domains.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.doesNotMatch(sql, /drop policy .*approved email domains/i);
+  assert.doesNotMatch(sql, /create policy .*approved email domains/i);
+  assert.doesNotMatch(sql, /for\s+(insert|update|delete)\s+to authenticated\s+on public\.approved_email_domains/i);
+  assert.doesNotMatch(sql, /\baa\.com\b/i);
+});
+
+test("approved-domain management does not mislabel expected duplicate responses as migration setup failures", () => {
+  const source = readFileSync(
+    new URL("../../src/lib/admin/approvedDomains.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /if \(!payload\?\.ok\)/);
+  assert.match(source, /getMutationMessage\(\s*payload,\s*"The approved domain could not be created\."/s);
+  assert.match(source, /getMutationMessage\(\s*payload,\s*"The approved domain could not be updated\."/s);
+  assert.match(source, /domain_already_exists/);
+  assert.doesNotMatch(source, /domain_already_exists[\s\S]*Apply the E05-T03 migration/s);
+});
