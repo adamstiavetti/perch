@@ -117,7 +117,6 @@ Navigation behavior now becomes:
 
 ## 7. Runtime Follow-Up
 
-Runtime validation is still required after merge and migration apply.
 The initial post-apply runtime pass confirmed the migration applied and operator
 scope checks passed, then stopped on an invalid-input check that used stale
 `p_*` RPC argument names. The app and published RPC contract use
@@ -143,10 +142,12 @@ reserved/test-only TLDs can be used for safe runtime proof while malformed,
 protocol/path, email local-part, and known personal-provider inputs still fail
 with structured safe validation responses.
 
-The full E05-T03 runtime proof remains pending until this corrective migration is
-reviewed, merged, applied, and runtime-validated.
+Runtime proof completed after the corrective migration was merged and applied.
+The proof is recorded in:
 
-The runtime pass should confirm:
+- `docs/ops/approved-domain-management-runtime-pass.md`
+
+The runtime pass confirmed:
 
 - unauthorized users cannot access or fetch approved-domain data
 - authorized operators can create, update, and disable domains safely
@@ -166,6 +167,8 @@ That slice still needs:
 
 ## 9. Source-Of-Truth Status
 
-This document records the E05-T03 implementation outcome.
+This document records the E05-T03 implementation outcome and links to the
+completed runtime proof.
 
-No Supabase `db push`, production commands, or secrets are part of this ticket.
+The runtime proof applied the reviewed Supabase migrations. No production
+deployment or secrets are part of this ticket.
