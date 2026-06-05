@@ -29,6 +29,7 @@ Supplemental epoch-specific ticket packs:
 - [Epoch 04: Verification Security Events Implementation](epochs/epoch-04-verification-security-events-implementation.md)
 - [Epoch 04: Claims-Based Authorization Preparation](epochs/epoch-04-claims-based-authorization-preparation.md)
 - [Epoch 04: Exit Report](epochs/epoch-04-exit-report.md)
+- [Epoch 05: Operator/Admin Tooling Foundation Ticket Pack](epochs/epoch-05-operator-admin-tooling-tickets.md)
 - [Epoch 04: Approved Email Domain Read Policy Fix](epochs/epoch-04-approved-email-domain-read-policy-fix.md)
 - [Verification Transactional Review Action Hardening](epochs/verification-transactional-review-action-hardening.md)
 - [Redacted Proof Upload Storage Foundation](epochs/redacted-proof-upload-storage-foundation.md)
