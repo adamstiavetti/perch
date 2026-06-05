@@ -112,10 +112,11 @@ export default async function AdminHomePage() {
             authorization for a specific tool exists.
           </p>
           <p className={styles.sectionText}>
-            Approved-domain management is now available only to accounts with
-            the explicit operator scope required for that tooling. The existing
-            verification reviewer queue remains separate and only available for
-            accounts with an active reviewer scope.
+            Approved-domain and reviewer-scope management are now available
+            only to accounts with the explicit operator scopes required for
+            those tools. The existing verification reviewer queue remains
+            separate and only available for accounts with an active reviewer
+            scope.
           </p>
         </section>
 

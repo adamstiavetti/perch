@@ -42,6 +42,9 @@ export const SECURITY_EVENT_TYPES = [
   "approved_email_domain.updated",
   "approved_email_domain.disabled",
   "approved_email_domain.unauthorized_attempt",
+  "reviewer_scope.granted",
+  "reviewer_scope.revoked",
+  "reviewer_scope.unauthorized_attempt",
 ] as const;
 
 export type SecurityEventType = (typeof SECURITY_EVENT_TYPES)[number];

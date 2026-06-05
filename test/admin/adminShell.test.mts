@@ -93,11 +93,14 @@ test("admin landing copy distinguishes operator grants from implemented-tool ava
 test("admin shell nav keeps unimplemented operator sections disabled even with matching explicit grants", () => {
   const navigation = buildAdminNavigation({
     reviewerAuthorized: false,
-    operatorScopes: [OPERATOR_SCOPE_VALUES[1]],
+    operatorScopes: [OPERATOR_SCOPE_VALUES[1], OPERATOR_SCOPE_VALUES[2]],
   });
 
   const approvedDomains = navigation.find(
     (item) => item.key === "approved_domains",
+  );
+  const reviewerScopes = navigation.find(
+    (item) => item.key === "reviewer_scopes",
   );
   const auditInspection = navigation.find(
     (item) => item.key === "audit_inspection",
@@ -106,6 +109,9 @@ test("admin shell nav keeps unimplemented operator sections disabled even with m
   assert.equal(approvedDomains?.status, "available");
   assert.equal(approvedDomains?.availabilityLabel, "Available now");
   assert.match(approvedDomains?.reason ?? "", /operator\.manage_approved_domains/i);
+  assert.equal(reviewerScopes?.status, "available");
+  assert.equal(reviewerScopes?.availabilityLabel, "Available now");
+  assert.match(reviewerScopes?.reason ?? "", /operator\.manage_reviewer_scopes/i);
   assert.equal(auditInspection?.status, "disabled");
 });
 
@@ -129,9 +135,12 @@ test("admin shell nav links only to implemented operator routes for scoped opera
     navigation.find((item) => item.path === ADMIN_ROUTES.approvedDomains)?.status,
     "available",
   );
+  assert.equal(
+    navigation.find((item) => item.path === ADMIN_ROUTES.reviewerScopes)?.status,
+    "available",
+  );
 
   for (const path of [
-    ADMIN_ROUTES.reviewerScopes,
     ADMIN_ROUTES.auditInspection,
     ADMIN_ROUTES.proofCleanup,
   ]) {

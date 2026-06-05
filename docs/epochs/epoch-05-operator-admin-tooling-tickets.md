@@ -204,7 +204,7 @@ Acceptance criteria:
 
 ### E05-T04 Reviewer Scope Management
 
-Status: not started.
+Status: implemented; pending review, migration apply, and runtime proof.
 
 Objective:
 

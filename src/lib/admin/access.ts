@@ -260,13 +260,14 @@ export function buildAdminNavigation(input: {
       grantedScopes: input.operatorScopes,
       implemented: true,
     }),
-    buildOperatorUnavailableItem({
+    buildOperatorNavigationItem({
       key: "reviewer_scopes",
       label: "Reviewer Scopes",
       path: ADMIN_ROUTES.reviewerScopes,
-      description: "Future operator management for reviewer-scope grants and revocations.",
+      description: "Operator management for reviewer-scope grants and soft revocations.",
       requiredScopes: ["operator.manage_reviewer_scopes"],
       grantedScopes: input.operatorScopes,
+      implemented: true,
     }),
     buildOperatorUnavailableItem({
       key: "audit_inspection",

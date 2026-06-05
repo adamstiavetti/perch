@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 import {
   getVerificationRequestEventType,
@@ -192,6 +192,25 @@ test("approved-domain management migration extends the event-type constraint for
   assert.match(sql, /approved_email_domain\.updated/i);
   assert.match(sql, /approved_email_domain\.disabled/i);
   assert.match(sql, /approved_email_domain\.unauthorized_attempt/i);
+});
+
+test("reviewer-scope management migration extends the event-type constraint for bounded reviewer-scope audit events", () => {
+  const migrationsDir = new URL("../../supabase/migrations/", import.meta.url);
+  const migrationName = readdirSync(migrationsDir).find((name) =>
+    name.endsWith("_add_operator_managed_reviewer_scopes.sql"),
+  );
+
+  assert.ok(migrationName, "expected reviewer-scope management migration");
+
+  const sql = readFileSync(
+    new URL(`../../supabase/migrations/${migrationName}`, import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
+  assert.match(sql, /reviewer_scope\.granted/i);
+  assert.match(sql, /reviewer_scope\.revoked/i);
+  assert.match(sql, /reviewer_scope\.unauthorized_attempt/i);
 });
 
 test("proof retention implementation records deletion audit events without logging paths or proof data", () => {

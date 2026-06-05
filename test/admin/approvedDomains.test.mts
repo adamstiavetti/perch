@@ -67,7 +67,7 @@ test("approved-domains route becomes available only for the matching operator sc
   assert.match(approvedDomainsItem?.reason ?? "", /operator\.manage_approved_domains/i);
 });
 
-test("future operator sections remain disabled even when approved-domains is implemented", () => {
+test("future operator sections remain disabled while implemented operator tools are linkable", () => {
   const navigation = buildAdminNavigation({
     reviewerAuthorized: false,
     operatorScopes: [
@@ -83,9 +83,12 @@ test("future operator sections remain disabled even when approved-domains is imp
     navigation.find((item) => item.path === ADMIN_ROUTES.approvedDomains)?.status,
     "available",
   );
+  assert.equal(
+    navigation.find((item) => item.path === ADMIN_ROUTES.reviewerScopes)?.status,
+    "available",
+  );
 
   for (const path of [
-    ADMIN_ROUTES.reviewerScopes,
     ADMIN_ROUTES.auditInspection,
     ADMIN_ROUTES.proofCleanup,
   ]) {

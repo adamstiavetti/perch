@@ -151,11 +151,16 @@ test("admin nav only enables implemented operator sections for matching scopes",
   const approvedDomains = navigation.find(
     (entry) => entry.key === "approved_domains",
   );
+  const reviewerScopes = navigation.find(
+    (entry) => entry.key === "reviewer_scopes",
+  );
 
   assert.equal(approvedDomains?.status, "available");
   assert.equal(approvedDomains?.availabilityLabel, "Available now");
+  assert.equal(reviewerScopes?.status, "available");
+  assert.equal(reviewerScopes?.availabilityLabel, "Available now");
 
-  for (const key of ["reviewer_scopes", "audit_inspection", "proof_cleanup"] as const) {
+  for (const key of ["audit_inspection", "proof_cleanup"] as const) {
     const item = navigation.find((entry) => entry.key === key);
 
     assert.equal(item?.status, "disabled");
