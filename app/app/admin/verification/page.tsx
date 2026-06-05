@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 
+import { AdminShell } from "../../../../src/components/admin/AdminShell";
 import { AuthCard } from "../../../../src/components/auth/AuthCard";
 import authStyles from "../../../../src/components/auth/auth.module.css";
+import { ADMIN_ROUTES, buildAdminNavigation } from "../../../../src/lib/admin/access";
 import styles from "./review.module.css";
 import { AUTH_ROUTES } from "../../../../src/lib/auth/routes";
 import { getCurrentAppAccessContext } from "../../../../src/lib/betaAccess/server";
@@ -51,14 +53,14 @@ export default async function VerificationReviewQueuePage({
   const appContext = await getCurrentAppAccessContext();
   const gate = getPrivateAppGateResult({
     routeKind: "private-child",
-    nextPath: "/app/admin/verification",
+    nextPath: ADMIN_ROUTES.verification,
     context: appContext,
   });
 
   await recordSecurityEvent({
     userId: appContext.user?.id,
     eventType: getPrivateAccessEventType(gate),
-    route: "/app/admin/verification",
+    route: ADMIN_ROUTES.verification,
     result: getPrivateRouteAuditResult(gate, appContext),
     metadata: {
       route_kind: "private-child",
@@ -76,11 +78,17 @@ export default async function VerificationReviewQueuePage({
     redirect(AUTH_ROUTES.accessRestricted);
   }
 
+  const navigation = buildAdminNavigation({
+    reviewerAuthorized: reviewContext.reviewerAuthorized,
+  });
+
   return (
-    <AuthCard
+    <AdminShell
       eyebrow="Epoch 04 Review"
       title="Verification review queue"
       description="This bounded reviewer surface shows safe verification request metadata only. Reviewers must not use employer systems, internal directories, or other confidential employer resources."
+      currentPath={ADMIN_ROUTES.verification}
+      navigation={navigation}
       error={searchError ?? reviewContext.loadError ?? undefined}
       message={message}
       footer={
@@ -205,6 +213,6 @@ export default async function VerificationReviewQueuePage({
           )}
         </section>
       </div>
-    </AuthCard>
+    </AdminShell>
   );
 }

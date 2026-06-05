@@ -60,7 +60,15 @@ export type CurrentVerificationReviewContext = {
   loadError: string | null;
 };
 
-export async function getCurrentVerificationReviewContext(): Promise<CurrentVerificationReviewContext> {
+export type CurrentVerificationReviewerAuthorizationContext = {
+  authConfigured: boolean;
+  user: User | null;
+  reviewerScopes: ReviewerScope[];
+  reviewerAuthorized: boolean;
+  loadError: string | null;
+};
+
+export async function getCurrentVerificationReviewerAuthorizationContext(): Promise<CurrentVerificationReviewerAuthorizationContext> {
   const env = getSupabaseBrowserEnv();
 
   if (!env.enabled) {
@@ -69,7 +77,6 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
       user: null,
       reviewerScopes: [],
       reviewerAuthorized: false,
-      queue: [],
       loadError: null,
     };
   }
@@ -86,7 +93,6 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
       user: null,
       reviewerScopes: [],
       reviewerAuthorized: false,
-      queue: [],
       loadError: userError?.message ?? null,
     };
   }
@@ -103,7 +109,6 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
       user,
       reviewerScopes: [],
       reviewerAuthorized: false,
-      queue: [],
       loadError: VERIFICATION_REVIEW_NOT_READY_MESSAGE,
     };
   }
@@ -121,10 +126,36 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
       user,
       reviewerScopes,
       reviewerAuthorized: false,
-      queue: [],
       loadError: null,
     };
   }
+
+  return {
+    authConfigured: true,
+    user,
+    reviewerScopes,
+    reviewerAuthorized: true,
+    loadError: null,
+  };
+}
+
+export async function getCurrentVerificationReviewContext(): Promise<CurrentVerificationReviewContext> {
+  const reviewerContext =
+    await getCurrentVerificationReviewerAuthorizationContext();
+
+  if (
+    !reviewerContext.authConfigured ||
+    !reviewerContext.user ||
+    reviewerContext.loadError ||
+    !reviewerContext.reviewerAuthorized
+  ) {
+    return {
+      ...reviewerContext,
+      queue: [],
+    };
+  }
+
+  const supabase = await createClient();
 
   const requestsResult = await supabase
     .from("verification_requests")
@@ -135,9 +166,9 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
 
   if (requestsResult.error) {
     return {
-      authConfigured: true,
-      user,
-      reviewerScopes,
+      authConfigured: reviewerContext.authConfigured,
+      user: reviewerContext.user,
+      reviewerScopes: reviewerContext.reviewerScopes,
       reviewerAuthorized: true,
       queue: [],
       loadError: VERIFICATION_REVIEW_NOT_READY_MESSAGE,
@@ -158,9 +189,9 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
 
   if (evidenceResult.error) {
     return {
-      authConfigured: true,
-      user,
-      reviewerScopes,
+      authConfigured: reviewerContext.authConfigured,
+      user: reviewerContext.user,
+      reviewerScopes: reviewerContext.reviewerScopes,
       reviewerAuthorized: true,
       queue: [],
       loadError: VERIFICATION_REVIEW_NOT_READY_MESSAGE,
@@ -182,13 +213,13 @@ export async function getCurrentVerificationReviewContext(): Promise<CurrentVeri
         evidence: evidenceByRequestId.get(request.id) ?? [],
       }),
     ),
-    scopes: reviewerScopes,
+    scopes: reviewerContext.reviewerScopes,
   });
 
   return {
-    authConfigured: true,
-    user,
-    reviewerScopes,
+    authConfigured: reviewerContext.authConfigured,
+    user: reviewerContext.user,
+    reviewerScopes: reviewerContext.reviewerScopes,
     reviewerAuthorized: true,
     queue: filteredQueue,
     loadError: null,

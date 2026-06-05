@@ -31,6 +31,7 @@ Supplemental epoch-specific ticket packs:
 - [Epoch 04: Exit Report](epochs/epoch-04-exit-report.md)
 - [Epoch 05: Operator/Admin Tooling Foundation Ticket Pack](epochs/epoch-05-operator-admin-tooling-tickets.md)
 - [E05-T01: Operator Access Model Decision](epochs/e05-operator-access-model-decision.md)
+- [E05-T02: Admin Shell And Navigation Foundation](epochs/e05-admin-shell-navigation-foundation.md)
 - [Epoch 04: Approved Email Domain Read Policy Fix](epochs/epoch-04-approved-email-domain-read-policy-fix.md)
 - [Verification Transactional Review Action Hardening](epochs/verification-transactional-review-action-hardening.md)
 - [Redacted Proof Upload Storage Foundation](epochs/redacted-proof-upload-storage-foundation.md)
