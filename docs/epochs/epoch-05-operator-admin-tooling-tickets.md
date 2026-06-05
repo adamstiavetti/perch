@@ -299,7 +299,7 @@ Acceptance criteria:
 
 ### E05-T07 Protected Manual Cleanup Controls
 
-Status: not started.
+Status: implemented; runtime validation pending.
 
 Objective:
 
@@ -312,6 +312,8 @@ Scope:
 - Require operator authorization.
 - Audit every requested, granted, denied, successful, and failed manual cleanup action.
 - Preserve `deleted_at` semantics.
+- Implementation recorded in
+  [E05-T07: Protected Manual Proof Cleanup Controls](e05-protected-manual-proof-cleanup-controls.md).
 
 Security requirements:
 

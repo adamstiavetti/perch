@@ -14,6 +14,12 @@ import {
   PROOF_CLEANUP_MONITORING_SCOPE,
   normalizeProofCleanupMonitoringLimit,
 } from "../../../../src/lib/admin/proofCleanupMonitoringShared";
+import { runProofCleanupForOperatorAction } from "../../../../src/lib/admin/proofCleanupControls";
+import {
+  PROOF_CLEANUP_RUN_CONFIRMATION,
+  PROOF_CLEANUP_RUN_SCOPE,
+  normalizeProofCleanupRunLimit,
+} from "../../../../src/lib/admin/proofCleanupControlsShared";
 import {
   PROOF_CLEANUP_MONITORING_ROUTE,
   getProofCleanupMonitoringForOperator,
@@ -43,12 +49,41 @@ function formatNullable(value: string | null | undefined) {
   return value || "none";
 }
 
+function getNumberParam(value: string | string[] | undefined) {
+  const parsed = Number.parseInt(getValue(value) ?? "", 10);
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+}
+
+function getManualRunMessage(status: string | null) {
+  switch (status) {
+    case "completed":
+      return "Manual cleanup completed for eligible expired proof files.";
+    case "failed":
+      return "Manual cleanup finished with failures. Failed proof deletion rows keep deleted_at unset.";
+    case "confirmation_required":
+      return `Type ${PROOF_CLEANUP_RUN_CONFIRMATION} to confirm a manual cleanup run.`;
+    case "denied":
+      return "Operator scope required to run proof cleanup.";
+    case "not_ready":
+      return "Manual cleanup controls are not ready in this environment.";
+    case "audit_not_recorded":
+      return "Manual cleanup did not run because the required audit event could not be recorded.";
+    case "outcome_audit_not_recorded":
+      return "Manual cleanup may have run, but the required outcome audit event could not be recorded. Treat this run as needing operator investigation.";
+    default:
+      return null;
+  }
+}
+
 export default async function ProofCleanupMonitoringPage({
   searchParams,
 }: ProofCleanupPageProps) {
   const params = await searchParams;
   const eventType = getValue(params.event_type)?.trim() || null;
   const limit = normalizeProofCleanupMonitoringLimit(getValue(params.limit));
+  const manualStatus = getValue(params.manual_status)?.trim() || null;
+  const manualLimit = normalizeProofCleanupRunLimit(getValue(params.manual_limit));
+  const manualRunMessage = getManualRunMessage(manualStatus);
 
   const appContext = await getCurrentAppAccessContext();
   const gate = getPrivateAppGateResult({
@@ -140,77 +175,85 @@ export default async function ProofCleanupMonitoringPage({
     );
   }
 
-  if (
-    !hasOperatorScope({
-      scopes: operatorContext.scopes,
-      scope: PROOF_CLEANUP_MONITORING_SCOPE,
-    })
-  ) {
+  const operatorCanMonitor = hasOperatorScope({
+    scopes: operatorContext.scopes,
+    scope: PROOF_CLEANUP_MONITORING_SCOPE,
+  });
+  const operatorCanRunCleanup = hasOperatorScope({
+    scopes: operatorContext.scopes,
+    scope: PROOF_CLEANUP_RUN_SCOPE,
+  });
+
+  if (!operatorCanMonitor && !operatorCanRunCleanup) {
     if (appContext.user?.id) {
       await recordProofCleanupMonitoringUnauthorizedRouteAttempt(appContext.user.id);
     }
     redirect(AUTH_ROUTES.accessRestricted);
   }
 
-  const cleanupResult = await getProofCleanupMonitoringForOperator({
-    eventType,
-    limit,
-  });
+  const cleanupResult = operatorCanMonitor
+    ? await getProofCleanupMonitoringForOperator({
+        eventType,
+        limit,
+      })
+    : null;
 
   return (
     <AdminShell
       eyebrow="Epoch 05 Admin"
-      title="Proof cleanup monitoring"
-      description="Read-only cleanup health and failure visibility for explicitly scoped operators."
+      title="Proof cleanup"
+      description="Cleanup health monitoring plus bounded manual execution for explicitly scoped operators."
       currentPath={PROOF_CLEANUP_MONITORING_ROUTE}
       navigation={navigation}
-      error={!cleanupResult.ok ? cleanupResult.message : undefined}
+      error={cleanupResult && !cleanupResult.ok ? cleanupResult.message : undefined}
       message="This page never renders raw proof files, proof contents, proof-view links, URLs, filenames, or object-location details."
       footer={
         <p className={authStyles.hint}>
-          Cleanup monitoring uses `operator.monitor_proof_cleanup`.
-          `operator.run_proof_cleanup` is intentionally not a trigger or access
-          shortcut in this read-only ticket.
+          Monitoring uses `operator.monitor_proof_cleanup`. Manual cleanup uses
+          `operator.run_proof_cleanup` and only invokes the existing eligible
+          proof-retention cleanup helper.
         </p>
       }
     >
       <div className={styles.stack}>
-        <section className={styles.section} aria-labelledby="cleanup-filters">
-          <h2 id="cleanup-filters" className={styles.sectionTitle}>
-            Filters
-          </h2>
-          <form className={styles.searchForm} method="get">
-            <div className={styles.fieldGrid}>
-              <div className={styles.field}>
-                <label htmlFor="cleanup-event-type">Cleanup event type</label>
-                <input
-                  id="cleanup-event-type"
-                  name="event_type"
-                  defaultValue={eventType ?? ""}
-                />
+        {operatorCanMonitor ? (
+          <section className={styles.section} aria-labelledby="cleanup-filters">
+            <h2 id="cleanup-filters" className={styles.sectionTitle}>
+              Filters
+            </h2>
+            <form className={styles.searchForm} method="get">
+              <div className={styles.fieldGrid}>
+                <div className={styles.field}>
+                  <label htmlFor="cleanup-event-type">Cleanup event type</label>
+                  <input
+                    id="cleanup-event-type"
+                    name="event_type"
+                    defaultValue={eventType ?? ""}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label htmlFor="cleanup-limit">Limit</label>
+                  <input
+                    id="cleanup-limit"
+                    name="limit"
+                    type="number"
+                    min="1"
+                    max="50"
+                    defaultValue={limit}
+                  />
+                </div>
               </div>
-              <div className={styles.field}>
-                <label htmlFor="cleanup-limit">Limit</label>
-                <input
-                  id="cleanup-limit"
-                  name="limit"
-                  type="number"
-                  min="1"
-                  max="50"
-                  defaultValue={limit}
-                />
+              <div className={styles.searchActions}>
+                <input className={styles.buttonSecondary} type="submit" value="Apply filters" />
+                <a className={styles.buttonSecondary} href={PROOF_CLEANUP_MONITORING_ROUTE}>
+                  Clear
+                </a>
               </div>
-            </div>
-            <div className={styles.searchActions}>
-              <input className={styles.buttonSecondary} type="submit" value="Apply filters" />
-              <a className={styles.buttonSecondary} href={PROOF_CLEANUP_MONITORING_ROUTE}>
-                Clear
-              </a>
-            </div>
-          </form>
-        </section>
+            </form>
+          </section>
+        ) : null}
 
-        {cleanupResult.ok ? (
+        {cleanupResult?.ok ? (
           <section className={styles.section} aria-labelledby="cleanup-summary">
             <h2 id="cleanup-summary" className={styles.sectionTitle}>
               Cleanup health summary
@@ -264,14 +307,94 @@ export default async function ProofCleanupMonitoringPage({
           <h2 id="cleanup-controls" className={styles.sectionTitle}>
             Manual controls
           </h2>
-          <p className={styles.sectionText}>
-            No manual cleanup trigger, arbitrary deletion control, or proof
-            viewing link is implemented in E05-T06. Protected manual cleanup
-            controls remain a later reviewed ticket.
-          </p>
+          {manualRunMessage ? (
+            <p className={styles.resultMessage}>{manualRunMessage}</p>
+          ) : null}
+          {manualStatus === "completed" ||
+          manualStatus === "failed" ||
+          manualStatus === "outcome_audit_not_recorded" ? (
+            <div className={styles.summaryGrid}>
+              <article className={styles.summaryCard}>
+                <span className={styles.summaryLabel}>Run limit</span>
+                <strong className={styles.summaryValue}>{manualLimit}</strong>
+              </article>
+              <article className={styles.summaryCard}>
+                <span className={styles.summaryLabel}>Scanned</span>
+                <strong className={styles.summaryValue}>
+                  {getNumberParam(params.manual_scanned)}
+                </strong>
+              </article>
+              <article className={styles.summaryCard}>
+                <span className={styles.summaryLabel}>Deleted</span>
+                <strong className={styles.summaryValue}>
+                  {getNumberParam(params.manual_deleted)}
+                </strong>
+              </article>
+              <article className={styles.summaryCard}>
+                <span className={styles.summaryLabel}>Missing</span>
+                <strong className={styles.summaryValue}>
+                  {getNumberParam(params.manual_missing)}
+                </strong>
+              </article>
+              <article className={styles.summaryCard}>
+                <span className={styles.summaryLabel}>Failed</span>
+                <strong className={styles.summaryValue}>
+                  {getNumberParam(params.manual_failed)}
+                </strong>
+              </article>
+              <article className={styles.summaryCard}>
+                <span className={styles.summaryLabel}>Skipped</span>
+                <strong className={styles.summaryValue}>
+                  {getNumberParam(params.manual_skipped)}
+                </strong>
+              </article>
+            </div>
+          ) : null}
+          {operatorCanRunCleanup ? (
+            <form className={styles.searchForm} action={runProofCleanupForOperatorAction}>
+              <p className={styles.sectionText}>
+                This action runs cleanup for eligible expired proof files only.
+                It accepts a bounded batch limit and does not accept bucket,
+                object, evidence, file, or path identifiers.
+              </p>
+              <div className={styles.fieldGrid}>
+                <div className={styles.field}>
+                  <label htmlFor="manual-cleanup-limit">Batch limit</label>
+                  <input
+                    id="manual-cleanup-limit"
+                    name="limit"
+                    type="number"
+                    min="1"
+                    max="25"
+                    defaultValue={manualLimit}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label htmlFor="manual-cleanup-confirmation">
+                    Type {PROOF_CLEANUP_RUN_CONFIRMATION}
+                  </label>
+                  <input
+                    id="manual-cleanup-confirmation"
+                    name="confirmation"
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+              <div className={styles.searchActions}>
+                <button className={styles.buttonDanger} type="submit">
+                  Run eligible cleanup
+                </button>
+              </div>
+            </form>
+          ) : (
+            <p className={styles.sectionText}>
+              Manual cleanup execution requires `operator.run_proof_cleanup`.
+              Monitoring access alone cannot run cleanup.
+            </p>
+          )}
         </section>
 
-        {cleanupResult.ok ? (
+        {cleanupResult?.ok ? (
           <section className={styles.section} aria-labelledby="cleanup-failures">
             <h2 id="cleanup-failures" className={styles.sectionTitle}>
               Recent failed cleanup references
@@ -327,7 +450,7 @@ export default async function ProofCleanupMonitoringPage({
           </section>
         ) : null}
 
-        {cleanupResult.ok ? (
+        {cleanupResult?.ok ? (
           <section className={styles.section} aria-labelledby="cleanup-events">
             <h2 id="cleanup-events" className={styles.sectionTitle}>
               Recent cleanup events

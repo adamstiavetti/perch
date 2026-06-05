@@ -249,6 +249,26 @@ test("proof cleanup monitoring migration extends the event-type constraint for m
   assert.match(sql, /proof_cleanup\.monitor_unauthorized_attempt/i);
 });
 
+test("manual proof cleanup controls migration extends the event-type constraint for run audit events", () => {
+  const migrationsDir = new URL("../../supabase/migrations/", import.meta.url);
+  const migrationName = readdirSync(migrationsDir).find((name) =>
+    name.endsWith("_add_operator_manual_proof_cleanup_controls.sql"),
+  );
+
+  assert.ok(migrationName, "expected manual proof cleanup controls migration");
+
+  const sql = readFileSync(
+    new URL(`../../supabase/migrations/${migrationName}`, import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
+  assert.match(sql, /proof_cleanup\.manual_requested/i);
+  assert.match(sql, /proof_cleanup\.manual_completed/i);
+  assert.match(sql, /proof_cleanup\.manual_denied/i);
+  assert.match(sql, /proof_cleanup\.manual_failed/i);
+});
+
 test("proof retention implementation records deletion audit events without logging paths or proof data", () => {
   const source = readFileSync(
     new URL("../../src/lib/verification/proofRetentionCore.ts", import.meta.url),

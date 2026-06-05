@@ -285,8 +285,11 @@ export function buildAdminNavigation(input: {
       key: "proof_cleanup",
       label: "Proof Cleanup",
       path: ADMIN_ROUTES.proofCleanup,
-      description: "Read-only operator monitoring for proof cleanup status and failures.",
-      requiredScopes: ["operator.monitor_proof_cleanup"],
+      description: "Operator monitoring and bounded manual cleanup for expired proof files.",
+      requiredScopes: [
+        "operator.monitor_proof_cleanup",
+        "operator.run_proof_cleanup",
+      ],
       grantedScopes: input.operatorScopes,
       implemented: true,
     }),

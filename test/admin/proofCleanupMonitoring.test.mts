@@ -13,7 +13,7 @@ import {
   normalizeProofCleanupMonitoringOffset,
 } from "../../src/lib/admin/proofCleanupMonitoringShared.ts";
 
-test("proof cleanup monitoring navigation requires the monitoring scope only", () => {
+test("proof cleanup navigation accepts monitoring or run scope while keeping monitoring scoped", () => {
   const noScopeNavigation = buildAdminNavigation({
     reviewerAuthorized: false,
     operatorScopes: [],
@@ -38,7 +38,7 @@ test("proof cleanup monitoring navigation requires the monitoring scope only", (
   );
   assert.equal(
     runScopeNavigation.find((item) => item.path === ADMIN_ROUTES.proofCleanup)?.status,
-    "disabled",
+    "available",
   );
 });
 
@@ -84,18 +84,19 @@ test("proof cleanup monitoring helpers enforce bounds and recursively redact uns
   );
 });
 
-test("proof cleanup monitoring page gates before loading data and stays read-only", () => {
+test("proof cleanup monitoring page gates before loading monitoring data", () => {
   const source = readFileSync(
     new URL("../../app/app/admin/proof-cleanup/page.tsx", import.meta.url),
     "utf8",
   );
   const gateIndex = source.indexOf("const gate = getPrivateAppGateResult(");
   const loadErrorIndex = source.indexOf("if (operatorContext.loadError) {");
-  const missingScopeIndex = source.indexOf("!hasOperatorScope");
-  const dataLoadIndex = source.indexOf("const cleanupResult = await getProofCleanupMonitoringForOperator");
+  const missingScopeIndex = source.indexOf("!operatorCanMonitor && !operatorCanRunCleanup");
+  const dataLoadIndex = source.indexOf("const cleanupResult = operatorCanMonitor");
 
   assert.match(source, /AdminShell/);
   assert.match(source, /PROOF_CLEANUP_MONITORING_SCOPE/);
+  assert.match(source, /PROOF_CLEANUP_RUN_SCOPE/);
   assert.match(source, /AUTH_ROUTES\.accessRestricted/);
   assert.ok(gateIndex >= 0);
   assert.ok(loadErrorIndex >= 0);
@@ -105,8 +106,7 @@ test("proof cleanup monitoring page gates before loading data and stays read-onl
   assert.ok(loadErrorIndex < missingScopeIndex);
   assert.ok(missingScopeIndex < dataLoadIndex);
   assert.doesNotMatch(source, /viewVerificationProofAction|createSignedUrl|signed_url|storage_path/i);
-  assert.doesNotMatch(source, /handleOpsProofRetentionCleanupRequest|cleanupExpiredVerificationProofs|runCleanup/i);
-  assert.doesNotMatch(source, /<button/i);
+  assert.doesNotMatch(source, /handleOpsProofRetentionCleanupRequest/);
 });
 
 test("proof cleanup monitoring server module uses scoped RPCs without service-role behavior", () => {
@@ -149,6 +149,36 @@ test("proof cleanup monitoring migration creates bounded summary-only operator R
   assert.match(sql, /verification_evidence\.deletion_failed/i);
   assert.match(sql, /verification_evidence\.deletion_scheduled/i);
   assert.match(sql, /verification_evidence\.deleted/i);
+  assert.match(sql, /public\.sanitize_operator_audit_metadata\(event_row\.metadata\)/i);
+  assert.doesNotMatch(sql, /'storage_path'|'storage_bucket'|'signed_url'|'public_url'|'filename'|'proof_file_contents'|'proof_text'/i);
+  assert.doesNotMatch(sql, /storage\.objects|createSignedUrl|signed url/i);
+  assert.doesNotMatch(sql, /update public\.verification_evidence|delete from public\.verification_evidence/i);
+});
+
+test("manual cleanup migration makes manual events visible to cleanup monitoring", () => {
+  const migrationsDir = new URL("../../supabase/migrations/", import.meta.url);
+  const migrationName = readdirSync(migrationsDir).find((name) =>
+    name.endsWith("_add_operator_manual_proof_cleanup_controls.sql"),
+  );
+
+  assert.ok(migrationName, "expected manual proof cleanup controls migration");
+
+  const sql = readFileSync(
+    new URL(`../../supabase/migrations/${migrationName}`, import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /create or replace function public\.list_proof_cleanup_events_for_operator/i);
+  assert.match(sql, /invalid_cleanup_event_type/i);
+  assert.match(sql, /proof_cleanup\.manual_requested/i);
+  assert.match(sql, /proof_cleanup\.manual_completed/i);
+  assert.match(sql, /proof_cleanup\.manual_denied/i);
+  assert.match(sql, /proof_cleanup\.manual_failed/i);
+  assert.match(sql, /proof_cleanup\.monitor_viewed/i);
+  assert.match(sql, /proof_cleanup\.monitor_unauthorized_attempt/i);
+  assert.match(sql, /verification_evidence\.deletion_scheduled/i);
+  assert.match(sql, /verification_evidence\.deleted/i);
+  assert.match(sql, /verification_evidence\.deletion_failed/i);
   assert.match(sql, /public\.sanitize_operator_audit_metadata\(event_row\.metadata\)/i);
   assert.doesNotMatch(sql, /'storage_path'|'storage_bucket'|'signed_url'|'public_url'|'filename'|'proof_file_contents'|'proof_text'/i);
   assert.doesNotMatch(sql, /storage\.objects|createSignedUrl|signed url/i);

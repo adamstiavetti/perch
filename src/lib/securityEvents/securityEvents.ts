@@ -49,6 +49,10 @@ export const SECURITY_EVENT_TYPES = [
   "operator_audit.unauthorized_attempt",
   "proof_cleanup.monitor_viewed",
   "proof_cleanup.monitor_unauthorized_attempt",
+  "proof_cleanup.manual_requested",
+  "proof_cleanup.manual_completed",
+  "proof_cleanup.manual_denied",
+  "proof_cleanup.manual_failed",
 ] as const;
 
 export type SecurityEventType = (typeof SECURITY_EVENT_TYPES)[number];

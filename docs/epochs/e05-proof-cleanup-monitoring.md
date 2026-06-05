@@ -140,15 +140,16 @@ Navigation behavior now becomes:
   `operator.manage_approved_domains`
 - Verification Review: still reviewer-scope based
 
-The page is read-only and includes a clear note that manual cleanup controls are
-not implemented in E05-T06.
+The E05-T06 monitoring slice was read-only. E05-T07 later adds protected manual
+cleanup controls on the same route with a separate `operator.run_proof_cleanup`
+scope.
 
-## 7. What Remains For E05-T07
+## 7. E05-T07 Follow-On
 
-The next protected cleanup ticket, if approved, is E05-T07 Protected Manual
-Cleanup Controls.
+The follow-on protected cleanup ticket is E05-T07 Protected Manual Cleanup
+Controls.
 
-That later slice still needs:
+That later slice covers:
 
 - bounded manual cleanup trigger controls
 - explicit operator authorization for running cleanup
@@ -156,7 +157,14 @@ That later slice still needs:
 - audit events for requested, denied, completed, and failed manual cleanup
 - runtime proof that the existing cleanup helper remains the only deletion path
 
-E05-T06 does not implement those controls.
+E05-T06 itself did not implement those controls. E05-T07 implementation is
+tracked separately in
+`docs/epochs/e05-protected-manual-proof-cleanup-controls.md`.
+
+The E05-T07 migration updates the cleanup event monitoring RPC so the bounded
+event list also includes `proof_cleanup.manual_requested`,
+`proof_cleanup.manual_completed`, `proof_cleanup.manual_denied`, and
+`proof_cleanup.manual_failed` after the manual controls migration is applied.
 
 ## 8. Validation Status
 
