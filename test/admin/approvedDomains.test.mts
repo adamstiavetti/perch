@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 import {
   APPROVED_DOMAIN_PERSONAL_EMAIL_DOMAINS,
@@ -20,9 +20,20 @@ test("approved-domain helpers normalize casing and trim operator input safely", 
 
 test("approved-domain format validation rejects protocols, paths, local-parts, and malformed domains", () => {
   assert.equal(isApprovedDomainFormatValid("airline.test"), true);
+  assert.equal(isApprovedDomainFormatValid("runtime-proof-airline.test"), true);
+  assert.equal(isApprovedDomainFormatValid("runtime-proof-airline.example"), true);
+  assert.equal(isApprovedDomainFormatValid("runtime-proof-airline.invalid"), true);
+  assert.equal(
+    normalizeApprovedDomain(" RUNTIME-Proof-Airline.TEST "),
+    "runtime-proof-airline.test",
+  );
   assert.equal(isApprovedDomainFormatValid("https://airline.test"), false);
   assert.equal(isApprovedDomainFormatValid("airline.test/path"), false);
   assert.equal(isApprovedDomainFormatValid("crew.member@airline.test"), false);
+  assert.equal(isApprovedDomainFormatValid("crew_airline.test"), false);
+  assert.equal(isApprovedDomainFormatValid("crew airline.test"), false);
+  assert.equal(isApprovedDomainFormatValid("-airline.test"), false);
+  assert.equal(isApprovedDomainFormatValid("airline-.test"), false);
   assert.equal(isApprovedDomainFormatValid("localhost"), false);
 });
 
@@ -215,6 +226,32 @@ test("approved-domains migration adds audited operator RPCs without destructive 
   assert.match(sql, /approved_email_domains_domain_key/i);
   assert.match(sql, /'code', 'domain_already_exists'/i);
   assert.doesNotMatch(sql, /delete from public\.approved_email_domains/i);
+});
+
+test("approved-domains corrective migration aligns SQL validation with reserved test TLD support", () => {
+  const migrationsDir = new URL("../../supabase/migrations/", import.meta.url);
+  const migrationName = readdirSync(migrationsDir).find((name) =>
+    name.endsWith("_fix_approved_domain_test_tld_validation.sql"),
+  );
+
+  assert.ok(migrationName, "expected corrective approved-domain validation migration");
+
+  const sql = readFileSync(
+    new URL(`../../supabase/migrations/${migrationName}`, import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /create or replace function public\.approved_email_domain_format_valid/i);
+  assert.match(sql, /normalize_approved_email_domain\(raw_domain\) ~ /i);
+  assert.ok(
+    sql.includes("(?:\\.[a-z0-9]"),
+    "SQL regex should match a literal dot between domain labels",
+  );
+  assert.equal(
+    sql.includes("(?:\\\\.[a-z0-9]"),
+    false,
+    "SQL regex should not require a literal backslash before the dot",
+  );
 });
 
 test("approved-domains RPC contract returns structured validation failures for expected invalid input", () => {

@@ -127,8 +127,24 @@ responses for protocol, path, local-part, blank, malformed, and personal-provide
 inputs.
 
 No corrective schema migration was created for that investigation because the
-database behavior matched the app's RPC contract. The full E05-T03 runtime proof
-is still pending and should resume with app-shaped RPC parameters.
+database behavior matched the app's RPC contract. Runtime validation then
+continued with app-shaped RPC parameters and found that syntactically valid
+reserved/test-only domains using `.test`, `.example`, and `.invalid` were
+rejected by SQL validation. That blocked safe non-production create/update/disable
+proof domains.
+
+Corrective migration added:
+
+- `supabase/migrations/20260605190500_fix_approved_domain_test_tld_validation.sql`
+
+The corrective migration keeps the published RPC contract intact and realigns
+the SQL approved-domain format helper with the TypeScript shared validator so
+reserved/test-only TLDs can be used for safe runtime proof while malformed,
+protocol/path, email local-part, and known personal-provider inputs still fail
+with structured safe validation responses.
+
+The full E05-T03 runtime proof remains pending until this corrective migration is
+reviewed, merged, applied, and runtime-validated.
 
 The runtime pass should confirm:
 
