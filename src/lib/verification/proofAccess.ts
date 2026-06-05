@@ -1,6 +1,6 @@
 import "server-only";
 
-import { redirect } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 
 import { AUTH_ROUTES } from "../auth/routes";
 import { recordSecurityEvent } from "../securityEvents/server";
@@ -222,7 +222,9 @@ export async function viewVerificationProofAction(formData: FormData) {
     });
 
     redirect(signedUrlResult.data.signedUrl);
-  } catch {
+  } catch (error) {
+    unstable_rethrow(error);
+
     await recordDeniedProofViewEvent({
       reviewerId: user.id,
       requestId: decision.requestId,

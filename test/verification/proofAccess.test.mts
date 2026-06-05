@@ -304,3 +304,12 @@ test("proof access implementation stays server-only and uses service-role signed
   assert.doesNotMatch(storageAdminSource, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/);
   assert.doesNotMatch(source, /approve|verification_claim\.issued/i);
 });
+
+test("proof access preserves Next redirect throws instead of mapping them to signed-url unavailable", () => {
+  const source = readFileSync(
+    new URL("../../src/lib/verification/proofAccess.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /isRedirectError|unstable_rethrow|throw error|throw caught/i);
+});
