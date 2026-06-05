@@ -305,12 +305,12 @@ Do not implement this phase yet. The next work should be docs-only pivot
 planning that resolves the access model before app, database, or migration
 changes.
 
-Recommended next docs:
+Recommended follow-up docs:
 
 - board/community access model decision
 - airline-email verification access-gate decision
 - proof-system freeze/deprecation plan
-- baseboard MVP scope
+- First-Base MVP scope
 - community-admin responsibilities and disclaimer policy
 
 ## 12. Non-Goals
