@@ -118,7 +118,17 @@ Navigation behavior now becomes:
 ## 7. Runtime Follow-Up
 
 Runtime validation is still required after merge and migration apply.
-This migration remains unapplied while the branch is under review.
+The initial post-apply runtime pass confirmed the migration applied and operator
+scope checks passed, then stopped on an invalid-input check that used stale
+`p_*` RPC argument names. The app and published RPC contract use
+`requested_domain`, `requested_airline`, `requested_status`, and
+`target_domain_id`; app-shaped runtime calls return structured validation
+responses for protocol, path, local-part, blank, malformed, and personal-provider
+inputs.
+
+No corrective schema migration was created for that investigation because the
+database behavior matched the app's RPC contract. The full E05-T03 runtime proof
+is still pending and should resume with app-shaped RPC parameters.
 
 The runtime pass should confirm:
 

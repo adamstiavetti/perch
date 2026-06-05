@@ -217,6 +217,43 @@ test("approved-domains migration adds audited operator RPCs without destructive 
   assert.doesNotMatch(sql, /delete from public\.approved_email_domains/i);
 });
 
+test("approved-domains RPC contract returns structured validation failures for expected invalid input", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260605184500_add_operator_managed_approved_email_domains.sql", import.meta.url),
+    "utf8",
+  );
+  const createFunction = sql.slice(
+    sql.indexOf("create or replace function public.create_approved_email_domain"),
+    sql.indexOf("create or replace function public.update_approved_email_domain"),
+  );
+  const updateFunction = sql.slice(
+    sql.indexOf("create or replace function public.update_approved_email_domain"),
+    sql.indexOf("create or replace function public.disable_approved_email_domain"),
+  );
+  const source = readFileSync(
+    new URL("../../src/lib/admin/approvedDomains.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(createFunction, /requested_domain text/i);
+  assert.match(createFunction, /requested_status text default 'active'/i);
+  assert.match(createFunction, /if not public\.approved_email_domain_format_valid\(requested_domain\) then/i);
+  assert.match(createFunction, /'ok', false[\s\S]*'code', 'invalid_domain_format'/i);
+  assert.match(createFunction, /if public\.is_personal_approved_email_domain\(v_domain\) then/i);
+  assert.match(createFunction, /'ok', false[\s\S]*'code', 'personal_email_domain_blocked'/i);
+  assert.match(createFunction, /if v_status not in \('active', 'disabled'\) then/i);
+  assert.match(createFunction, /'ok', false[\s\S]*'code', 'invalid_status'/i);
+  assert.match(updateFunction, /target_domain_id uuid/i);
+  assert.match(updateFunction, /requested_domain text/i);
+  assert.match(updateFunction, /'ok', false[\s\S]*'code', 'invalid_domain_format'/i);
+  assert.match(updateFunction, /'ok', false[\s\S]*'code', 'personal_email_domain_blocked'/i);
+  assert.match(updateFunction, /'ok', false[\s\S]*'code', 'invalid_status'/i);
+  assert.match(source, /requested_domain: values\.domain/);
+  assert.match(source, /requested_status: values\.status \?\? APPROVED_EMAIL_DOMAIN_STATUSES\[0\]/);
+  assert.match(source, /target_domain_id: values\.domainId/);
+  assert.doesNotMatch(source, /\bp_domain\b|\bp_status\b|\bp_domain_id\b/);
+});
+
 test("approved-domains migration handles duplicate-domain races inside create and update RPCs", () => {
   const sql = readFileSync(
     new URL("../../supabase/migrations/20260605184500_add_operator_managed_approved_email_domains.sql", import.meta.url),
