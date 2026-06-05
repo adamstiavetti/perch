@@ -494,3 +494,13 @@ The first implementation should prove the lifecycle on dummy proof:
 - `deleted_at` set
 - event recorded
 - deleted proof can no longer be viewed
+
+## Implementation Note
+
+The first cleanup foundation is documented in:
+
+- [Proof Retention Deletion Cleanup Foundation](proof-retention-deletion-cleanup-foundation.md)
+
+That slice adds a server-only cleanup helper, deletion event taxonomy, idempotent missing-object handling, failure audit behavior, and deleted-proof view denial.
+
+It intentionally does not add a scheduler, cron route, Edge Function, operator UI, or reviewer delete control yet.

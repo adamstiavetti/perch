@@ -215,6 +215,32 @@ test("proof access fails closed when storage path or reviewer authorization is m
         request_id: "req-1",
         evidence_type: "redacted_badge_or_proof",
         storage_bucket: "verification-proofs",
+        storage_path: "user-1/req-1/evidence-1.png",
+        deleted_at: "2026-06-05T00:00:00.000Z",
+      },
+      canReviewRequest: true,
+    }),
+    {
+      kind: "denied",
+      reasonCode: "proof_deleted",
+      message: "This verification proof has been deleted and is no longer available.",
+    },
+  );
+
+  assert.deepEqual(
+    resolveProofViewAccess({
+      reviewerId: "reviewer-1",
+      reviewerAuthorized: true,
+      request: {
+        id: "req-1",
+        user_id: "user-1",
+        status: "submitted",
+      },
+      evidence: {
+        id: "evidence-1",
+        request_id: "req-1",
+        evidence_type: "redacted_badge_or_proof",
+        storage_bucket: "verification-proofs",
         storage_path: null,
       },
       canReviewRequest: true,
@@ -300,6 +326,7 @@ test("proof access implementation stays server-only and uses service-role signed
   assert.match(source, /import "server-only"/i);
   assert.match(storageAdminSource, /import "server-only"/i);
   assert.match(source, /createSignedUrl/i);
+  assert.match(source, /deleted_at/);
   assert.match(storageAdminSource, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.doesNotMatch(storageAdminSource, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/);
   assert.doesNotMatch(source, /approve|verification_claim\.issued/i);
