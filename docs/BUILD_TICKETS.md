@@ -30,6 +30,7 @@ Supplemental epoch-specific ticket packs:
 - [Epoch 04: Claims-Based Authorization Preparation](epochs/epoch-04-claims-based-authorization-preparation.md)
 - [Epoch 04: Exit Report](epochs/epoch-04-exit-report.md)
 - [Epoch 05: Operator/Admin Tooling Foundation Ticket Pack](epochs/epoch-05-operator-admin-tooling-tickets.md)
+- [Product Pivot: Airline Email Verification And Community-Managed Boards](strategy/product-pivot-email-verification-community-boards.md) - forward direction: airline-email access for general app use and community-admin approval for restricted boards.
 - [E05-T01: Operator Access Model Decision](epochs/e05-operator-access-model-decision.md)
 - [E05-T02: Admin Shell And Navigation Foundation](epochs/e05-admin-shell-navigation-foundation.md)
 - [E05 Operator Grants Foundation](epochs/e05-operator-grants-foundation.md) - explicit operator grants plus a one-time protected bootstrap route for the zero-grant state.
@@ -70,6 +71,8 @@ Supplemental epoch-specific ticket packs:
 Documentation hygiene reminder:
 
 - Future tickets should identify documentation impact and include docs-update acceptance criteria when applicable. See `PRODUCT_DELIVERY_OPERATING_MODEL.md`.
+- Current implementation work is paused for the product pivot. E05-T08 should not proceed until pivot planning is complete, and future tasks should not expand proof-upload verification unless explicitly instructed.
+- E05-T07 runtime proof is committed on `main`; if an older or parallel branch still has uncommitted E05-T07 runtime-proof docs, commit those before starting pivot planning.
 
 Scalability guardrail:
 

@@ -16,6 +16,16 @@ Epoch 04 proved the worker-verification repo/runtime foundation: work-email veri
 
 Epoch 05 bridges the verification foundation and future claim-gated community features by making verification operations manageable, authorized, audited, and privacy-preserving.
 
+Pivot status:
+
+- E05-T01 through E05-T07 are implemented and runtime-proven.
+- Forward product direction has pivoted away from proof-upload verification.
+- E05-T08 should not proceed until the pivot planning docs are complete.
+- Future Codex tasks must not expand proof-upload verification or proof-cleanup
+  tooling unless explicitly instructed.
+- Source of truth:
+  [Product Pivot: Airline Email Verification And Community-Managed Boards](../strategy/product-pivot-email-verification-community-boards.md).
+
 ## 2. Epoch 04 Baseline
 
 Epoch 05 starts from the completed Epoch 04 repo/runtime foundation, including:
@@ -333,11 +343,13 @@ Acceptance criteria:
 
 ### E05-T08 Epoch 05 Runtime Validation And Handoff
 
-Status: not started.
+Status: paused by product pivot.
 
 Objective:
 
 - Validate and document the completed Epoch 05 operator/admin tooling foundation.
+- Re-scope the handoff after the airline-email/community-board pivot planning is
+  complete.
 
 Scope:
 
