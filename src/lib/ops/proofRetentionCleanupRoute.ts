@@ -17,7 +17,7 @@ type CleanupRunner = (input: {
 
 async function getDefaultCleanupRunner(): Promise<CleanupRunner> {
   const proofRetentionModule = await import("../verification/proofRetention");
-  return proofRetentionModule.cleanupExpiredVerificationProofs;
+  return proofRetentionModule.cleanupExpiredVerificationProofsForOps;
 }
 
 async function getStorageAdminReadiness(source: EnvSource) {

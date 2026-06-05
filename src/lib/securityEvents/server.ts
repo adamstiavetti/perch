@@ -1,15 +1,15 @@
+import "server-only";
+
 import type { PostgrestError } from "@supabase/supabase-js";
 
 import { createClient } from "../supabase/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
+import { createStorageAdminClient, isStorageAdminConfigured } from "../supabase/storageAdmin";
 import {
   recordSecurityEventWithInsert,
   type RecordSecurityEventInput,
   type SecurityEventInsert,
 } from "./securityEvents";
-
-const SECURITY_EVENTS_SERVER_ONLY = "server-only";
-void SECURITY_EVENTS_SERVER_ONLY;
 
 type SecurityEventInsertResult =
   | { error: PostgrestError | Error | null }
@@ -26,5 +26,17 @@ export async function recordSecurityEvent(input: RecordSecurityEventInput) {
   return recordSecurityEventWithInsert(input, {
     enabled: env.enabled,
     insert: insertSecurityEvent,
+  });
+}
+
+export async function recordSecurityEventWithServiceRole(
+  input: RecordSecurityEventInput,
+) {
+  return recordSecurityEventWithInsert(input, {
+    enabled: isStorageAdminConfigured(),
+    insert: async (payload) => {
+      const supabase = createStorageAdminClient();
+      return supabase.from("security_events").insert(payload);
+    },
   });
 }

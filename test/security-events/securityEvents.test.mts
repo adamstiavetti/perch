@@ -253,3 +253,20 @@ test("security event implementation stays server-only", () => {
 
   assert.match(serverSource, /"server-only"|import "server-only"/i);
 });
+
+test("security event server module exposes a service-role recorder for ops audit events", () => {
+  const serverSource = readFileSync(
+    new URL("../../src/lib/securityEvents/server.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(serverSource, /import "server-only"/);
+  assert.match(serverSource, /recordSecurityEventWithServiceRole/);
+  assert.match(serverSource, /createStorageAdminClient/);
+  assert.match(serverSource, /isStorageAdminConfigured/);
+  assert.match(serverSource, /recordSecurityEventWithInsert/);
+  assert.doesNotMatch(
+    serverSource,
+    /SUPABASE_SERVICE_ROLE_KEY|OPS_CLEANUP_SECRET|console\.log|console\.error/,
+  );
+});

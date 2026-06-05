@@ -1,6 +1,9 @@
 import "server-only";
 
-import { recordSecurityEvent } from "../securityEvents/server";
+import {
+  recordSecurityEvent,
+  recordSecurityEventWithServiceRole,
+} from "../securityEvents/server";
 import { createStorageAdminClient } from "../supabase/storageAdmin";
 import {
   cleanupExpiredVerificationProofsWithClient,
@@ -33,5 +36,18 @@ export async function cleanupExpiredVerificationProofs(input: {
     storageAdmin:
       createStorageAdminClient() as unknown as ProofRetentionStorageAdminClient,
     recordEvent: recordSecurityEvent,
+  });
+}
+
+export async function cleanupExpiredVerificationProofsForOps(input: {
+  now?: Date;
+  limit?: number;
+} = {}): Promise<ProofRetentionCleanupSummary> {
+  return cleanupExpiredVerificationProofsWithClient({
+    now: input.now,
+    limit: input.limit,
+    storageAdmin:
+      createStorageAdminClient() as unknown as ProofRetentionStorageAdminClient,
+    recordEvent: recordSecurityEventWithServiceRole,
   });
 }

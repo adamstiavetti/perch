@@ -110,6 +110,8 @@ No signed URL is generated after deletion.
 
 The production cleanup entrypoint is server-only and uses the existing service-role Storage helper.
 
+The protected ops cleanup route uses the same service-role posture for deletion audit events. This avoids losing cleanup audit events when the route is invoked without a browser user session while preserving normal session-based security-event recording elsewhere.
+
 The cleanup foundation does not expose:
 
 - browser/client-side deletion
@@ -143,6 +145,31 @@ After review/merge and migration push, validate with dummy proof only:
 7. Confirm proof viewing is denied with `proof_deleted`.
 8. Confirm a missing object is marked deleted with `object_already_missing`.
 9. Confirm a Storage deletion failure leaves `deleted_at` null and is retryable.
+
+## Protected Trigger Audit Fix
+
+Runtime validation of the protected cleanup trigger found that the route deleted the expired object and set `deleted_at`, but did not persist the route-triggered `verification_evidence.deletion_scheduled` and `verification_evidence.deleted` events.
+
+Root cause:
+
+- the ops route runs without an authenticated browser user session
+- deletion cleanup used the normal session-backed `recordSecurityEvent` path
+- `security_events` RLS caused event insertion to fail soft while cleanup itself succeeded
+
+Fix:
+
+- normal user/session security-event recording remains unchanged
+- the ops cleanup route now uses a server-only proof-retention cleanup entrypoint backed by a service-role security-event recorder
+- the privileged recorder still uses the shared security-event sanitizer
+- event recording remains fail-soft and does not expose service-role credentials
+
+No migration was required for this fix.
+
+Runtime re-test is still needed after merge to confirm the protected route now records:
+
+- `verification_evidence.deletion_scheduled`
+- `verification_evidence.deleted`
+- `verification_evidence.deletion_failed` on failure paths where practical
 
 ## Out Of Scope
 

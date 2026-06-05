@@ -341,7 +341,8 @@ test("proof retention cleanup route source stays bounded to a protected ops rout
   assert.match(routeSource, /export async function POST/);
   assert.match(helperSource, /OPS_CLEANUP_SECRET/);
   assert.match(helperSource, /x-jmpseat-ops-secret/);
-  assert.match(helperSource, /cleanupExpiredVerificationProofs/);
+  assert.match(helperSource, /cleanupExpiredVerificationProofsForOps/);
+  assert.doesNotMatch(helperSource, /cleanupExpiredVerificationProofs;/);
   assert.doesNotMatch(
     `${routeSource}\n${helperSource}`,
     /type="file"|View proof|download button|signed url|public url|employer system lookup|openai|ai\/ocr|automatic approval/i,

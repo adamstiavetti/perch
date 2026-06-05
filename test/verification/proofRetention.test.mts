@@ -294,6 +294,8 @@ test("proof retention helper remains server-only and does not add UI delete cont
   assert.match(source, /import "server-only"/i);
   assert.match(source, /createStorageAdminClient/);
   assert.match(source, /cleanupExpiredVerificationProofsWithClient/);
+  assert.match(source, /cleanupExpiredVerificationProofsForOps/);
+  assert.match(source, /recordSecurityEventWithServiceRole/);
   assert.doesNotMatch(source, /createSignedUrl|public url|download button|type="file"|openai|ocr|ai pre-check|employer system lookup/i);
 
   const coreSource = readFileSync(

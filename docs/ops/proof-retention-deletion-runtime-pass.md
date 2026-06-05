@@ -145,14 +145,47 @@ They were deferred in live runtime to avoid mutating additional rows or objects 
 ## Remaining Limitations
 
 - no scheduled cron or Edge Function trigger is wired yet in runtime
-- protected trigger foundation is now implemented, but still needs dedicated runtime trigger validation after deployment or local operator-secret setup
+- protected trigger foundation is implemented
+- protected trigger runtime validation found and fixed a route-specific audit-event gap; it still needs a post-fix runtime re-test
 - no operator UI exists for cleanup
 - no finalized retention-policy or legal review is recorded yet
 - no finalized production privacy notice is recorded yet
 
+## Protected Trigger Audit Gap
+
+After the protected route `/api/ops/proof-retention-cleanup` landed, a dedicated route runtime validation confirmed:
+
+- denied route checks worked
+- authorized cleanup deleted the target private object
+- `deleted_at` was set
+- the route response was summary-only
+- post-deletion proof viewing denied with `proof_deleted`
+
+The same route validation also found that route-triggered cleanup did not persist:
+
+- `verification_evidence.deletion_scheduled`
+- `verification_evidence.deleted`
+
+Older deletion events from the direct helper runtime pass remained present, so the issue was isolated to the protected route invocation path.
+
+Root cause:
+
+- the route runs without an authenticated browser user session
+- the cleanup route used the normal session-backed security-event recorder
+- `security_events` RLS caused insertion to fail soft for cleanup events
+
+Fix now prepared:
+
+- the protected ops cleanup route uses a server-only proof-retention cleanup entrypoint
+- that entrypoint records deletion audit events with a service-role-backed security-event recorder
+- the recorder still uses the shared metadata sanitizer
+- normal user/session security-event recording remains unchanged
+
+Post-fix runtime validation still needs to confirm the protected route now records deletion scheduled/deleted events without leaking storage paths, URLs, filenames, proof contents, employee identifiers, badge data, OCR text, or secrets.
+
 ## Recommended Next Work
 
-1. Runtime-validate the protected cleanup trigger with operator-secret authentication.
+1. Runtime-retest the protected cleanup trigger with operator-secret authentication after the audit-event fix merges.
 2. Add operator tooling for cleanup failures and retries.
 3. Finalize production privacy and legal copy for proof retention/deletion.
 4. Add approved-domain and reviewer-scope operator tooling.
