@@ -17,6 +17,7 @@ export type ProofViewReasonCode =
   | "unsupported_evidence_type"
   | "bucket_mismatch"
   | "storage_path_missing"
+  | "proof_deleted"
   | "request_access_denied"
   | "signed_url_unavailable";
 
@@ -32,6 +33,7 @@ type ProofAccessEvidence = {
   evidence_type: string;
   storage_bucket: string | null;
   storage_path: string | null;
+  deleted_at?: string | null;
 };
 
 type ResolveProofViewAccessInput = {
@@ -140,6 +142,14 @@ export function resolveProofViewAccess(
       kind: "denied",
       reasonCode: "bucket_mismatch",
       message: "This verification proof is not stored in the private proof bucket.",
+    };
+  }
+
+  if (input.evidence.deleted_at) {
+    return {
+      kind: "denied",
+      reasonCode: "proof_deleted",
+      message: "This verification proof has been deleted and is no longer available.",
     };
   }
 

@@ -157,6 +157,30 @@ test("proof-view migration extends the event-type constraint for bounded proof-v
   assert.match(sql, /verification_evidence\.view_denied/i);
 });
 
+test("proof-deletion migration extends the event-type constraint for bounded deletion audit events", () => {
+  const sql = readFileSync(
+    new URL("../../supabase/migrations/20260605003656_extend_security_events_for_proof_deletion.sql", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(sql, /drop constraint if exists security_events_event_type_check/i);
+  assert.match(sql, /verification_evidence\.deletion_scheduled/i);
+  assert.match(sql, /verification_evidence\.deleted/i);
+  assert.match(sql, /verification_evidence\.deletion_failed/i);
+});
+
+test("proof retention implementation records deletion audit events without logging paths or proof data", () => {
+  const source = readFileSync(
+    new URL("../../src/lib/verification/proofRetentionCore.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /verification_evidence\.deletion_scheduled/);
+  assert.match(source, /verification_evidence\.deleted/);
+  assert.match(source, /verification_evidence\.deletion_failed/);
+  assert.doesNotMatch(source, /signed_url|public_url|filename|employee_id|badge_number|barcode|qr_content|ocr_text|proof_text|employer system lookup|ai pre-check/i);
+});
+
 test("proof access implementation records bounded proof-view audit events without logging URLs or storage paths", () => {
   const source = readFileSync(
     new URL("../../src/lib/verification/proofAccess.ts", import.meta.url),

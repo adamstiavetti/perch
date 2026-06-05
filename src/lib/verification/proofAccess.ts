@@ -33,6 +33,7 @@ type QueryVerificationEvidenceRow = {
   evidence_type: string;
   storage_bucket: string | null;
   storage_path: string | null;
+  deleted_at: string | null;
   status: string;
 };
 
@@ -124,7 +125,7 @@ export async function viewVerificationProofAction(formData: FormData) {
 
   const evidenceResult = await supabase
     .from("verification_evidence")
-    .select("id, request_id, evidence_type, storage_bucket, storage_path, status")
+    .select("id, request_id, evidence_type, storage_bucket, storage_path, deleted_at, status")
     .eq("id", evidenceId)
     .maybeSingle<QueryVerificationEvidenceRow>();
 

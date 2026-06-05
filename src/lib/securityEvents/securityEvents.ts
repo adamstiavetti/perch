@@ -26,6 +26,9 @@ export const SECURITY_EVENT_TYPES = [
   "verification_evidence.view_requested",
   "verification_evidence.view_granted",
   "verification_evidence.view_denied",
+  "verification_evidence.deletion_scheduled",
+  "verification_evidence.deleted",
+  "verification_evidence.deletion_failed",
   "verification_review.approved",
   "verification_review.rejected",
   "verification_review.needs_resubmission",
@@ -81,6 +84,7 @@ const REDACTED_METADATA_KEYS = new Set([
   "signed_url",
   "public_url",
   "proof_view_url",
+  "token",
   "passenger_data",
   "customer_data",
   "trip_data",
@@ -91,6 +95,7 @@ const REDACTED_METADATA_KEYS = new Set([
   "access_token",
   "refresh_token",
   "api_key",
+  "service_role_key",
 ]);
 
 const REDACTED_METADATA_KEY_PATTERNS = [
@@ -113,9 +118,11 @@ const REDACTED_METADATA_KEY_PATTERNS = [
   /^crew_hotel(_information)?$/,
   /password/,
   /secret(_key)?$/,
+  /(^|_)token$/,
   /access_token$/,
   /refresh_token$/,
   /api_key$/,
+  /service_role_key$/,
 ];
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

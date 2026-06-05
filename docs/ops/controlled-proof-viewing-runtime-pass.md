@@ -159,7 +159,7 @@ Applicant and non-reviewer boundary:
 ## Remaining Limitations
 
 - signed-URL proof viewing works, but inline preview remains intentionally deferred
-- no proof retention automation yet
+- proof retention cleanup foundation exists, but scheduled/runtime deletion automation still remains deferred until its migration is pushed and a trigger path is implemented
 - no AI or OCR
 - no automatic approval
 - no final airline-domain policy
@@ -174,3 +174,8 @@ Applicant and non-reviewer boundary:
 3. Finalized privacy and legal copy before real user uploads.
 4. Custom SMTP and auth email branding before public work-email delivery.
 5. Claim-gated community and room rollout after the privacy and verification surfaces are fully settled.
+
+The next privacy-critical design step is documented in:
+
+- [Proof Retention Deletion Automation Design](../epochs/proof-retention-deletion-automation-design.md)
+- [Proof Retention Deletion Cleanup Foundation](../epochs/proof-retention-deletion-cleanup-foundation.md)
