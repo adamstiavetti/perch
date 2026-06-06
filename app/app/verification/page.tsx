@@ -11,10 +11,7 @@ import {
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
-import {
-  submitRedactedProofVerificationAction,
-  submitWorkEmailVerificationAction,
-} from "../../../src/lib/verification/actions";
+import { submitWorkEmailVerificationAction } from "../../../src/lib/verification/actions";
 import { getCurrentVerificationSurfaceContext } from "../../../src/lib/verification/server";
 import {
   formatClaimDisplayValue,
@@ -40,7 +37,7 @@ export default async function VerificationPage({ searchParams }: VerificationPag
   if (!env.enabled) {
     return (
       <AuthCard
-        eyebrow="Epoch 04 Verification"
+        eyebrow="Verification"
         title="Verification needs Supabase auth"
         description="This verification surface depends on the Supabase auth configuration used by the private web app."
         error="Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY to exercise runtime verification flows."
@@ -88,17 +85,18 @@ export default async function VerificationPage({ searchParams }: VerificationPag
 
   return (
     <AuthCard
-      eyebrow="Epoch 04 Verification"
-      title="Verification status and method guidance"
-      description="Verification is separate from signup, profile completion, and beta access. This page shows your verification status and the currently supported verification paths."
+      eyebrow="First-Base Access Planning"
+      title="Airline-email access status"
+      description="jmpseat is moving general app eligibility toward confirmed approved airline employee email. Badge, document, and proof upload are frozen as forward access paths."
       error={searchError ?? verificationContext.loadError ?? undefined}
       message={message}
       footer={
         <p className={authStyles.hint}>
           jmpseat uses no employer-system lookup and does not ask reviewers to
           use employer systems or internal directories. Work email is not
-          public, and redacted proof stays private with short retention and
-          strict redaction rules in this bounded upload slice.
+          public. Future restricted-board access is separate from general
+          airline-email eligibility and will use board/community-admin approval
+          instead of badge or document upload.
         </p>
       }
     >
@@ -111,16 +109,17 @@ export default async function VerificationPage({ searchParams }: VerificationPag
           <div className={styles.pillRow}>
             <span className={styles.pill}>Account signup is separate</span>
             <span className={styles.pill}>Profile completion is separate</span>
-            <span className={styles.pill}>Beta access is separate</span>
+            <span className={styles.pill}>Airline employee email is the forward path</span>
+            <span className={styles.pill}>Proof upload is frozen</span>
           </div>
         </section>
 
         <section className={styles.section} aria-labelledby="verification-requests-title">
           <h2 id="verification-requests-title" className={styles.sectionTitle}>
-            Current request and claim status
+            Legacy request and claim status
           </h2>
           {verificationContext.requests.length === 0 ? (
-            <p className={styles.sectionText}>No verification request yet.</p>
+            <p className={styles.sectionText}>No legacy verification request on file.</p>
           ) : (
             <ul className={styles.list}>
               {verificationContext.requests.map((request) => (
@@ -139,7 +138,9 @@ export default async function VerificationPage({ searchParams }: VerificationPag
           {verificationContext.claims.length > 0 ? (
             <>
               <p className={styles.sectionText}>
-                Approved claims are separate from self-declared profile fields.
+                Existing approved claims remain historical account status until
+                future airline-email access state is implemented. Restricted
+                board access remains separate.
               </p>
               <ul className={styles.list}>
                 {verificationContext.claims.map((claim) => (
@@ -159,20 +160,23 @@ export default async function VerificationPage({ searchParams }: VerificationPag
 
         <section className={styles.section} aria-labelledby="work-email-title">
           <h2 id="work-email-title" className={styles.sectionTitle}>
-            Work-email verification
+            Airline employee email
           </h2>
           <p className={styles.sectionText}>
-            Work-email verification checks access to an approved airline-controlled domain where available. Work email may be different from your login email, and your work email is not public.
+            Confirmed approved airline employee email is the intended
+            general-access direction for jmpseat. It may be different from your
+            login email, and your employee email is not public.
           </p>
           <p className={styles.sectionText}>
-            This path is for broad airline-worker verification and can support
-            an airline-specific claim later. Role and base claims remain
-            separate and are not proven by work email alone.
+            This request path tracks airline-email eligibility foundations only.
+            It does not implement the launch gate, does not grant access
+            automatically, and does not prove role, base, or restricted-board
+            membership.
           </p>
           <p className={styles.sectionText}>
-            Only approved domains are currently supported. Work-email request
-            creation does not send a custom verification email yet and does not
-            issue claims automatically.
+            Only approved airline-controlled domains are currently supported.
+            Work-email request creation does not send a custom verification
+            email yet and does not issue claims automatically.
           </p>
           <p className={styles.sectionText}>{workEmailState.description}</p>
           <form className={styles.form} action={submitWorkEmailVerificationAction}>
@@ -202,94 +206,23 @@ export default async function VerificationPage({ searchParams }: VerificationPag
 
         <section className={styles.section} aria-labelledby="proof-title">
           <h2 id="proof-title" className={styles.sectionTitle}>
-            Redacted badge or proof
+            Proof upload is frozen
           </h2>
           <p className={styles.sectionText}>
-            Redacted proof is now a bounded upload path for human review. It
-            does not guarantee approval, does not issue claims automatically,
-            and does not use any employer-system lookup.
+            jmpseat no longer asks normal users to upload badges, proof files,
+            redacted documents, employment screenshots, or similar sensitive
+            evidence as a forward access path.
           </p>
           <p className={styles.sectionText}>
-            Upload only a redacted JPEG or PNG under 5 MB. Raw proof stays
-            private, is intended for short retention, and is reviewed by humans
-            rather than AI.
+            Existing proof infrastructure remains historical, runtime-applied
+            safety and cleanup infrastructure. This page does not expose a new
+            proof upload form or proof-review call to action.
           </p>
           <p className={styles.sectionText}>
-            Include the airline name reviewers should use for routing. That
-            airline value is self-declared review context only. It is not proof
-            by itself, is not treated as a verified claim, and does not grant
-            protected access.
-          </p>
-          <form
-            className={styles.form}
-            action={submitRedactedProofVerificationAction}
-            encType="multipart/form-data"
-          >
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="proof-file">
-                Redacted proof image
-              </label>
-              <input
-                className={styles.input}
-                id="proof-file"
-                name="proof_file"
-                type="file"
-                accept="image/jpeg,image/png"
-                required
-              />
-            </div>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="requested-airline">
-                Requested airline for reviewer routing
-              </label>
-              <input
-                className={styles.input}
-                id="requested-airline"
-                name="requested_airline"
-                type="text"
-                placeholder="American Airlines"
-                defaultValue={verificationContext.proofRoutingAirline ?? ""}
-                required
-              />
-              <p className={styles.muted}>
-                This value may be prefilled from your profile claimed airline.
-                You can edit it here. It stays self-declared and unverified
-                unless a reviewer later approves a separate claim.
-              </p>
-            </div>
-            <div className={styles.checkboxField}>
-              <input
-                id="redaction-acknowledged"
-                name="redaction_acknowledged"
-                type="checkbox"
-                required
-              />
-              <label
-                className={styles.checkboxLabel}
-                htmlFor="redaction-acknowledged"
-              >
-                I confirm I redacted employee IDs, badge numbers, barcodes, QR
-                codes, badge backsides, security/access markings, passenger or
-                customer information, trip or schedule screenshots, and crew
-                hotel information before uploading.
-              </label>
-            </div>
-            <button className={styles.button} type="submit">
-              Upload redacted proof for review
-            </button>
-          </form>
-          <ul className={styles.list}>
-            <li className={styles.listItem}>Redact employee IDs.</li>
-            <li className={styles.listItem}>Redact badge numbers.</li>
-            <li className={styles.listItem}>Redact barcodes and QR codes.</li>
-            <li className={styles.listItem}>Do not upload badge backsides or security/access markings.</li>
-            <li className={styles.listItem}>Do not upload passenger or customer info.</li>
-            <li className={styles.listItem}>Do not upload trip or schedule screenshots.</li>
-            <li className={styles.listItem}>Do not upload crew hotel info.</li>
-          </ul>
-          <p className={styles.muted}>
-            Reviewer proof viewing, signed downloads, and image previews remain
-            deferred. Role and base claims also remain separate or later steps.
+            General app and general baseboard access should use confirmed
+            approved airline employee email. Restricted boards remain separate
+            and will require board/community-admin approval rather than
+            badge-document upload.
           </p>
         </section>
       </div>

@@ -16,9 +16,9 @@ test("verification surface summary shows no-request state when the user has no v
     }),
     {
       state: "no_request",
-      title: "No verification request yet",
+      title: "No airline-email access request yet",
       description:
-        "Your account can exist without worker verification. When verification opens for your path, this page will show request status and approved claims here.",
+        "Your account can exist without a legacy proof request. General app eligibility is moving toward confirmed approved airline employee email, not badge or proof upload.",
     },
   );
 });
@@ -32,9 +32,9 @@ test("verification surface summary prioritizes pending and needs-resubmission st
     }),
     {
       state: "pending",
-      title: "Verification is in progress",
+      title: "Legacy verification request is in progress",
       description:
-        "A verification request exists, but no approved claim has been issued yet.",
+        "A verification request exists, but no approved claim has been issued yet. This status remains historical and does not replace the airline-email access model.",
     },
   );
 
@@ -46,9 +46,9 @@ test("verification surface summary prioritizes pending and needs-resubmission st
     }),
     {
       state: "needs_resubmission",
-      title: "Verification needs resubmission",
+      title: "Legacy verification needs follow-up",
       description:
-        "A reviewer or verification rule flagged your current submission as incomplete or unsafe, so you should expect to resubmit a safer verification method later.",
+        "A legacy request was marked incomplete or unsafe. Proof upload remains frozen for forward access, and future general eligibility should use confirmed approved airline employee email.",
     },
   );
 });
@@ -62,9 +62,9 @@ test("verification surface summary shows approved state when approved claims exi
     }),
     {
       state: "approved",
-      title: "Verification claim is approved",
+      title: "Historical verification claim is approved",
       description:
-        "At least one verification claim has been approved. Airline, role, and base claims may still remain separate or arrive later.",
+        "At least one historical verification claim has been approved. Future general app eligibility should still move through confirmed approved airline employee email, and restricted boards remain separate.",
     },
   );
 });
@@ -78,9 +78,9 @@ test("verification surface summary can show a rejected request state", () => {
     }),
     {
       state: "rejected",
-      title: "Verification request was rejected",
+      title: "Legacy verification request was rejected",
       description:
-        "A prior verification request was rejected, so this page should guide your next safe verification step instead of implying approval.",
+        "A prior request was rejected. Forward access should use airline-email eligibility instead of treating proof review as the launch path.",
     },
   );
 });
@@ -92,7 +92,7 @@ test("work-email surface state explains unavailable or deferred self-serve submi
       kind: "unsupported",
       title: "No supported work-email domains are currently available",
       description:
-        "Work-email verification is supported only where an approved airline-controlled domain has been configured. This beta does not expose any supported domains for self-serve verification yet.",
+        "Airline-email verification is supported only where an approved airline-controlled domain has been configured. No configured domain is available for self-serve request tracking yet.",
     },
   );
 
@@ -100,39 +100,38 @@ test("work-email surface state explains unavailable or deferred self-serve submi
     getWorkEmailSurfaceState({ approvedDomainCount: 2 }),
     {
       kind: "available",
-      title: "Work-email verification is available for supported domains",
+      title: "Airline-email request tracking is available for supported domains",
       description:
-        "Approved domains can start a work-email verification request here, but this ticket still stops short of email delivery, automatic approval, or claim issuance.",
+        "Approved domains can start an airline-email request here, but this ticket still stops short of email delivery, automatic approval, launch-gate access, or claim issuance.",
     },
   );
 });
 
-test("/app/verification copy stays bounded to status, work-email guidance, and redacted proof upload rules", () => {
+test("/app/verification copy freezes proof upload while preserving airline-email guidance", () => {
   const source = readFileSync(
     new URL("../../app/app/verification/page.tsx", import.meta.url),
     "utf8",
   );
 
-  assert.match(source, /verification is separate from signup, profile completion, and beta access/i);
-  assert.match(source, /work email may be different from your login email/i);
+  assert.match(source, /confirmed approved airline employee email/i);
+  assert.match(source, /employee email is not public/i);
+  assert.match(source, /does not implement the launch gate/i);
+  assert.match(source, /does not grant access\s+automatically/i);
   assert.match(source, /approved airline-controlled domain/i);
-  assert.match(source, /work email is not public/i);
-  assert.match(source, /only approved domains are currently supported/i);
+  assert.match(source, /only approved airline-controlled domains are currently supported/i);
   assert.match(source, /submit work-email verification request/i);
   assert.match(source, /no employer-system lookup/i);
-  assert.match(source, /Upload redacted proof for review/i);
-  assert.match(source, /type="file"/i);
-  assert.match(source, /accept="image\/jpeg,image\/png"/i);
-  assert.match(source, /Requested airline for reviewer routing/i);
-  assert.match(source, /self-declared review context only/i);
-  assert.match(source, /not treated as a verified claim/i);
-  assert.match(source, /reviewed by humans\s+rather than AI/i);
-  assert.match(source, /does not guarantee approval/i);
-  assert.match(source, /short retention/i);
-  assert.match(source, /employee IDs/i);
-  assert.match(source, /badge numbers/i);
-  assert.match(source, /barcodes/i);
-  assert.match(source, /QR codes/i);
-  assert.match(source, /crew hotel info/i);
+  assert.match(source, /Proof upload is frozen/i);
+  assert.match(source, /no longer asks normal users to upload badges/i);
+  assert.match(source, /runtime-applied\s+safety and cleanup infrastructure/i);
+  assert.match(source, /community-admin approval/i);
+  assert.doesNotMatch(source, /submitRedactedProofVerificationAction/i);
+  assert.doesNotMatch(source, /encType="multipart\/form-data"/i);
+  assert.doesNotMatch(source, /name="proof_file"/i);
+  assert.doesNotMatch(source, /type="file"/i);
+  assert.doesNotMatch(source, /accept="image\/jpeg,image\/png"/i);
+  assert.doesNotMatch(source, /Upload redacted proof for review/i);
+  assert.doesNotMatch(source, /Requested airline for reviewer routing/i);
+  assert.doesNotMatch(source, /employee IDs|badge numbers|barcodes|QR codes|crew hotel info/i);
   assert.doesNotMatch(source, /public url|download button|automatic approval|openai|ai pre-check/i);
 });

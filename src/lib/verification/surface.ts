@@ -70,44 +70,44 @@ export function getVerificationSurfaceSummary({
   if (requestStatuses.includes("needs_resubmission")) {
     return {
       state: "needs_resubmission",
-      title: "Verification needs resubmission",
+      title: "Legacy verification needs follow-up",
       description:
-        "A reviewer or verification rule flagged your current submission as incomplete or unsafe, so you should expect to resubmit a safer verification method later.",
+        "A legacy request was marked incomplete or unsafe. Proof upload remains frozen for forward access, and future general eligibility should use confirmed approved airline employee email.",
     };
   }
 
   if (claimStatuses.includes("approved")) {
     return {
       state: "approved",
-      title: "Verification claim is approved",
+      title: "Historical verification claim is approved",
       description:
-        "At least one verification claim has been approved. Airline, role, and base claims may still remain separate or arrive later.",
+        "At least one historical verification claim has been approved. Future general app eligibility should still move through confirmed approved airline employee email, and restricted boards remain separate.",
     };
   }
 
   if (requestStatuses.includes("rejected")) {
     return {
       state: "rejected",
-      title: "Verification request was rejected",
+      title: "Legacy verification request was rejected",
       description:
-        "A prior verification request was rejected, so this page should guide your next safe verification step instead of implying approval.",
+        "A prior request was rejected. Forward access should use airline-email eligibility instead of treating proof review as the launch path.",
     };
   }
 
   if (requestStatuses.length > 0) {
     return {
       state: "pending",
-      title: "Verification is in progress",
+      title: "Legacy verification request is in progress",
       description:
-        "A verification request exists, but no approved claim has been issued yet.",
+        "A verification request exists, but no approved claim has been issued yet. This status remains historical and does not replace the airline-email access model.",
     };
   }
 
   return {
     state: "no_request",
-    title: "No verification request yet",
+    title: "No airline-email access request yet",
     description:
-      "Your account can exist without worker verification. When verification opens for your path, this page will show request status and approved claims here.",
+      "Your account can exist without a legacy proof request. General app eligibility is moving toward confirmed approved airline employee email, not badge or proof upload.",
   };
 }
 
@@ -121,25 +121,25 @@ export function getWorkEmailSurfaceState({
       kind: "unsupported",
       title: "No supported work-email domains are currently available",
       description:
-        "Work-email verification is supported only where an approved airline-controlled domain has been configured. This beta does not expose any supported domains for self-serve verification yet.",
+        "Airline-email verification is supported only where an approved airline-controlled domain has been configured. No configured domain is available for self-serve request tracking yet.",
     };
   }
 
   return {
     kind: "available",
-    title: "Work-email verification is available for supported domains",
+    title: "Airline-email request tracking is available for supported domains",
     description:
-      "Approved domains can start a work-email verification request here, but this ticket still stops short of email delivery, automatic approval, or claim issuance.",
+      "Approved domains can start an airline-email request here, but this ticket still stops short of email delivery, automatic approval, launch-gate access, or claim issuance.",
   };
 }
 
 export function formatVerificationMethodLabel(method: VerificationMethod | string | null | undefined) {
   if (method === "work_email") {
-    return "Work email";
+    return "Airline employee email";
   }
 
   if (method === "redacted_badge_or_proof") {
-    return "Redacted badge or proof";
+    return "Legacy proof review";
   }
 
   return "Unknown method";

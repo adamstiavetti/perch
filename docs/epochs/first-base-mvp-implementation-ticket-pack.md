@@ -43,8 +43,8 @@ This pack is based on:
 
 Recommended order:
 
-1. `FBMVP-T01` Freeze user-facing proof verification surfaces.
-2. `FBMVP-T02` Airline-email verification access state design/implementation.
+1. `FBMVP-T01` Freeze user-facing proof verification surfaces. Implemented locally; see `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
+2. `FBMVP-T02` Airline-email verification access state design/implementation. Recommended next ticket.
 3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation.
 4. `FBMVP-T04` Onboarding/signup flow update.
 5. `FBMVP-T05` Base and board data model design.
@@ -61,6 +61,8 @@ Recommended order:
 ## 5. Per-Ticket Detail
 
 ### FBMVP-T01 Freeze User-Facing Proof Verification Surfaces
+
+Status: implemented and validated locally; stop before commit for review. See `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
 
 Goal: Hide or disable proof upload from normal user flows and update verification copy so proof upload is no longer presented as a forward app-access path.
 
