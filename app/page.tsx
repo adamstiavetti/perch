@@ -12,6 +12,8 @@ const TRUST_ITEMS = [
   "built for airline life",
 ] as const;
 
+const BETA_ACCESS_HREF = "/login?next=/app";
+
 const FEATURE_CARDS = [
   {
     label: "base",
@@ -82,6 +84,9 @@ export default function Home() {
             <a className={styles.wordmark} href="#top" aria-label="jmpseat. home">
               jmpseat.
             </a>
+            <Link className={styles.betaAccessLink} href={BETA_ACCESS_HREF}>
+              Beta Access
+            </Link>
           </header>
 
           <div id="top" className={styles.heroContent}>

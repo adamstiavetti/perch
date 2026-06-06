@@ -12,7 +12,11 @@ test("public waitlist page uses restored editorial card imagery and airline life
 
   assert.match(pageSource, /headlineAccent}>airline life\./);
   assert.match(pageSource, /Trusted base intel and layover knowledge for airline life\./);
+  assert.match(pageSource, /Beta Access/);
+  assert.match(pageSource, /\/login\?next=\/app/);
   assert.doesNotMatch(pageSource, /invite-only/);
+  assert.doesNotMatch(pageSource, /proof upload|badge upload|document upload/i);
+  assert.doesNotMatch(pageSource, /access-hold|redeemBetaInviteCode|privateShell/i);
   assert.match(pageSource, /"\/jmpseat\/base-boards-v2\.png"/);
   assert.match(pageSource, /"\/jmpseat\/layover-boards-v2\.png"/);
   assert.match(pageSource, /"\/jmpseat\/verified-rooms-v2\.png"/);

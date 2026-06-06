@@ -51,25 +51,38 @@
   text-decoration: none;
 }
 
-.inviteBadge {
+.betaAccessLink {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.72rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 1rem;
+  border-radius: 0.85rem;
   background: rgba(5, 10, 18, 0.62);
-  color: #f6a31a;
-  font-size: 1rem;
-  font-weight: 600;
+  color: #ffbd4d;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
   backdrop-filter: blur(16px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+  transition:
+    border-color 120ms ease,
+    background 120ms ease,
+    color 120ms ease,
+    transform 120ms ease;
 }
 
-.badgeIcon {
-  width: 1.25rem;
-  height: 1.25rem;
-  flex: 0 0 auto;
+.betaAccessLink:hover {
+  border-color: rgba(255, 189, 77, 0.5);
+  background: rgba(11, 17, 27, 0.76);
+  color: #ffd48a;
+  transform: translateY(-1px);
+}
+
+.betaAccessLink:focus-visible {
+  outline: 3px solid rgba(255, 196, 92, 0.92);
+  outline-offset: 3px;
 }
 
 .heroContent {
