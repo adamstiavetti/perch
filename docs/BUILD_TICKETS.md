@@ -37,6 +37,7 @@ Supplemental epoch-specific ticket packs:
 - [First-Base MVP Scope](strategy/first-base-mvp-scope.md) - defines the first complete base launch package, including airline-email access, boards, posting/Q&A, moderation expectations, trust copy, and launch boundaries.
 - [Community Admin Responsibilities / Disclaimer Policy](strategy/community-admin-responsibilities-disclaimer-policy.md) - defines board-scoped community-admin responsibilities, limits, privacy boundaries, non-sponsorship disclaimers, abuse controls, and escalation expectations.
 - [Launch-Readiness Gate Transition Plan](strategy/launch-readiness-gate-transition-plan.md) - defines the explicit transition from private-testing beta gates to first-base launch gates without removing beta too early, requiring one-by-one beta grants, or bypassing airline-email verification.
+- [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence and recommends starting with `FBMVP-T01` proof-surface freeze.
 - [E05-T01: Operator Access Model Decision](epochs/e05-operator-access-model-decision.md)
 - [E05-T02: Admin Shell And Navigation Foundation](epochs/e05-admin-shell-navigation-foundation.md)
 - [E05 Operator Grants Foundation](epochs/e05-operator-grants-foundation.md) - explicit operator grants plus a one-time protected bootstrap route for the zero-grant state.
@@ -79,7 +80,7 @@ Documentation hygiene reminder:
 - Future tickets should identify documentation impact and include docs-update acceptance criteria when applicable. See `PRODUCT_DELIVERY_OPERATING_MODEL.md`.
 - Current implementation work is paused for the product pivot. E05-T08 should not proceed until pivot planning is complete, and future tasks should not expand proof-upload verification unless explicitly instructed.
 - E05-T07 runtime proof is committed on `main`; if an older or parallel branch still has uncommitted E05-T07 runtime-proof docs, commit those before starting pivot planning.
-- Next pivot docs should focus on content/moderation policy if needed and the first implementation ticket pack after docs decisions are complete.
+- Next implementation work should follow the First-Base MVP Implementation Ticket Pack. Recommended first ticket: `FBMVP-T01 Freeze User-Facing Proof Verification Surfaces`; content/moderation policy can still be refined before live community launch if needed.
 
 Scalability guardrail:
 

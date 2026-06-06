@@ -27,7 +27,7 @@ Future Codex tasks must declare which epoch they belong to. Work that does not m
 - Operator grants foundation exists, the first operator bootstrap runtime pass is complete, approved-domain management is implemented and runtime-proven, reviewer-scope management is implemented and runtime-proven, verification audit inspection is implemented and runtime-proven, proof cleanup monitoring is implemented and runtime-proven, and protected manual proof cleanup controls are implemented and runtime-proven.
 - Waitlist CTA is wired through `NEXT_PUBLIC_WAITLIST_FORM_URL`.
 - Supabase-backed auth, profiles, beta access, verification, claims, reviewer queue, proof storage, proof viewing, and proof cleanup foundations exist.
-- Product direction has pivoted: forward app-level access should use confirmed approved airline employee email control, and restricted role/base board access should be community-admin managed rather than based on jmpseat proof-upload review. Proof upload is frozen as a forward product path, First-Base MVP scope is defined as the first complete base launch package, community-admin responsibilities/disclaimers are defined, and the private-testing-to-first-base-launch gate transition is defined. See `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, and `strategy/launch-readiness-gate-transition-plan.md`.
+- Product direction has pivoted: forward app-level access should use confirmed approved airline employee email control, and restricted role/base board access should be community-admin managed rather than based on jmpseat proof-upload review. Proof upload is frozen as a forward product path, First-Base MVP scope is defined as the first complete base launch package, community-admin responsibilities/disclaimers are defined, the private-testing-to-first-base-launch gate transition is defined, and the First-Base MVP implementation ticket pack now defines the forward `FBMVP` sequence. See `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, `strategy/launch-readiness-gate-transition-plan.md`, and `epochs/first-base-mvp-implementation-ticket-pack.md`.
 - No community functionality, AI product feature, payments, analytics SDK, or internal waitlist capture exists.
 - Discovery is desk-researched, not fully user-validated.
 - FA expert interview remains pending.
@@ -55,8 +55,8 @@ Future Codex tasks must declare which epoch they belong to. Work that does not m
 | 02 | Private App Foundation | Pending | Create locked private app shell behind splash page. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `NAMING_AND_INFORMATION_ARCHITECTURE.md`, `MILESTONE_EXECUTION_PLAN.md`, `TECHNICAL_ARCHITECTURE.md` | Private shell exists, route structure defined, no unauthorized access, no real community functionality. | Explicit approval required; M0 validation signal preferred first. | Decide after Epoch 00 feedback whether M1B is justified. |
 | 03 | Auth, Profiles, and Beta Access | Complete | Establish login, profile, invite-only beta access, and access gates. | `epochs/epoch-03-auth-account-beta-access-tickets.md`, `epochs/epoch-03-validation-and-handoff-review.md`, `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Auth implemented, beta access state exists, invited users can enter, non-invited users are blocked, auth remains separate from aviation verification. | Supabase operator setup and private-beta operations remain ongoing, but the approved implementation scope is complete. | Use the merged Epoch 03 handoff and runtime setup docs as the operator baseline. |
 | 04 | Worker Verification Foundation | Complete | Implement worker-verification foundation, claims, evidence handling rules, and human review baseline. | `VERIFICATION_METHOD_DECISION.md`, `epochs/epoch-04-worker-verification-foundation-tickets.md`, `epochs/epoch-04-exit-report.md`, `TRUST_AND_SAFETY.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Verification claim model exists, work-email and redacted-proof verification foundations are implemented, proof handling is private and retention-bounded, human review exists, controlled proof viewing exists, cleanup routes exist, claims-based authorization direction is explicit, and no employer-system lookup or AI final approval exists. | Production env/cron monitoring, final privacy/legal copy, custom SMTP/auth email branding, approved-domain tooling, reviewer-scope tooling, and cleanup monitoring remain follow-ups. | Move to Epoch 05 Operator/Admin Tooling Foundation unless a verification bug appears. |
-| 05 | Operator/Admin Tooling Foundation | Paused / runtime-proven foundation | Preserve the completed operator/admin verification foundation while product direction pivots away from proof-upload verification. | `epochs/epoch-05-operator-admin-tooling-tickets.md`, `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, `strategy/launch-readiness-gate-transition-plan.md`, `epochs/e05-operator-access-model-decision.md`, `epochs/e05-admin-shell-navigation-foundation.md`, `epochs/e05-operator-grants-foundation.md`, `epochs/e05-approved-domain-management.md`, `epochs/e05-reviewer-scope-management.md`, `epochs/e05-verification-audit-inspection.md`, `epochs/e05-proof-cleanup-monitoring.md`, `epochs/e05-protected-manual-proof-cleanup-controls.md`, `ops/operator-grants-bootstrap-runtime-pass.md`, `ops/approved-domain-management-runtime-pass.md`, `ops/reviewer-scope-management-runtime-pass.md`, `ops/verification-audit-inspection-runtime-pass.md`, `ops/proof-cleanup-monitoring-runtime-pass.md`, `ops/protected-manual-proof-cleanup-controls-runtime-pass.md`, `epochs/epoch-04-exit-report.md`, `BUILD_TICKETS.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Historical operator/admin verification tooling remains documented and runtime-proven; forward planning defines airline-email access, board memberships, community-admin authority, proof-system freeze/deprecation, First-Base MVP scope, community-admin responsibilities/disclaimers, and the launch-readiness gate transition. | E05-T01 through E05-T07 are implemented/runtime-proven, but additional proof-upload/proof-cleanup expansion is frozen. E05-T08 should not proceed until pivot planning is complete. | Complete docs-only pivot planning before new implementation: content/moderation policy if needed and first implementation ticket pack. |
-| 05B | Community Access Architecture | Pending pivot planning | Define general baseboards, restricted boards, board memberships, board access requests, community-admin authority, and First-Base MVP launch boundaries under the new email-verification direction. | `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, `strategy/launch-readiness-gate-transition-plan.md`, `MVP_SCOPE.md`, `BUILD_TICKETS.md`, `FEATURE_ROADMAP.md`, `DISCOVERY_RESEARCH_REPORT_001.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Docs define airline-email app access, general baseboard access, restricted board membership, community-admin responsibilities/disclaimers, First-Base MVP scope, launch-readiness gate transition, moderation/audit needs, and legacy proof-system freeze/deprecation. | Pivot decisions are not yet translated into implementation tickets. | Do remaining docs-only pivot planning before implementing boards, memberships, or community-admin tools. |
+| 05 | Operator/Admin Tooling Foundation | Paused / runtime-proven foundation | Preserve the completed operator/admin verification foundation while product direction pivots away from proof-upload verification. | `epochs/epoch-05-operator-admin-tooling-tickets.md`, `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, `strategy/launch-readiness-gate-transition-plan.md`, `epochs/first-base-mvp-implementation-ticket-pack.md`, `epochs/e05-operator-access-model-decision.md`, `epochs/e05-admin-shell-navigation-foundation.md`, `epochs/e05-operator-grants-foundation.md`, `epochs/e05-approved-domain-management.md`, `epochs/e05-reviewer-scope-management.md`, `epochs/e05-verification-audit-inspection.md`, `epochs/e05-proof-cleanup-monitoring.md`, `epochs/e05-protected-manual-proof-cleanup-controls.md`, `ops/operator-grants-bootstrap-runtime-pass.md`, `ops/approved-domain-management-runtime-pass.md`, `ops/reviewer-scope-management-runtime-pass.md`, `ops/verification-audit-inspection-runtime-pass.md`, `ops/proof-cleanup-monitoring-runtime-pass.md`, `ops/protected-manual-proof-cleanup-controls-runtime-pass.md`, `epochs/epoch-04-exit-report.md`, `BUILD_TICKETS.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Historical operator/admin verification tooling remains documented and runtime-proven; forward planning defines airline-email access, board memberships, community-admin authority, proof-system freeze/deprecation, First-Base MVP scope, community-admin responsibilities/disclaimers, launch-readiness gate transition, and the forward FBMVP ticket sequence. | E05-T01 through E05-T07 are implemented/runtime-proven, but additional proof-upload/proof-cleanup expansion is frozen. E05-T08 remains paused unless explicitly reactivated. | Follow the First-Base MVP Implementation Ticket Pack; recommended first ticket is `FBMVP-T01 Freeze User-Facing Proof Verification Surfaces`. |
+| 05B | Community Access Architecture | Pending implementation | Define and implement general baseboards, restricted boards, board memberships, board access requests, community-admin authority, and First-Base MVP launch boundaries under the new email-verification direction. | `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, `strategy/launch-readiness-gate-transition-plan.md`, `epochs/first-base-mvp-implementation-ticket-pack.md`, `MVP_SCOPE.md`, `BUILD_TICKETS.md`, `FEATURE_ROADMAP.md`, `DISCOVERY_RESEARCH_REPORT_001.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Docs define airline-email app access, general baseboard access, restricted board membership, community-admin responsibilities/disclaimers, First-Base MVP scope, launch-readiness gate transition, moderation/audit needs, legacy proof-system freeze/deprecation, and the ordered FBMVP implementation sequence. | Implementation blockers remain: first base, launch scope, included airline domains, MVP restricted boards, minimal profile fields, base self-selection, moderation scope, and first community-admin appointment owner. | Start `FBMVP-T01 Freeze User-Facing Proof Verification Surfaces` before building new board/community flows. |
 | 06 | Moderation, Reporting, and Admin | Pending | Implement safety foundation before real anonymous posting. | `TRUST_AND_SAFETY.md`, `LEGAL_POLICY_REQUIREMENTS.md`, `BETA_READINESS_CHECKLIST.md`, `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Report flow, moderation queue, admin actions, emergency escalation, and audit/security events exist. | Must precede real anonymous posting and beta UGC. | Design admin/moderation slice before enabling posting. |
 | 11 | Native Mobile Client | Future | Add a native phone app after the core web loop, access model, and moderation foundations are validated. | `MOBILE_APP_STRATEGY.md`, `TECHNICAL_ARCHITECTURE.md`, `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md` | Mobile implementation begins only after core backend, auth, authorization, verification, and community rules are stable enough to reuse. | Web MVP and private-beta product loop are not validated yet. | Keep current implementation web-first while avoiding web-only architecture lock-in. |
 | 07 | Limited Private Beta | Pending | Invite controlled users and validate product behavior. | `PRIVATE_BETA_OPERATING_PLAN.md`, `BETA_READINESS_CHECKLIST.md`, `M0_VALIDATION_OPERATING_PACKET.md` | First beta community selected, first users invited, ambassadors identified, moderation coverage exists, activation/retention/contribution measured. | First community, first 50, policy minimums, verification, moderation, and admin controls not ready. | Continue Epoch 00 validation and policy readiness. |
@@ -301,6 +301,7 @@ Primary docs:
 - `strategy/first-base-mvp-scope.md`
 - `strategy/community-admin-responsibilities-disclaimer-policy.md`
 - `strategy/launch-readiness-gate-transition-plan.md`
+- `epochs/first-base-mvp-implementation-ticket-pack.md`
 - `ops/operator-grants-bootstrap-runtime-pass.md`
 - `ops/approved-domain-management-runtime-pass.md`
 - `ops/proof-cleanup-monitoring-runtime-pass.md`
@@ -339,10 +340,12 @@ Pivot note:
   `strategy/community-admin-responsibilities-disclaimer-policy.md`.
 - Launch-readiness gate transition behavior is defined in
   `strategy/launch-readiness-gate-transition-plan.md`.
+- The forward First-Base MVP implementation sequence is defined in
+  `epochs/first-base-mvp-implementation-ticket-pack.md`.
 
 ### Epoch 05B - Community Access Architecture
 
-Status: pending pivot planning.
+Status: pending implementation.
 
 Purpose:
 
@@ -365,6 +368,7 @@ Primary docs:
 - `strategy/first-base-mvp-scope.md`
 - `strategy/community-admin-responsibilities-disclaimer-policy.md`
 - `strategy/launch-readiness-gate-transition-plan.md`
+- `epochs/first-base-mvp-implementation-ticket-pack.md`
 
 Exit criteria:
 
@@ -374,11 +378,12 @@ Exit criteria:
 - First-Base MVP scope is defined.
 - Community-admin responsibilities and disclaimers are defined.
 - Launch-readiness gate transition is defined.
+- First-Base MVP implementation ticket sequence is defined.
 - Proof-system freeze/deprecation plan exists before user-facing flow changes.
 
 Blockers:
 
-- Pivot decisions are not yet translated into implementation tickets.
+- Open implementation decisions remain: first base, launch scope, included airline domains, MVP restricted boards, minimal profile fields, base self-selection, moderation scope, and first community-admin appointment owner.
 - Moderation/admin readiness still gates real anonymous posting.
 
 ### Epoch 06 - Moderation, Reporting, and Admin
@@ -516,13 +521,12 @@ Exit criteria:
 - Use `strategy/first-base-mvp-scope.md` as the First-Base MVP launch-package source of truth.
 - Use `strategy/community-admin-responsibilities-disclaimer-policy.md` as the community-admin responsibilities, limits, privacy, disclaimer, and abuse-control source of truth.
 - Use `strategy/launch-readiness-gate-transition-plan.md` as the private-testing beta gate to first-base launch gate transition source of truth.
+- Use `epochs/first-base-mvp-implementation-ticket-pack.md` as the forward First-Base MVP implementation ticket sequence.
 - Do not start E05-T08 until pivot planning is complete.
 - Do not expand proof-upload verification unless explicitly instructed.
 - E05-T07 runtime proof is committed on `main`; older or parallel branches with
   uncommitted E05-T07 proof docs should finish that handoff before pivot work.
-- Create docs-only pivot planning artifacts:
-  - content/moderation policy if needed
-  - first implementation ticket pack after docs decisions are complete
+- Start implementation with `FBMVP-T01 Freeze User-Facing Proof Verification Surfaces`; content/moderation policy can still be refined before live community launch if needed.
 - Continue product validation outreach in parallel:
   - submit and verify a Tally test response if not already recorded
   - review the live site on mobile
@@ -567,7 +571,7 @@ Exit criteria:
 
 ## 11. Recommended Next Codex Task
 
-Recommended next task: `docs: define content/moderation policy for first-base launch` if policy gaps remain, otherwise `docs: prepare first implementation ticket pack`.
+Recommended next task: `FBMVP-T01 Freeze User-Facing Proof Verification Surfaces`.
 
 Use Plan/Goals: yes.
 
