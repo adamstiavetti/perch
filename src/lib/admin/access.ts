@@ -19,6 +19,7 @@ export const OPERATOR_SCOPE_VALUES = [
   "operator.monitor_proof_cleanup",
   "operator.run_proof_cleanup",
   "operator.manage_operator_access",
+  "operator.manage_beta_invites",
 ] as const;
 
 export type OperatorScope = (typeof OPERATOR_SCOPE_VALUES)[number];

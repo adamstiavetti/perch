@@ -7,11 +7,16 @@ import {
   BETA_ACCESS_ACTIVE_MESSAGE,
   type BetaAccessStatus,
 } from "../../../src/lib/betaAccess/betaAccess";
+import {
+  getBetaInviteRedemptionMessage,
+  redeemBetaInviteCodeAction,
+} from "../../../src/lib/betaAccess/inviteCodes";
 import { getCurrentAppAccessContext } from "../../../src/lib/betaAccess/server";
 import {
   getPrivateAppGateResult,
   getPrivateRouteAuditResult,
 } from "../../../src/lib/privateApp/access";
+import { doesLaunchModeRequireBeta } from "../../../src/lib/privateApp/launchMode";
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
@@ -71,6 +76,7 @@ export default async function AccessHoldPage({
   const params = await searchParams;
   const env = getSupabaseBrowserEnv();
   const searchError = getValue(params.error);
+  const inviteResult = getValue(params.invite_result);
 
   if (!env.enabled) {
     return (
@@ -114,6 +120,11 @@ export default async function AccessHoldPage({
   const airlineEmailStatusMessage = getAirlineEmailStatusMessage(
     context.airlineEmailAccessState.status,
   );
+  const inviteMessage = getBetaInviteRedemptionMessage(inviteResult);
+  const canShowInviteForm =
+    doesLaunchModeRequireBeta(context.launchMode) &&
+    !context.betaActive &&
+    context.airlineEmailAccessState.airlineEmailVerified;
 
   return (
     <AuthCard
@@ -121,7 +132,10 @@ export default async function AccessHoldPage({
       title="jmpseat access is still on hold"
       description="Your profile is complete, but jmpseat app access now checks launch mode, beta access when required, and confirmed approved airline employee email eligibility separately."
       error={error}
-      message={`${getStatusMessage(context.betaStatus)} ${airlineEmailStatusMessage}`}
+      message={
+        inviteMessage ??
+        `${getStatusMessage(context.betaStatus)} ${airlineEmailStatusMessage}`
+      }
       footer={
         <p className={styles.hint}>
           We will notify you when private-testing beta access is approved.
@@ -130,6 +144,42 @@ export default async function AccessHoldPage({
         </p>
       }
     >
+      {canShowInviteForm ? (
+        <form className={styles.form} action={redeemBetaInviteCodeAction}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="invite_code">
+              Beta invite code
+            </label>
+            <input
+              className={styles.input}
+              id="invite_code"
+              name="invite_code"
+              type="text"
+              autoComplete="off"
+              inputMode="text"
+              placeholder="ABCD-EFGH-JKLM-NPQR"
+              required
+            />
+          </div>
+
+          <p className={styles.hint}>
+            Invite codes control private-testing capacity only. Your verified
+            airline employee email remains the eligibility check.
+          </p>
+
+          <button className={styles.button} type="submit">
+            Redeem invite
+          </button>
+        </form>
+      ) : null}
+
+      {!context.airlineEmailAccessState.airlineEmailVerified ? (
+        <p className={styles.hint}>
+          Beta invite codes do not replace airline-email verification. Confirm
+          an approved airline employee email before redeeming a code.
+        </p>
+      ) : null}
+
       <p className={styles.hint}>
         No badge upload, proof upload, verification files, or community access
         appears in this slice. Airline-email eligibility does not grant role,

@@ -27,6 +27,7 @@ export type BetaAccessRecord = {
   reason?: string | null;
   approved_at?: string | null;
   revoked_at?: string | null;
+  invite_code_id?: string | null;
 };
 
 export const BETA_ACCESS_ACTIVE_MESSAGE =

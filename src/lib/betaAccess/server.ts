@@ -38,6 +38,7 @@ type QueryBetaAccessRow = {
   reason: string | null;
   approved_at: string | null;
   revoked_at: string | null;
+  invite_code_id: string | null;
 };
 
 type QueryApprovedEmailDomainRow = {
@@ -181,7 +182,7 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       .maybeSingle<QueryProfileRow>(),
     supabase
       .from("beta_access")
-      .select("status, source, invited_email, reason, approved_at, revoked_at")
+      .select("status, source, invited_email, reason, approved_at, revoked_at, invite_code_id")
       .eq("user_id", user.id)
       .maybeSingle<QueryBetaAccessRow>(),
     supabase

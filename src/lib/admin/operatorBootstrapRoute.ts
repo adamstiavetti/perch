@@ -10,6 +10,7 @@ export const INITIAL_OPERATOR_BOOTSTRAP_SCOPES = [
   "operator.monitor_proof_cleanup",
   "operator.run_proof_cleanup",
   "operator.manage_operator_access",
+  "operator.manage_beta_invites",
 ] as const;
 
 type EnvSource = Record<string, string | undefined>;

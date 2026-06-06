@@ -47,7 +47,7 @@ Recommended order:
 1. `FBMVP-T01` Freeze user-facing proof verification surfaces. Implemented and merged; see `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
 2. `FBMVP-T02` Airline-email verification access state design/implementation. Helper implementation complete and merged; see `docs/epochs/fbmvp-t02-airline-email-verification-access-state-design.md` and `docs/epochs/fbmvp-t02-airline-email-verification-access-state-implementation.md`.
 3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation. Implemented and merged; see `docs/epochs/fbmvp-t03-private-testing-versus-first-base-launch-gate-implementation.md`.
-4. `FBMVP-T03A` Beta invite-code foundation decision. Decision doc complete; implementation pending.
+4. `FBMVP-T03A` Beta invite-code foundation. Implementation complete pending review/runtime proof; see `docs/strategy/beta-invite-code-foundation-decision.md` and `docs/epochs/fbmvp-t03a-beta-invite-code-foundation-implementation.md`.
 5. `FBMVP-T04` Onboarding/signup flow update.
 6. `FBMVP-T05` Base and board data model design.
 7. `FBMVP-T06` Board membership and access request model.
@@ -227,40 +227,42 @@ Stop-before-commit/review requirements:
 
 ### FBMVP-T03A Beta Invite-Code Foundation
 
-Status: decision doc complete; implementation pending. See `docs/strategy/beta-invite-code-foundation-decision.md`.
+Status: implementation complete pending review/runtime proof. See `docs/strategy/beta-invite-code-foundation-decision.md` and `docs/epochs/fbmvp-t03a-beta-invite-code-foundation-implementation.md`.
 
-Goal: Define the private-testing beta invite-code model before onboarding/signup work depends on invite-code copy, access-hold behavior, or beta-access grant semantics.
+Goal: Implement the private-testing beta invite-code foundation before onboarding/signup work depends on invite-code copy, access-hold behavior, or beta-access grant semantics.
 
-Decision scope:
+Implemented scope:
 
 - Batch-generated invite codes for private testing capacity control.
 - Single-use by default.
 - Random and non-personal by default.
-- Hashed storage after generation in any future implementation.
-- Operator-managed batches, pause/close/revoke behavior, safe counts, and audit requirements.
+- Hash-only storage after generation.
+- Operator-only server batch generation helper requiring `operator.manage_beta_invites`.
+- Batch pause/close/revoke states and code revoked/expired/redeemed states.
+- Safe audit event taxonomy for batch creation, redemption, failed redemption, and beta grants from invite redemption.
 - Redemption grants beta access only after server-side validation.
 - Invite codes never prove airline eligibility.
+- Access-hold redemption form appears only when beta access is required and airline-email eligibility is verified.
 
 Out of scope:
 
-- Code changes.
-- Migrations.
-- App-gate changes.
-- Launch-mode changes.
+- Full operator/admin invite-code UI.
+- FBMVP-T04 onboarding/signup changes.
+- Baseboards, board memberships, posting, or restricted-board gates.
+- App-gate changes beyond beta access becoming grantable through invite redemption.
+- Launch-mode behavior changes for `first_base_launch` or `broader_launch`.
 - Community-admin invite management.
 - Restricted-board access.
 - Proof upload or badge upload.
 
-Likely future files/areas:
+Implemented files/areas:
 
-- `supabase/migrations`
+- `supabase/migrations/20260606120000_add_beta_invite_code_foundation.sql`
 - `src/lib/betaAccess/*`
-- future beta invite generation/redemption helpers
 - `app/app/access-hold/page.tsx`
-- future operator/admin beta invite UI
 - beta access and private-app access tests
 
-Migration likely needed: yes, in a later reviewed implementation task for invite batches/codes. No migration is created by the decision task.
+Migration created: yes. It remains unapplied until a separate reviewed migration-apply/runtime-validation task.
 
 Authorization/security boundaries:
 
@@ -270,7 +272,7 @@ Authorization/security boundaries:
 - Plaintext invite codes must not be logged or stored after generation.
 - Redemption errors must not reveal whether a code exists, expired, was revoked, or was already redeemed in an enumeration-helpful way.
 
-Tests expected for future implementation:
+Tests expected:
 
 - Batch generation is operator-only and bounded.
 - Codes are single-use by default.
@@ -280,7 +282,7 @@ Tests expected for future implementation:
 - Invalid redemption failures are safe and generic.
 - Plaintext codes, secrets, tokens, and private identifiers are not logged or returned after generation.
 
-Runtime validation expected for future implementation:
+Runtime validation expected:
 
 - Runtime-prove operator batch generation, redemption, duplicate redemption denial, revoked/expired denial, and launch-mode boundaries without printing secrets, privileged identifiers, plaintext codes, or private user data.
 

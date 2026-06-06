@@ -20,6 +20,7 @@ test("operator scope list stays aligned with E05-T01", () => {
     "operator.monitor_proof_cleanup",
     "operator.run_proof_cleanup",
     "operator.manage_operator_access",
+    "operator.manage_beta_invites",
   ]);
 });
 
