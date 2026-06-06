@@ -1,18 +1,26 @@
 import type { User } from "@supabase/supabase-js";
 
-import { AUTH_ROUTES } from "../auth/routes";
+import { AUTH_ROUTES, sanitizeNextPath } from "../auth/routes";
+import { getPrivateAppGateResult } from "../privateApp/access";
+import { getJmpseatLaunchMode, type JmpseatLaunchMode } from "../privateApp/launchMode";
 import { getProfileCompletionState, type AppProfileRecord } from "../profile/profile";
 import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
 import { createClient } from "../supabase/server";
 import {
+  getCurrentAirlineEmailAccessState,
+  type AirlineEmailAccessState,
+} from "../verification/airlineEmailAccess";
+import {
   BETA_ACCESS_STORAGE_NOT_READY_MESSAGE,
   getBetaAccessState,
-  getPrivateAppPathForState,
   isBetaAccessActive,
   type BetaAccessRecord,
   type BetaAccessStatus,
 } from "./betaAccess";
+
+const AIRLINE_EMAIL_ACCESS_STORAGE_NOT_READY_MESSAGE =
+  "Airline-email verification storage is not ready yet. Apply the verification foundation migration before using airline-email app access gates.";
 
 type QueryProfileRow = {
   handle: string | null;
@@ -32,16 +40,53 @@ type QueryBetaAccessRow = {
   revoked_at: string | null;
 };
 
+type QueryApprovedEmailDomainRow = {
+  domain: string | null;
+  airline: string | null;
+  status: string | null;
+};
+
+type QueryVerificationRequestRow = {
+  id: string;
+  method: string | null;
+  status: string | null;
+  submitted_at: string | null;
+  reviewed_at: string | null;
+  expires_at: string | null;
+};
+
+type QueryVerificationEvidenceRow = {
+  request_id: string | null;
+  evidence_type: string | null;
+  status: string | null;
+  uploaded_at: string | null;
+  metadata: Record<string, unknown> | null;
+};
+
+type QueryVerificationClaimRow = {
+  request_id: string | null;
+  claim_type: string | null;
+  claim_value: string | null;
+  status: string | null;
+  verification_method: string | null;
+  approved_at: string | null;
+  expires_at: string | null;
+  revoked_at: string | null;
+};
+
 export type CurrentAppAccessContext = {
   authConfigured: boolean;
   user: User | null;
   profile: AppProfileRecord | null;
   betaAccess: BetaAccessRecord | null;
   hasCompletedProfile: boolean;
+  launchMode: JmpseatLaunchMode;
   betaStatus: BetaAccessStatus;
   betaActive: boolean;
+  airlineEmailAccessState: AirlineEmailAccessState;
   profileLoadError: string | null;
   betaLoadError: string | null;
+  airlineEmailLoadError: string | null;
 };
 
 function buildPath(path: string, params: Record<string, string | null | undefined>) {
@@ -61,8 +106,23 @@ export function getBetaAccessStorageErrorMessage() {
   return BETA_ACCESS_STORAGE_NOT_READY_MESSAGE;
 }
 
+function getAirlineEmailAccessStorageErrorMessage() {
+  return AIRLINE_EMAIL_ACCESS_STORAGE_NOT_READY_MESSAGE;
+}
+
+function getUnavailableAirlineEmailAccessState() {
+  return getCurrentAirlineEmailAccessState({
+    approvedDomains: [],
+    requests: [],
+    evidence: [],
+    claims: [],
+    loadError: getAirlineEmailAccessStorageErrorMessage(),
+  });
+}
+
 export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessContext> {
   const env = getSupabaseBrowserEnv();
+  const launchMode = getJmpseatLaunchMode();
 
   if (!env.enabled) {
     return {
@@ -71,10 +131,13 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       profile: null,
       betaAccess: null,
       hasCompletedProfile: false,
+      launchMode,
       betaStatus: "none",
       betaActive: false,
+      airlineEmailAccessState: getUnavailableAirlineEmailAccessState(),
       profileLoadError: null,
       betaLoadError: null,
+      airlineEmailLoadError: null,
     };
   }
 
@@ -91,43 +154,96 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       profile: null,
       betaAccess: null,
       hasCompletedProfile: false,
+      launchMode,
       betaStatus: "none",
       betaActive: false,
+      airlineEmailAccessState: getUnavailableAirlineEmailAccessState(),
       profileLoadError: userError?.message ?? null,
       betaLoadError: null,
+      airlineEmailLoadError: null,
     };
   }
 
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select(
-      "handle, display_name, claimed_airline, claimed_role, claimed_base, profile_completed_at",
-    )
-    .eq("id", user.id)
-    .maybeSingle<QueryProfileRow>();
+  const [
+    profileResult,
+    betaResult,
+    approvedDomainsResult,
+    verificationRequestsResult,
+    verificationEvidenceResult,
+    verificationClaimsResult,
+  ] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select(
+        "handle, display_name, claimed_airline, claimed_role, claimed_base, profile_completed_at",
+      )
+      .eq("id", user.id)
+      .maybeSingle<QueryProfileRow>(),
+    supabase
+      .from("beta_access")
+      .select("status, source, invited_email, reason, approved_at, revoked_at")
+      .eq("user_id", user.id)
+      .maybeSingle<QueryBetaAccessRow>(),
+    supabase
+      .from("approved_email_domains")
+      .select("domain, airline, status")
+      .eq("status", "active")
+      .returns<QueryApprovedEmailDomainRow[]>(),
+    supabase
+      .from("verification_requests")
+      .select("id, method, status, submitted_at, reviewed_at, expires_at")
+      .eq("user_id", user.id)
+      .order("submitted_at", { ascending: false })
+      .returns<QueryVerificationRequestRow[]>(),
+    supabase
+      .from("verification_evidence")
+      .select("request_id, evidence_type, status, uploaded_at, metadata")
+      .eq("user_id", user.id)
+      .order("uploaded_at", { ascending: false })
+      .returns<QueryVerificationEvidenceRow[]>(),
+    supabase
+      .from("verification_claims")
+      .select("request_id, claim_type, claim_value, status, verification_method, approved_at, expires_at, revoked_at")
+      .eq("user_id", user.id)
+      .order("approved_at", { ascending: false })
+      .returns<QueryVerificationClaimRow[]>(),
+  ]);
 
-  const profileCompletion = getProfileCompletionState(profile);
-
-  const { data: betaAccess, error: betaError } = await supabase
-    .from("beta_access")
-    .select("status, source, invited_email, reason, approved_at, revoked_at")
-    .eq("user_id", user.id)
-    .maybeSingle<QueryBetaAccessRow>();
-
-  const betaStatus = betaError ? "none" : getBetaAccessState(betaAccess);
+  const profileCompletion = getProfileCompletionState(profileResult.data);
+  const betaStatus = betaResult.error ? "none" : getBetaAccessState(betaResult.data);
+  const airlineEmailLoadError =
+    approvedDomainsResult.error ||
+    verificationRequestsResult.error ||
+    verificationEvidenceResult.error ||
+    verificationClaimsResult.error
+      ? getAirlineEmailAccessStorageErrorMessage()
+      : null;
+  const airlineEmailAccessState = getCurrentAirlineEmailAccessState({
+    approvedDomains: approvedDomainsResult.data ?? [],
+    requests: verificationRequestsResult.data ?? [],
+    evidence: verificationEvidenceResult.data ?? [],
+    claims: verificationClaimsResult.data ?? [],
+    profile: profileResult.data,
+    loginEmail: user.email ?? null,
+    betaActive: isBetaAccessActive(betaStatus),
+    loadError: airlineEmailLoadError,
+  });
 
   return {
     authConfigured: true,
     user,
-    profile: profile ?? null,
-    betaAccess: betaAccess ?? null,
-    hasCompletedProfile: profileError ? false : profileCompletion.isComplete,
+    profile: profileResult.data ?? null,
+    betaAccess: betaResult.data ?? null,
+    hasCompletedProfile: profileResult.error ? false : profileCompletion.isComplete,
+    launchMode,
     betaStatus,
     betaActive: isBetaAccessActive(betaStatus),
-    profileLoadError: profileError
+    airlineEmailAccessState,
+    profileLoadError: profileResult.error
       ? "Profile storage is not ready yet. Apply the profiles migration to this Supabase project before using account profiles."
       : null,
-    betaLoadError: betaError ? getBetaAccessStorageErrorMessage() : null,
+    betaLoadError: betaResult.error ? getBetaAccessStorageErrorMessage() : null,
+    airlineEmailLoadError,
   };
 }
 
@@ -135,31 +251,13 @@ export function getAppEntryRedirect(
   context: CurrentAppAccessContext,
   nextPath: string,
 ) {
-  if (!context.authConfigured) {
-    return null;
-  }
+  const gate = getPrivateAppGateResult({
+    routeKind: "private-root",
+    nextPath,
+    context,
+  });
 
-  if (!context.user) {
-    return buildPath(AUTH_ROUTES.login, { next: nextPath });
-  }
-
-  if (context.profileLoadError) {
-    return buildPath(AUTH_ROUTES.profile, { error: context.profileLoadError });
-  }
-
-  if (!context.hasCompletedProfile) {
-    return AUTH_ROUTES.profile;
-  }
-
-  if (context.betaLoadError) {
-    return buildPath(AUTH_ROUTES.accessHold, { error: context.betaLoadError });
-  }
-
-  if (!context.betaActive) {
-    return AUTH_ROUTES.accessHold;
-  }
-
-  return null;
+  return gate.kind === "redirect" ? gate.path : null;
 }
 
 export async function resolveCurrentUserAppPath(next?: string | null) {
@@ -186,13 +284,15 @@ export async function resolveCurrentUserAppPath(next?: string | null) {
     return buildPath(AUTH_ROUTES.profile, { error: context.profileLoadError });
   }
 
-  if (context.betaLoadError && context.hasCompletedProfile) {
-    return buildPath(AUTH_ROUTES.accessHold, { error: context.betaLoadError });
+  const gate = getPrivateAppGateResult({
+    routeKind: "private-root",
+    nextPath: next ?? AUTH_ROUTES.app,
+    context,
+  });
+
+  if (gate.kind === "redirect") {
+    return gate.path;
   }
 
-  return getPrivateAppPathForState({
-    next,
-    hasCompletedProfile: context.hasCompletedProfile,
-    betaStatus: context.betaStatus,
-  });
+  return sanitizeNextPath(next) ?? AUTH_ROUTES.app;
 }

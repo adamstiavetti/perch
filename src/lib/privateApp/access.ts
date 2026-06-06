@@ -1,3 +1,6 @@
+import type { AirlineEmailAccessState } from "../verification/airlineEmailAccess";
+import type { JmpseatLaunchMode } from "./launchMode";
+
 const PRIVATE_APP_ROUTES = {
   login: "/login",
   app: "/app",
@@ -15,9 +18,12 @@ type PrivateRouteContext = {
   authConfigured: boolean;
   user: { id: string } | null;
   hasCompletedProfile: boolean;
+  launchMode: JmpseatLaunchMode;
   betaActive: boolean;
+  airlineEmailAccessState: AirlineEmailAccessState;
   profileLoadError: string | null;
   betaLoadError: string | null;
+  airlineEmailLoadError: string | null;
 };
 
 type PrivateAppGateResult =
@@ -35,6 +41,43 @@ function buildPath(path: string, params: Record<string, string | null | undefine
 
   const suffix = search.toString();
   return suffix ? `${path}?${suffix}` : path;
+}
+
+function doesLaunchModeRequireBeta(mode: JmpseatLaunchMode) {
+  return mode === "private_testing" || mode === "internal_test";
+}
+
+function doesLaunchModeRequireAirlineEmail(mode: JmpseatLaunchMode) {
+  void mode;
+  return true;
+}
+
+function getAccessHoldError(context: PrivateRouteContext) {
+  if (doesLaunchModeRequireBeta(context.launchMode) && context.betaLoadError) {
+    return context.betaLoadError;
+  }
+
+  return context.airlineEmailLoadError;
+}
+
+function hasBetaAccessForLaunchMode(context: PrivateRouteContext) {
+  return !doesLaunchModeRequireBeta(context.launchMode) || context.betaActive;
+}
+
+function hasAirlineEmailAccessForLaunchMode(context: PrivateRouteContext) {
+  return (
+    !doesLaunchModeRequireAirlineEmail(context.launchMode) ||
+    context.airlineEmailAccessState.airlineEmailVerified
+  );
+}
+
+function shouldHoldForAccess(context: PrivateRouteContext) {
+  return (
+    (doesLaunchModeRequireBeta(context.launchMode) &&
+      (Boolean(context.betaLoadError) || !hasBetaAccessForLaunchMode(context))) ||
+    Boolean(context.airlineEmailLoadError) ||
+    !hasAirlineEmailAccessForLaunchMode(context)
+  );
 }
 
 export function getPrivateAppGateResult({
@@ -73,21 +116,36 @@ export function getPrivateAppGateResult({
   }
 
   if (routeKind === "access-hold") {
-    if (context.betaActive) {
+    if (!shouldHoldForAccess(context)) {
       return { kind: "redirect", path: PRIVATE_APP_ROUTES.app };
     }
 
     return { kind: "allow" };
   }
 
-  if (context.betaLoadError) {
+  if (doesLaunchModeRequireBeta(context.launchMode) && context.betaLoadError) {
     return {
       kind: "redirect",
-      path: buildPath(PRIVATE_APP_ROUTES.accessHold, { error: context.betaLoadError }),
+      path: buildPath(PRIVATE_APP_ROUTES.accessHold, {
+        error: getAccessHoldError(context),
+      }),
     };
   }
 
-  if (!context.betaActive) {
+  if (!hasBetaAccessForLaunchMode(context)) {
+    return { kind: "redirect", path: PRIVATE_APP_ROUTES.accessHold };
+  }
+
+  if (context.airlineEmailLoadError) {
+    return {
+      kind: "redirect",
+      path: buildPath(PRIVATE_APP_ROUTES.accessHold, {
+        error: context.airlineEmailLoadError,
+      }),
+    };
+  }
+
+  if (!hasAirlineEmailAccessForLaunchMode(context)) {
     return { kind: "redirect", path: PRIVATE_APP_ROUTES.accessHold };
   }
 
@@ -101,7 +159,7 @@ export function getPrivateRouteAuditResult(
   context: PrivateRouteContext,
 ) {
   if (gate.kind === "allow") {
-    return context.betaLoadError || context.profileLoadError
+    return context.betaLoadError || context.profileLoadError || context.airlineEmailLoadError
       ? "storage_not_ready"
       : "allowed";
   }
@@ -115,7 +173,9 @@ export function getPrivateRouteAuditResult(
   }
 
   if (gate.path.startsWith(PRIVATE_APP_ROUTES.accessHold)) {
-    return context.betaLoadError ? "storage_not_ready" : "redirect_access_hold";
+    return context.betaLoadError || context.airlineEmailLoadError
+      ? "storage_not_ready"
+      : "redirect_access_hold";
   }
 
   return "redirect";

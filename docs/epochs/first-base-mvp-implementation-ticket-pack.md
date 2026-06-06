@@ -44,8 +44,8 @@ This pack is based on:
 Recommended order:
 
 1. `FBMVP-T01` Freeze user-facing proof verification surfaces. Implemented and merged; see `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
-2. `FBMVP-T02` Airline-email verification access state design/implementation. Helper implementation complete pending review; see `docs/epochs/fbmvp-t02-airline-email-verification-access-state-design.md` and `docs/epochs/fbmvp-t02-airline-email-verification-access-state-implementation.md`.
-3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation.
+2. `FBMVP-T02` Airline-email verification access state design/implementation. Helper implementation complete and merged; see `docs/epochs/fbmvp-t02-airline-email-verification-access-state-design.md` and `docs/epochs/fbmvp-t02-airline-email-verification-access-state-implementation.md`.
+3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation. Implementation complete pending review; see `docs/epochs/fbmvp-t03-private-testing-versus-first-base-launch-gate-implementation.md`.
 4. `FBMVP-T04` Onboarding/signup flow update.
 5. `FBMVP-T05` Base and board data model design.
 6. `FBMVP-T06` Board membership and access request model.
@@ -781,7 +781,7 @@ Rationale:
 - It aligns current visible verification copy with the pivot.
 - It preserves legacy proof ops/admin safety while making the forward product direction clear.
 
-Next ticket after `FBMVP-T02`: `FBMVP-T03 Private-Testing Versus First-Base-Launch Gate Implementation`, because it consumes the forward airline-email eligibility state without mixing launch-mode work into the helper.
+Next ticket after `FBMVP-T03`: `FBMVP-T04 Onboarding/Signup Flow Update`, because the launch-mode gate now consumes airline-email eligibility and the next user-facing gap is collecting and verifying the airline employee email credential during signup/onboarding.
 
 ## 8. Validation Standards
 

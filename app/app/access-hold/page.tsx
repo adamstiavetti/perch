@@ -15,6 +15,7 @@ import {
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
+import type { AirlineEmailAccessStatus } from "../../../src/lib/verification/airlineEmailAccess";
 
 type AccessHoldPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -41,6 +42,26 @@ function getStatusMessage(status: BetaAccessStatus) {
     case "none":
     default:
       return "Your account and profile are ready, but private beta access has not been approved yet.";
+  }
+}
+
+function getAirlineEmailStatusMessage(status: AirlineEmailAccessStatus) {
+  switch (status) {
+    case "pending":
+      return "Your airline employee email is still pending confirmation.";
+    case "expired":
+      return "Your airline employee email verification has expired and must be refreshed before app access opens.";
+    case "revoked":
+      return "Your airline employee email verification is no longer active.";
+    case "unsupported_domain":
+      return "That airline employee email domain is not currently approved for jmpseat access.";
+    case "not_ready":
+      return "Airline-email access checks are not ready yet.";
+    case "verified":
+      return "Your airline employee email is verified.";
+    case "not_verified":
+    default:
+      return "Confirm an approved airline employee email before entering the app.";
   }
 }
 
@@ -90,26 +111,29 @@ export default async function AccessHoldPage({
   }
 
   const error = searchError ?? context.betaLoadError ?? undefined;
+  const airlineEmailStatusMessage = getAirlineEmailStatusMessage(
+    context.airlineEmailAccessState.status,
+  );
 
   return (
     <AuthCard
-      eyebrow="Epoch 03 Beta Access"
-      title="Private beta access is still on hold"
-      description="Your profile is complete, but jmpseat beta access is a separate approval layer from signup, profile completion, and worker verification."
+      eyebrow="App access hold"
+      title="jmpseat access is still on hold"
+      description="Your profile is complete, but jmpseat app access now checks launch mode, beta access when required, and confirmed approved airline employee email eligibility separately."
       error={error}
-      message={getStatusMessage(context.betaStatus)}
+      message={`${getStatusMessage(context.betaStatus)} ${airlineEmailStatusMessage}`}
       footer={
         <p className={styles.hint}>
-          We will notify you when your beta access is approved. This hold
-          state is separate from worker verification and does not imply you are
-          verified as an airline worker yet.
+          We will notify you when private-testing beta access is approved.
+          Beta access is temporary rollout control and remains separate from
+          airline-email eligibility.
         </p>
       }
     >
       <p className={styles.hint}>
-        No badge upload, verification workflow, or community access appears in
-        this slice. Beta approval remains separate from airline/base/role
-        verification claims.
+        No badge upload, proof upload, verification files, or community access
+        appears in this slice. Airline-email eligibility does not grant role,
+        base, restricted-board, reviewer, operator, or community-admin authority.
       </p>
     </AuthCard>
   );

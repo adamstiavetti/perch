@@ -63,7 +63,7 @@ test("private app route resolution keeps profile and beta access separate", () =
   );
 });
 
-test("access-hold page exists and keeps beta access separate from verification", () => {
+test("access-hold page exists and keeps beta access separate from airline-email eligibility", () => {
   const source = readFileSync(
     new URL("../../app/app/access-hold/page.tsx", import.meta.url),
     "utf8",
@@ -71,7 +71,7 @@ test("access-hold page exists and keeps beta access separate from verification",
 
   assert.match(source, /beta access/i);
   assert.match(source, /profile is complete/i);
-  assert.match(source, /separate from worker verification/i);
+  assert.match(source, /separate from\s+airline-email eligibility/i);
   assert.match(source, /notify you/i);
   assert.doesNotMatch(source, /type="file"|supabase storage|reviewer dashboard|verification request/i);
 });
