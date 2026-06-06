@@ -312,6 +312,7 @@ Recommended follow-up docs:
 - proof-system freeze/deprecation plan
 - First-Base MVP scope
 - community-admin responsibilities and disclaimer policy
+- launch-readiness gate transition plan
 
 ## 12. Non-Goals
 
