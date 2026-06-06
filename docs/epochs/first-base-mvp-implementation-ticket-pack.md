@@ -43,8 +43,8 @@ This pack is based on:
 
 Recommended order:
 
-1. `FBMVP-T01` Freeze user-facing proof verification surfaces. Implemented locally; see `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
-2. `FBMVP-T02` Airline-email verification access state design/implementation. Recommended next ticket.
+1. `FBMVP-T01` Freeze user-facing proof verification surfaces. Implemented and merged; see `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
+2. `FBMVP-T02` Airline-email verification access state design/implementation. Design-planned; see `docs/epochs/fbmvp-t02-airline-email-verification-access-state-design.md`. Recommended next task after review: implementation.
 3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation.
 4. `FBMVP-T04` Onboarding/signup flow update.
 5. `FBMVP-T05` Base and board data model design.
@@ -115,6 +115,8 @@ Stop-before-commit/review requirements:
 - Do not run `supabase db push` unless a later reviewed migration task explicitly requires it.
 
 ### FBMVP-T02 Airline-Email Verification Access State Design/Implementation
+
+Status: design-planned; implementation pending review. See `docs/epochs/fbmvp-t02-airline-email-verification-access-state-design.md`.
 
 Goal: Refactor existing work-email verification into the forward `airline_email_verified` app-level access state.
 
