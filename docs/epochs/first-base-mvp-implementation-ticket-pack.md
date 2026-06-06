@@ -25,6 +25,7 @@ This pack is based on:
 - `docs/strategy/first-base-mvp-scope.md`
 - `docs/strategy/community-admin-responsibilities-disclaimer-policy.md`
 - `docs/strategy/launch-readiness-gate-transition-plan.md`
+- `docs/strategy/beta-invite-code-foundation-decision.md`
 
 ## 3. Non-Negotiable Boundaries
 
@@ -45,18 +46,19 @@ Recommended order:
 
 1. `FBMVP-T01` Freeze user-facing proof verification surfaces. Implemented and merged; see `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`.
 2. `FBMVP-T02` Airline-email verification access state design/implementation. Helper implementation complete and merged; see `docs/epochs/fbmvp-t02-airline-email-verification-access-state-design.md` and `docs/epochs/fbmvp-t02-airline-email-verification-access-state-implementation.md`.
-3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation. Implementation complete pending review; see `docs/epochs/fbmvp-t03-private-testing-versus-first-base-launch-gate-implementation.md`.
-4. `FBMVP-T04` Onboarding/signup flow update.
-5. `FBMVP-T05` Base and board data model design.
-6. `FBMVP-T06` Board membership and access request model.
-7. `FBMVP-T07` Community-admin role model.
-8. `FBMVP-T08` General baseboard route foundation.
-9. `FBMVP-T09` Restricted board request-access flow.
-10. `FBMVP-T10` Community-admin request review UI.
-11. `FBMVP-T11` Text-only posts and replies MVP.
-12. `FBMVP-T12` Basic moderation/reporting MVP.
-13. `FBMVP-T13` Trust/disclaimer copy placement.
-14. `FBMVP-T14` First-base launch readiness validation.
+3. `FBMVP-T03` Private-testing versus first-base-launch gate implementation. Implemented and merged; see `docs/epochs/fbmvp-t03-private-testing-versus-first-base-launch-gate-implementation.md`.
+4. `FBMVP-T03A` Beta invite-code foundation decision. Decision doc complete; implementation pending.
+5. `FBMVP-T04` Onboarding/signup flow update.
+6. `FBMVP-T05` Base and board data model design.
+7. `FBMVP-T06` Board membership and access request model.
+8. `FBMVP-T07` Community-admin role model.
+9. `FBMVP-T08` General baseboard route foundation.
+10. `FBMVP-T09` Restricted board request-access flow.
+11. `FBMVP-T10` Community-admin request review UI.
+12. `FBMVP-T11` Text-only posts and replies MVP.
+13. `FBMVP-T12` Basic moderation/reporting MVP.
+14. `FBMVP-T13` Trust/disclaimer copy placement.
+15. `FBMVP-T14` First-base launch readiness validation.
 
 ## 5. Per-Ticket Detail
 
@@ -222,6 +224,70 @@ Stop-before-commit/review requirements:
 
 - Stop before commit after implementation and validation.
 - Do not change production launch mode or deploy in the implementation task.
+
+### FBMVP-T03A Beta Invite-Code Foundation
+
+Status: decision doc complete; implementation pending. See `docs/strategy/beta-invite-code-foundation-decision.md`.
+
+Goal: Define the private-testing beta invite-code model before onboarding/signup work depends on invite-code copy, access-hold behavior, or beta-access grant semantics.
+
+Decision scope:
+
+- Batch-generated invite codes for private testing capacity control.
+- Single-use by default.
+- Random and non-personal by default.
+- Hashed storage after generation in any future implementation.
+- Operator-managed batches, pause/close/revoke behavior, safe counts, and audit requirements.
+- Redemption grants beta access only after server-side validation.
+- Invite codes never prove airline eligibility.
+
+Out of scope:
+
+- Code changes.
+- Migrations.
+- App-gate changes.
+- Launch-mode changes.
+- Community-admin invite management.
+- Restricted-board access.
+- Proof upload or badge upload.
+
+Likely future files/areas:
+
+- `supabase/migrations`
+- `src/lib/betaAccess/*`
+- future beta invite generation/redemption helpers
+- `app/app/access-hold/page.tsx`
+- future operator/admin beta invite UI
+- beta access and private-app access tests
+
+Migration likely needed: yes, in a later reviewed implementation task for invite batches/codes. No migration is created by the decision task.
+
+Authorization/security boundaries:
+
+- Invite code alone must not grant app access.
+- Invite code must not grant airline-email verification.
+- Invite code must not grant restricted board access, reviewer access, operator access, or community-admin authority.
+- Plaintext invite codes must not be logged or stored after generation.
+- Redemption errors must not reveal whether a code exists, expired, was revoked, or was already redeemed in an enumeration-helpful way.
+
+Tests expected for future implementation:
+
+- Batch generation is operator-only and bounded.
+- Codes are single-use by default.
+- Redemption grants beta access only through server-side validation.
+- `private_testing` still requires airline-email verification plus beta access.
+- `first_base_launch` and `broader_launch` do not require invite codes for general launched access.
+- Invalid redemption failures are safe and generic.
+- Plaintext codes, secrets, tokens, and private identifiers are not logged or returned after generation.
+
+Runtime validation expected for future implementation:
+
+- Runtime-prove operator batch generation, redemption, duplicate redemption denial, revoked/expired denial, and launch-mode boundaries without printing secrets, privileged identifiers, plaintext codes, or private user data.
+
+Stop-before-commit/review requirements:
+
+- Stop before commit after implementation and validation.
+- Do not run `supabase db push` until an explicit migration-apply task.
 
 ### FBMVP-T04 Onboarding/Signup Flow Update
 
@@ -764,6 +830,7 @@ Stop-before-commit/review requirements:
 - Proof freeze before launch access implementation.
 - Airline-email access before launch gate.
 - Launch gate before broad first-base access.
+- Beta invite-code decision before onboarding/signup invite-code or access-hold integration.
 - Base/board model before posts.
 - Membership/access request before restricted board content.
 - Community-admin model before community-admin review UI.
@@ -781,7 +848,9 @@ Rationale:
 - It aligns current visible verification copy with the pivot.
 - It preserves legacy proof ops/admin safety while making the forward product direction clear.
 
-Next ticket after `FBMVP-T03`: `FBMVP-T04 Onboarding/Signup Flow Update`, because the launch-mode gate now consumes airline-email eligibility and the next user-facing gap is collecting and verifying the airline employee email credential during signup/onboarding.
+Next ticket after `FBMVP-T03`: `FBMVP-T03A Beta Invite-Code Foundation`, because private testing still needs a clear batch/single-use invite-code model before onboarding and access-hold copy depend on invite redemption behavior.
+
+Next implementation ticket after `FBMVP-T03A`: `FBMVP-T04 Onboarding/Signup Flow Update`, because the launch-mode gate now consumes airline-email eligibility and the next user-facing gap is collecting and verifying the airline employee email credential during signup/onboarding.
 
 ## 8. Validation Standards
 

@@ -16,6 +16,7 @@ This plan does not remove beta in code. It defines the later launch-readiness im
 
 - Private user testing mode: The current controlled testing state where private app access remains limited to authenticated users who satisfy profile/private-app prerequisites and active beta access.
 - Beta access: A temporary rollout-control state used to admit selected testers while the product is unfinished. It is not the long-term worker-eligibility credential.
+- Beta invite code: A private-testing capacity-control code that may grant beta access after server-side redemption. Invite codes do not prove airline eligibility and should not be required for launched general access.
 - First-base launch mode: The first launched base/community mode where the selected base population can enter without one-by-one beta grants after meeting the launch eligibility gate.
 - Launched base population: The users included in a formally selected first-base launch segment, such as an airport-wide or airline-specific population.
 - Airline-email verified user: A user with a confirmed, current, approved airline employee email verification state.
@@ -77,6 +78,8 @@ The implementation should support a controlled transition from beta-required mod
 - `broader_launch`
 
 The launch mode should be explicit, observable, and documented. Operators and future maintainers should be able to tell which mode is active without inferring behavior from scattered conditionals.
+
+If beta invite codes are implemented, they should feed beta access only for `private_testing` or separately scoped `internal_test` use. They must not become a permanent `first_base_launch` or `broader_launch` general-access requirement.
 
 If the first base is DFW, DFW users in the launched population should not need manual beta grants one by one. The launch gate must still require confirmed approved airline employee email and must still reject unsupported, unconfirmed, expired, or revoked airline-email eligibility.
 
@@ -176,6 +179,7 @@ Future implementation tasks should include:
 - define launch mode config or feature flag
 - define airline-email verified access state
 - update signup/onboarding to collect and verify airline employee email
+- decide whether beta invite-code redemption belongs before or after airline-email verification in private testing
 - update private app gate to support `private_testing` versus `first_base_launch`
 - update `/app/access-hold` and `/app/access-restricted` pages
 - update `/app/verification` copy or route behavior
@@ -226,5 +230,6 @@ This document defines the transition from private-testing beta gate to first-bas
 - `strategy/proof-system-freeze-deprecation-plan.md`
 - `strategy/first-base-mvp-scope.md`
 - `strategy/community-admin-responsibilities-disclaimer-policy.md`
+- `strategy/beta-invite-code-foundation-decision.md`
 
 Future implementation must not remove beta gating except through an explicit launch-readiness task. Future implementation must not keep beta as a permanent general-access requirement after launch. Future implementation must not reintroduce proof upload as a launch gate.
