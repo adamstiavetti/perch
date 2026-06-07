@@ -4,6 +4,7 @@ export const ADMIN_ROUTES = {
   home: "/app/admin",
   verification: "/app/admin/verification",
   operatorAccess: "/app/admin/operator-access",
+  waitlist: "/app/admin/waitlist",
   approvedDomains: "/app/admin/approved-domains",
   reviewerScopes: "/app/admin/reviewer-scopes",
   auditInspection: "/app/admin/audit",
@@ -41,6 +42,7 @@ export type AdminNavigationItem = {
   key:
     | "verification_review"
     | "operator_access"
+    | "waitlist"
     | "approved_domains"
     | "reviewer_scopes"
     | "audit_inspection"
@@ -261,6 +263,15 @@ export function buildAdminNavigation(input: {
       path: ADMIN_ROUTES.operatorAccess,
       description: "Grant the minimal internal private-app operator access to another existing account after first-operator bootstrap is closed.",
       requiredScopes: ["operator.manage_operator_access"],
+      grantedScopes: input.operatorScopes,
+      implemented: true,
+    }),
+    buildOperatorNavigationItem({
+      key: "waitlist",
+      label: "Waitlist",
+      path: ADMIN_ROUTES.waitlist,
+      description: "First-party public waitlist metrics, survey aggregates, and masked recent submissions.",
+      requiredScopes: ["operator.read_audit"],
       grantedScopes: input.operatorScopes,
       implemented: true,
     }),

@@ -26,8 +26,9 @@ Current post-E05 update:
 - `beta.jmpseat.com` remains the private beta/auth/admin/operator surface.
 - First-party jmpseat capture is the public waitlist path.
 - Tally is backup/research-only unless intentionally reintroduced later.
-- First-party waitlist funnel metrics and an operator/admin dashboard are now
-  planned follow-up work before the public waitlist launch is considered fully
+- First-party waitlist funnel metrics and the operator/admin dashboard are now
+  implemented through existing waitlist signup/survey data, with runtime
+  validation pending before the public waitlist launch is considered fully
   instrumented.
 
 ## 2. Current App Scope
@@ -39,13 +40,17 @@ Implemented:
 - First-party public waitlist email capture.
 - Post-submit optional product-shaping follow-up questions.
 - Safe duplicate submission behavior.
+- Operator/admin-only waitlist dashboard at `/app/admin/waitlist`.
 
 Intentionally not implemented:
 
-- Auth or user accounts.
+- Public auth or user accounts on the waitlist page.
 - Verification uploads or storage.
-- Crew Rooms, Base Boards, Layover Boards, posts, comments, search, moderation, or admin workflows.
-- AI, payments, marketplace, analytics SDK, schedule integrations, airline portal login, flight-load requests, nearby crew tracking, or dating/swiping.
+- Crew Rooms, Base Boards, Layover Boards, posts, comments, search, moderation,
+  or public/admin community workflows.
+- AI, payments, marketplace, third-party analytics SDK, schedule integrations,
+  airline portal login, flight-load requests, nearby crew tracking, or
+  dating/swiping.
 
 ## 3. First-Party Waitlist Capture Requirements
 
@@ -154,6 +159,8 @@ Local verification checks:
 - Optional survey can be submitted or skipped.
 - Footer disclaimer is visible.
 - No public Beta Access entry appears.
+- `/app/admin/waitlist` remains operator/admin-only and shows masked/aggregate
+  waitlist metrics only.
 
 ## 8. Vercel Preview Deployment
 
@@ -196,7 +203,8 @@ Production checks:
 - Verify the first-party waitlist email form works.
 - Verify the optional survey submit and skip states work.
 - Verify footer disclaimers are visible.
-- Verify `/app` remains a placeholder only.
+- Verify `/app` remains the private beta app surface and is not exposed from the
+  public waitlist page.
 - Verify no new features or data collection paths are present.
 
 Do not deploy production until the founder or designated reviewer approves the preview.
@@ -213,8 +221,12 @@ Do not deploy production until the founder or designated reviewer approves the p
 - [ ] No badge upload, ID upload, schedule, portal credential, exact hotel, passenger info, live location, or confidential document field exists.
 - [ ] No-official-affiliation disclaimer is visible.
 - [ ] Working-name/legal-trademark caveat is visible.
-- [ ] `/app` remains a private beta placeholder only.
-- [ ] No auth, verification uploads, community features, AI, payments, analytics SDK, airline integrations, schedule scraping, flight-load requests, nearby crew tracking, or dating/swiping were added.
+- [ ] `/app` remains the private beta app surface and is not exposed from the
+      public waitlist page.
+- [ ] No public auth entry, verification uploads, community features, AI,
+      payments, third-party analytics SDK, airline integrations, schedule
+      scraping, flight-load requests, nearby crew tracking, or dating/swiping
+      were added.
 
 ## 11. First Outreach Readiness
 
@@ -235,20 +247,18 @@ Do not broadly launch until initial clarity and trust feedback is checked.
 
 This readiness pass does not create or approve:
 
-- Auth.
-- Database.
-- Supabase.
-- Internal waitlist capture.
-- API persistence.
+- Public auth entry.
+- New database platform.
+- New Supabase project.
 - Verification uploads.
 - File storage.
 - Community features.
 - Posts or comments.
-- Moderation or admin dashboards.
+- Moderation dashboards.
 - AI features.
 - Payments.
 - Marketplace.
-- Analytics SDK.
+- Third-party analytics SDK.
 - Production legal documents.
 - Official airline affiliation claims.
 - Legal/trademark clearance claims.

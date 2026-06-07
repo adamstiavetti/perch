@@ -1,0 +1,112 @@
+.stack {
+  display: grid;
+  gap: 20px;
+}
+
+.section {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(176, 191, 209, 0.14);
+  border-radius: 18px;
+  background: rgba(8, 13, 22, 0.64);
+}
+
+.sectionTitle,
+.cardTitle,
+.recordTitle {
+  margin: 0;
+  color: #eef3f9;
+}
+
+.sectionText,
+.emptyState {
+  margin: 0;
+  color: #b3c0cf;
+  line-height: 1.55;
+}
+
+.metricGrid,
+.insightGrid,
+.recordGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.metricCard,
+.insightCard,
+.recordCard {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgba(176, 191, 209, 0.12);
+  border-radius: 16px;
+  background: rgba(5, 9, 16, 0.72);
+}
+
+.metricValue {
+  color: #f8fbff;
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.metricLabel,
+.recordMeta,
+.recordDetail {
+  margin: 0;
+  color: #96a7ba;
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+
+.topList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #d9e3ef;
+}
+
+.countBadge,
+.statusBadge {
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: rgba(14, 24, 38, 0.88);
+  border: 1px solid rgba(176, 191, 209, 0.14);
+  color: #b3c0cf;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recordHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.recordTitle {
+  font-size: 1.03rem;
+}
+
+@media (min-width: 760px) {
+  .metricGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .insightGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

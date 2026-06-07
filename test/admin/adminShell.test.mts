@@ -13,6 +13,7 @@ test("admin routes stay bounded to the admin shell", () => {
     home: "/app/admin",
     verification: "/app/admin/verification",
     operatorAccess: "/app/admin/operator-access",
+    waitlist: "/app/admin/waitlist",
     approvedDomains: "/app/admin/approved-domains",
     reviewerScopes: "/app/admin/reviewer-scopes",
     auditInspection: "/app/admin/audit",
@@ -108,6 +109,7 @@ test("admin shell nav keeps unimplemented operator sections disabled even with m
   const operatorAccess = navigation.find(
     (item) => item.key === "operator_access",
   );
+  const waitlist = navigation.find((item) => item.key === "waitlist");
   const auditInspection = navigation.find(
     (item) => item.key === "audit_inspection",
   );
@@ -119,6 +121,7 @@ test("admin shell nav keeps unimplemented operator sections disabled even with m
   assert.equal(reviewerScopes?.availabilityLabel, "Available now");
   assert.match(reviewerScopes?.reason ?? "", /operator\.manage_reviewer_scopes/i);
   assert.equal(operatorAccess?.status, "disabled");
+  assert.equal(waitlist?.status, "disabled");
   assert.equal(auditInspection?.status, "disabled");
 });
 
@@ -144,6 +147,10 @@ test("admin shell nav links only to implemented operator routes for scoped opera
     "available",
   );
   assert.equal(
+    navigation.find((item) => item.path === ADMIN_ROUTES.waitlist)?.status,
+    "available",
+  );
+  assert.equal(
     navigation.find((item) => item.path === ADMIN_ROUTES.approvedDomains)?.status,
     "available",
   );
@@ -163,6 +170,47 @@ test("admin shell nav links only to implemented operator routes for scoped opera
   assert.equal(proofCleanupItem?.status, "available");
   assert.equal(proofCleanupItem?.availabilityLabel, "Available now");
   assert.match(proofCleanupItem?.reason ?? "", /operator\.monitor_proof_cleanup/i);
+});
+
+test("admin shell nav keeps waitlist metrics restricted to read-audit operators", () => {
+  const unscopedNavigation = buildAdminNavigation({
+    reviewerAuthorized: false,
+    operatorScopes: ["operator.internal_private_app_access"],
+  });
+  const scopedNavigation = buildAdminNavigation({
+    reviewerAuthorized: false,
+    operatorScopes: ["operator.read_audit"],
+  });
+
+  assert.equal(
+    unscopedNavigation.find((item) => item.path === ADMIN_ROUTES.waitlist)?.status,
+    "disabled",
+  );
+  assert.match(
+    unscopedNavigation.find((item) => item.path === ADMIN_ROUTES.waitlist)?.reason ??
+      "",
+    /operator\.read_audit/i,
+  );
+  assert.equal(
+    scopedNavigation.find((item) => item.path === ADMIN_ROUTES.waitlist)?.status,
+    "available",
+  );
+});
+
+test("/app/admin/waitlist enforces operator access and avoids raw waitlist identifiers", () => {
+  const source = readFileSync(
+    new URL("../../app/app/admin/waitlist/page.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /getPrivateAppGateResult/);
+  assert.match(source, /hasOperatorScope/);
+  assert.match(source, /WAITLIST_ADMIN_SCOPE/);
+  assert.match(source, /AUTH_ROUTES\.accessRestricted/);
+  assert.match(source, /getWaitlistDashboardForOperator/);
+  assert.match(source, /AdminShell/);
+  assert.doesNotMatch(source, /survey_token|normalized_email|email:/i);
+  assert.doesNotMatch(source, /proof upload|badge upload|document upload/i);
 });
 
 test("admin shell nav lets run-cleanup scope open proof cleanup controls", () => {

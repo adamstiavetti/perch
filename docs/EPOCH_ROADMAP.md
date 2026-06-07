@@ -20,17 +20,19 @@ Future Codex tasks must declare which epoch they belong to. Work that does not m
 ## 2. Current Project State
 
 - Live production site exists: https://jmpseat.vercel.app.
-- Public waitlist capture is moving to first-party jmpseat email capture plus
-  optional product-shaping follow-up questions.
+- Public waitlist capture is first-party jmpseat email capture plus optional
+  product-shaping follow-up questions.
 - Public splash page exists at `/`.
 - `/app` private beta shell exists behind auth/profile/beta gates.
 - `/app/admin` safe shell exists, reads explicit operator grants as authorization metadata, and keeps unimplemented operator-only sections disabled until their tooling pages exist.
 - Operator grants foundation exists, the first operator bootstrap runtime pass is complete, approved-domain management is implemented and runtime-proven, reviewer-scope management is implemented and runtime-proven, verification audit inspection is implemented and runtime-proven, proof cleanup monitoring is implemented and runtime-proven, and protected manual proof cleanup controls are implemented and runtime-proven.
-- Waitlist CTA is being rewired from Tally-primary capture to first-party
-  jmpseat capture.
+- Waitlist CTA is first-party jmpseat capture, with Tally retained only as
+  backup/research context unless intentionally reintroduced later.
 - Supabase-backed auth, profiles, beta access, verification, claims, reviewer queue, proof storage, proof viewing, and proof cleanup foundations exist.
 - Product direction has pivoted: forward app-level access should use confirmed approved airline employee email control, and restricted role/base board access should be community-admin managed rather than based on jmpseat proof-upload review. Proof upload is frozen as a forward product path, First-Base MVP scope is defined as the first complete base launch package, community-admin responsibilities/disclaimers are defined, the private-testing-to-first-base-launch gate transition is defined, beta invite codes are defined as private-testing capacity control only, and the First-Base MVP implementation ticket pack now defines the forward `FBMVP` sequence. `FBMVP-T01` freezes normal user-facing proof upload surfaces; `FBMVP-T02` adds the airline-email access-state helper/adapter; `FBMVP-T03` adds explicit launch-mode app access gates; `FBMVP-T03A` adds beta invite-code foundation before onboarding/signup work and is runtime-proven on the linked Supabase runtime; `FBMVP-T04` aligns onboarding/signup/access-hold copy with the current access journey; the auth design-system overhaul now makes `/app/access-hold` the canonical airline employee email verification surface and deprecates `/app/verification` as a standalone page; founder/admin internal private-app access now uses explicit operator grants rather than temporary airline-domain abuse; post-bootstrap operator grant management is implemented and runtime-proven through the linked runtime RPC/action path; app-generated work-email verification codes are implemented with inline access-hold entry and legacy confirm-route compatibility; normal account signup confirmation uses a Supabase Auth-native code-first account confirmation UX and the unified stable-beta auth flow is founder-confirmed at runtime; the temporary `jmpseat.com` approved-domain workaround has been soft-disabled; auth email branding/custom SMTP requirements are planned before public-ish Closed Beta Login entry. See `strategy/product-pivot-email-verification-community-boards.md`, `strategy/airline-email-access-gate-decision.md`, `strategy/board-community-access-model-decision.md`, `strategy/proof-system-freeze-deprecation-plan.md`, `strategy/first-base-mvp-scope.md`, `strategy/community-admin-responsibilities-disclaimer-policy.md`, `strategy/launch-readiness-gate-transition-plan.md`, `strategy/beta-invite-code-foundation-decision.md`, `epochs/first-base-mvp-implementation-ticket-pack.md`, `epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`, `epochs/fbmvp-t02-airline-email-verification-access-state-design.md`, `epochs/fbmvp-t02-airline-email-verification-access-state-implementation.md`, `epochs/fbmvp-t03-private-testing-versus-first-base-launch-gate-implementation.md`, `epochs/fbmvp-t03a-beta-invite-code-foundation-implementation.md`, `epochs/fbmvp-t04-onboarding-signup-flow-update.md`, `epochs/founder-admin-private-app-access-implementation.md`, `epochs/operator-grant-management-implementation.md`, `epochs/work-email-confirmation-email-flow-implementation.md`, `epochs/account-signup-code-confirmation-implementation.md`, `ops/beta-invite-code-foundation-runtime-pass.md`, `ops/e05-operator-grant-management-runtime-pass.md`, `ops/auth-design-system-style-guide.md`, `ops/auth-design-overhaul-docs-audit.md`, `ops/auth-detour-closeout-runtime-pass.md`, and `ops/auth-email-branding-confirmation-template-plan.md`.
-- No community functionality, AI product feature, payments, analytics SDK, or internal waitlist capture exists.
+- No community functionality, AI product feature, payments, or analytics SDK
+  exists. First-party waitlist capture exists, and the initial operator/admin
+  waitlist dashboard is implemented with runtime validation pending.
 - Discovery is desk-researched, not fully user-validated.
 - FA expert interview remains pending.
 - First trusted aviation contact outreach remains pending.
@@ -53,7 +55,7 @@ Future Codex tasks must declare which epoch they belong to. Work that does not m
 | Epoch ID | Name | Status | Goal | Primary docs | Exit criteria | Current blockers / open items | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 00 | Discovery & Problem/Solution Validation | Active / partially complete | Validate problem, audience, wedge, trust concerns, and first beta community. | `DISCOVERY_RESEARCH_PLAN.md`, `DISCOVERY_RESEARCH_REPORT_001.md`, `PROBLEM_SOLUTION_VALIDATION_MATRIX.md`, `M0_VALIDATION_OPERATING_PACKET.md`, `PRODUCT_DELIVERY_OPERATING_MODEL.md` | FA expert interview completed, 3-5 trusted aviation contacts review live site, feedback captured, matrix updated, no major safety contradiction found. | FA expert interview, user feedback, trusted contact outreach, and first-community evidence are pending. | Start trusted-contact outreach and record feedback. |
-| 01 | Public Splash + Waitlist | Active / first-party capture implementation | Make concept publicly viewable and capture waitlist interest. | `APP_FOUNDATION_NOTES.md`, `LANDING_PAGE_WAITLIST_PLAN.md`, `DEPLOYMENT_AND_WAITLIST_READINESS.md`, `ops/post-e05-public-waitlist-launch-plan.md`, `ops/waitlist-question-research-selection.md`, `ops/public-waitlist-page-polish.md`, `DEPLOYMENT_RECORD_001.md` | Public `jmpseat.com` serves the waitlist page without Beta Access, first-party email capture works, optional product-shaping follow-up works, mobile page reviewed, first-party waitlist metrics captured, and authorized admin metrics view exists. | Public domain cutover, runtime waitlist validation, mobile UX review, first-party metrics, and admin metrics viewer are not yet complete. | Finish W01 first-party capture review, then run W02 public waitlist runtime validation before cutover. |
+| 01 | Public Splash + Waitlist | Active / first-party capture plus dashboard implementation | Make concept publicly viewable and capture waitlist interest. | `APP_FOUNDATION_NOTES.md`, `LANDING_PAGE_WAITLIST_PLAN.md`, `DEPLOYMENT_AND_WAITLIST_READINESS.md`, `ops/post-e05-public-waitlist-launch-plan.md`, `ops/waitlist-question-research-selection.md`, `ops/public-waitlist-page-polish.md`, `ops/waitlist-metrics-dashboard.md`, `DEPLOYMENT_RECORD_001.md` | Public `jmpseat.com` serves the waitlist page without Beta Access, first-party email capture works, optional product-shaping follow-up works, mobile page reviewed, first-party waitlist metrics captured, and authorized admin metrics view exists. | Public domain cutover, mobile UX review, and runtime validation for `/app/admin/waitlist` are not yet complete. | Review and runtime-validate `/app/admin/waitlist`, then plan public-domain cutover separately. |
 | 02 | Private App Foundation | Pending | Create locked private app shell behind splash page. | `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `NAMING_AND_INFORMATION_ARCHITECTURE.md`, `MILESTONE_EXECUTION_PLAN.md`, `TECHNICAL_ARCHITECTURE.md` | Private shell exists, route structure defined, no unauthorized access, no real community functionality. | Explicit approval required; M0 validation signal preferred first. | Decide after Epoch 00 feedback whether M1B is justified. |
 | 03 | Auth, Profiles, and Beta Access | Complete | Establish login, profile, invite-only beta access, and access gates. | `epochs/epoch-03-auth-account-beta-access-tickets.md`, `epochs/epoch-03-validation-and-handoff-review.md`, `PRIVATE_APP_AUTH_DB_ARCHITECTURE.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Auth implemented, beta access state exists, invited users can enter, non-invited users are blocked, auth remains separate from aviation verification. | Supabase operator setup and private-beta operations remain ongoing, but the approved implementation scope is complete. | Use the merged Epoch 03 handoff and runtime setup docs as the operator baseline. |
 | 04 | Worker Verification Foundation | Complete | Implement worker-verification foundation, claims, evidence handling rules, and human review baseline. | `VERIFICATION_METHOD_DECISION.md`, `epochs/epoch-04-worker-verification-foundation-tickets.md`, `epochs/epoch-04-exit-report.md`, `TRUST_AND_SAFETY.md`, `SCALABILITY_AND_ARCHITECTURE_REQUIREMENTS.md`, `MOBILE_APP_STRATEGY.md` | Verification claim model exists, work-email and redacted-proof verification foundations are implemented, proof handling is private and retention-bounded, human review exists, controlled proof viewing exists, cleanup routes exist, claims-based authorization direction is explicit, and no employer-system lookup or AI final approval exists. | Production env/cron monitoring, final privacy/legal copy, custom SMTP/auth email branding, approved-domain tooling, reviewer-scope tooling, and cleanup monitoring remain follow-ups. | Move to Epoch 05 Operator/Admin Tooling Foundation unless a verification bug appears. |
@@ -120,6 +122,7 @@ Primary docs:
 - `LANDING_PAGE_WAITLIST_PLAN.md`
 - `DEPLOYMENT_AND_WAITLIST_READINESS.md`
 - `ops/post-e05-public-waitlist-launch-plan.md`
+- `ops/waitlist-metrics-dashboard.md`
 - `DEPLOYMENT_RECORD_001.md`
 
 Current truth:
@@ -131,22 +134,24 @@ Current truth:
 - `beta.jmpseat.com` remains the private beta/auth/admin/operator surface.
 - First-party jmpseat capture is now the primary public waitlist path. Tally is
   backup/research-only unless intentionally reintroduced later.
+- `/app/admin/waitlist` is implemented as the operator/admin-only metrics
+  viewer for safe aggregates and masked recent submissions. Runtime validation
+  remains pending.
 - The near-term product remains web-first; native mobile is a later client, not a current implementation target.
 
 Complete:
 
 - M1A public splash/waitlist app foundation.
 - Production deployment record.
-- First-party waitlist capture implementation is in progress.
+- First-party waitlist capture is implemented and runtime-proven.
+- Initial operator/admin waitlist metrics dashboard is implemented.
 - Post-E05 domain split and waitlist launch intent.
 
 Pending:
 
 - Polish and lock the public waitlist page for `jmpseat.com`.
 - Remove/no-show Beta Access on the public domain.
-- Apply the waitlist migration through the normal reviewed runtime path.
-- Submit and verify a non-sensitive first-party waitlist response.
-- Add first-party waitlist metrics and an admin metrics viewer.
+- Runtime-validate `/app/admin/waitlist` on stable beta.
 - Review mobile UX.
 - Record first trusted-contact feedback.
 
@@ -543,9 +548,10 @@ Exit criteria:
   uncommitted E05-T07 proof docs should finish that handoff before pivot work.
 - Continue through the post-E05 public waitlist launch lane in
   `ops/post-e05-public-waitlist-launch-plan.md`: W01 first-party public
-  waitlist capture, W02 public waitlist runtime validation, W03 metrics capture,
-  W04 admin metrics dashboard, W05 public domain cutover, and W06 native
-  architecture readiness. Keep
+  waitlist capture and W02 public waitlist runtime validation are complete,
+  W03 dedicated event capture remains optional, W04 admin metrics dashboard is
+  implemented with runtime validation pending, and W05 public domain cutover plus
+  W06 native architecture readiness remain future lanes. Keep
   `ops/auth-email-branding-confirmation-template-plan.md` as the Supabase Auth
   confirmation/reset branding plan before broader auth entry.
 - Continue product validation outreach in parallel:

@@ -12,9 +12,11 @@ polished waitlist/marketing page only, while `beta.jmpseat.com` remains the
 private beta, auth, app, admin, and operator surface.
 
 This is a planning note. The first-party waitlist capture implementation is now
-tracked in `ops/public-waitlist-page-polish.md`. This plan still does not record
+tracked in `ops/public-waitlist-page-polish.md`, and the initial operator-only
+waitlist dashboard implementation is tracked in
+`ops/waitlist-metrics-dashboard.md`. This plan still does not record
 root-domain cutover, deployment, DNS changes, Vercel changes, Supabase runtime
-settings changes, native-app work, admin dashboards, or runtime mutations.
+settings changes, native-app work, or runtime mutations.
 
 ## Domain Split
 
@@ -105,7 +107,14 @@ Operations:
 
 The public waitlist launch should include first-party funnel metrics. Vercel Web
 Analytics can supplement traffic visibility, but first-party metrics should own
-product funnel data.
+product funnel data. The first dashboard pass uses existing first-party waitlist
+signup and survey-response data. Aggregate metrics are intentionally separate
+from the bounded recent-submissions display list so headline totals and top
+survey insights are not recent-sample numbers. UTM/source metrics preserve common
+safe campaign labels, including underscore-separated values, while excluding
+unsafe/private attribution strings. A dedicated event table remains optional
+future work if page-view, CTA-click, or failed-submit funnel details become
+necessary.
 
 Recommended events:
 
@@ -136,11 +145,12 @@ Do not capture:
 
 Recommended storage and viewing:
 
-- Prefer a small first-party waitlist metrics/event table or an existing
-  sanitized analytics/event path if one is already available when implemented.
+- Prefer existing sanitized first-party waitlist data first. Add a small
+  first-party waitlist metrics/event table only if the existing signup and
+  survey-response records are not enough for the funnel questions being asked.
 - Use server-side event ingestion where practical so client events stay bounded.
-- Add an admin viewer such as `/app/admin/waitlist` or equivalent once the
-  metrics path exists.
+- Use `/app/admin/waitlist` as the operator/admin-scoped viewer for aggregate
+  waitlist metrics, survey insights, and masked recent submissions.
 - Keep dashboard access operator/admin scoped.
 
 Recommended admin metrics cards:
@@ -204,14 +214,16 @@ Native:
    submission, and skip behavior.
 
 3. `W03 Waitlist Metrics Event Capture`
-   Add first-party public funnel events for page view, CTA click, email submit,
-   submit failure, optional survey view, optional survey submit, optional survey
-   skip, referrer/source, UTM, and safe device/browser metadata.
+   Status: initial implementation deferred because existing first-party waitlist
+   signup and survey-response records support the first dashboard. Add dedicated
+   page-view, CTA-click, failed-submit, and safe device/browser event capture only
+   if needed after runtime review.
 
 4. `W04 Admin Waitlist Metrics Dashboard`
-   Add an operator/admin-scoped viewer for waitlist metrics, conversion,
-   sources/referrers, recent submissions, and failed submissions without
-   exposing sensitive data.
+   Status: implemented on branch. Add `/app/admin/waitlist` as an
+   operator/admin-scoped viewer for signup totals, survey completion,
+   sources/referrers, aggregate survey responses, and masked recent submissions
+   without exposing sensitive data. Runtime validation remains pending.
 
 5. `W05 Public Domain Cutover To jmpseat.com`
    Prepare and execute the reversible production-domain cutover so the public
