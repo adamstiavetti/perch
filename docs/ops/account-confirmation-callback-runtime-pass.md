@@ -69,3 +69,7 @@ All passed during this runtime validation pass.
 - This is preview-only validation.
 - Production-domain Site URL, redirect allowlist, and confirmation template
   settings still need a separate production cutover pass.
+- This pass validated the earlier token-hash link compatibility path. The newer
+  account signup confirmation UX is code-first and still needs separate runtime
+  validation after the Supabase Confirm Signup template is updated to use the
+  six-digit `{{ .Token }}` code as the primary path.

@@ -3,7 +3,10 @@ import Link from "next/link";
 
 import { PasswordInput } from "../../src/components/auth/PasswordInput";
 import styles from "../../src/components/auth/auth.module.css";
-import { signUpAction } from "../../src/lib/auth/actions";
+import {
+  confirmAccountCodeAction,
+  signUpAction,
+} from "../../src/lib/auth/actions";
 import { AUTH_ROUTES } from "../../src/lib/auth/routes";
 
 type SignupPageProps = {
@@ -16,6 +19,9 @@ function getValue(value: string | string[] | undefined) {
 
 const SIGNUP_ACCESSIBILITY_NOTE =
   "Create a login account first. Airline employee email verification is required for closed beta private access, and beta access may require an invite code after verification.";
+
+const ACCOUNT_CODE_ACCESSIBILITY_NOTE =
+  "Account email confirmation is separate from airline employee email verification, beta invite codes, and private-app access gates.";
 
 function MailIcon() {
   return (
@@ -40,6 +46,8 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   const params = await searchParams;
   const error = getValue(params.error);
   const message = getValue(params.message);
+  const mode = getValue(params.mode);
+  const isConfirmingAccountCode = mode === "confirm";
 
   return (
     <main className={`${styles.loginPage} ${styles.signupPage}`}>
@@ -62,17 +70,24 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           <div className={styles.loginCopy}>
             <p className={styles.loginEyebrow}>PRIVATE BETA</p>
             <h1 id="signup-title" className={styles.loginTitle}>
-              Create your jmpseat account
+              {isConfirmingAccountCode
+                ? "Check your account email"
+                : "Create your jmpseat account"}
             </h1>
             <div className={styles.loginDivider} aria-hidden="true">
               <span />
               <span>✈</span>
               <span />
             </div>
-            <p className={styles.loginLead}>Create your account to continue.</p>
+            <p className={styles.loginLead}>
+              {isConfirmingAccountCode
+                ? "Enter the six-digit code we sent to finish creating your jmpseat account."
+                : "Create your account to continue."}
+            </p>
             <p className={styles.loginDescription}>
-              Private beta access requires an approved airline employee email and
-              may require an invite code.
+              {isConfirmingAccountCode
+                ? "You'll verify your airline employee email separately after signup."
+                : "Private beta access requires an approved airline employee email and may require an invite code."}
             </p>
           </div>
 
@@ -101,46 +116,98 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             </p>
           ) : null}
 
-          <form className={styles.loginForm} action={signUpAction}>
-            <div className={styles.loginField}>
-              <label className={styles.loginLabel} htmlFor="email">
-                Email
-              </label>
-              <div className={styles.loginInputShell}>
-                <MailIcon />
-                <input
-                  className={styles.loginInput}
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  required
+          {isConfirmingAccountCode ? (
+            <form className={styles.loginForm} action={confirmAccountCodeAction}>
+              <div className={styles.loginField}>
+                <label className={styles.loginLabel} htmlFor="email">
+                  Account email
+                </label>
+                <div className={styles.loginInputShell}>
+                  <MailIcon />
+                  <input
+                    className={styles.loginInput}
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={styles.loginField}>
+                <label className={styles.loginLabel} htmlFor="account_code">
+                  Six-digit code
+                </label>
+                <div className={styles.loginInputShell}>
+                  <input
+                    className={styles.loginInput}
+                    id="account_code"
+                    name="account_code"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    pattern="[0-9]{6}"
+                    maxLength={6}
+                    placeholder="000000"
+                    required
+                  />
+                </div>
+              </div>
+
+              <p className={styles.signupHint}>
+                Account email confirmation does not verify airline eligibility,
+                grant beta access, or replace airline employee email verification.
+              </p>
+
+              <button className={styles.loginButton} type="submit">
+                <span>Confirm account</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          ) : (
+            <form className={styles.loginForm} action={signUpAction}>
+              <div className={styles.loginField}>
+                <label className={styles.loginLabel} htmlFor="email">
+                  Email
+                </label>
+                <div className={styles.loginInputShell}>
+                  <MailIcon />
+                  <input
+                    className={styles.loginInput}
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={styles.loginField}>
+                <label className={styles.loginLabel} htmlFor="password">
+                  Password
+                </label>
+                <PasswordInput
+                  autoComplete="new-password"
+                  minLength={8}
+                  placeholder="Create a password"
                 />
               </div>
-            </div>
 
-            <div className={styles.loginField}>
-              <label className={styles.loginLabel} htmlFor="password">
-                Password
-              </label>
-              <PasswordInput
-                autoComplete="new-password"
-                minLength={8}
-                placeholder="Create a password"
-              />
-            </div>
+              <p className={styles.signupHint}>
+                Your login email can be separate from your airline employee email.
+                Airline verification happens later.
+              </p>
 
-            <p className={styles.signupHint}>
-              Your login email can be separate from your airline employee email.
-              Airline verification happens later.
-            </p>
-
-            <button className={styles.loginButton} type="submit">
-              <span>Create account</span>
-              <span aria-hidden="true">→</span>
-            </button>
-          </form>
+              <button className={styles.loginButton} type="submit">
+                <span>Create account</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          )}
 
           <Link className={styles.signupSigninLink} href={AUTH_ROUTES.login}>
             Already have an account? Sign in
@@ -149,7 +216,11 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           <p className={styles.loginSecurityNote}>
             <SecurityNoteIcon />
             Private community for verified aviation professionals.
-            <span className={styles.loginSrOnly}>{SIGNUP_ACCESSIBILITY_NOTE}</span>
+            <span className={styles.loginSrOnly}>
+              {isConfirmingAccountCode
+                ? ACCOUNT_CODE_ACCESSIBILITY_NOTE
+                : SIGNUP_ACCESSIBILITY_NOTE}
+            </span>
           </p>
         </div>
       </section>

@@ -17,10 +17,16 @@ at `/auth/callback`. Supabase email templates can also be configured to use the
 token-hash confirmation pattern. If that token-hash link lands on
 `/auth/callback`, the app has no code to exchange and the user is stranded.
 
+Follow-up: account signup confirmation is moving to a code-first jmpseat UX
+where possible. Supabase Auth remains the source of truth, and the legacy
+token-hash/callback routes remain for compatibility.
+
 ## Route Behavior
 
 The account auth routes now support both safe confirmation shapes:
 
+- `/signup` can show a code-first account confirmation state after account
+  creation.
 - `/auth/callback` continues to exchange PKCE `code` values for a session.
 - `/auth/confirm` verifies Supabase email `token_hash` links with the supplied
   email confirmation type.
@@ -40,8 +46,23 @@ Both routes keep post-auth routing aligned with the existing app gates:
 
 Supabase dashboard templates should be reviewed before founder/Yuri testing.
 
+Preferred code-first Confirm Signup template:
+
+```text
+Subject:
+Confirm your jmpseat account
+
+Body:
+Your jmpseat account confirmation code is: {{ .Token }}
+Enter this code in jmpseat to finish creating your account.
+You'll verify your airline employee email separately after signup.
+```
+
 Acceptable account-confirmation configurations:
 
+- Code-first confirmation email using the Supabase `{{ .Token }}` placeholder
+  and the jmpseat `/signup` account-code confirmation state. The app verifies
+  this submitted code through the Supabase Auth email OTP verification path.
 - PKCE/default confirmation link that redirects to `/auth/callback` with a
   callback `code`.
 - Token-hash template link that targets `/auth/confirm` with the Supabase
@@ -55,11 +76,12 @@ Placeholder-only token-hash shape:
 
 If the dashboard template uses token-hash placeholders, the app route should be
 `/auth/confirm`, not a normal app page. Do not paste real confirmation links,
-tokens, or auth URLs into docs, issue trackers, chat, or logs.
+tokens, account codes, or auth URLs into docs, issue trackers, chat, or logs.
 
 ## Token / Storage / Security Notes
 
-The fix does not store auth tokens or confirmation tokens.
+The fix does not store auth tokens, confirmation tokens, or account
+confirmation codes in app-owned tables.
 
 Error redirects are built from clean route URLs instead of cloned callback URLs,
 so failed callback and confirmation paths do not carry `code` or `token_hash`
@@ -75,9 +97,9 @@ identifiers.
 This fix is for normal Supabase account confirmation and password recovery.
 
 It does not change the airline employee work-email confirmation flow at
-`/app/verification/confirm`, does not change approved-domain behavior, and does
-not grant airline-email eligibility without the existing work-email
-confirmation path.
+`/app/verification/confirm`, does not change approved-domain behavior, does not
+grant beta access, and does not grant airline-email eligibility without the
+existing work-email confirmation path.
 
 ## Gate Rules Unchanged
 

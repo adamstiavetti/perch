@@ -338,6 +338,41 @@ Tests expected:
 - Unsupported airline email routes users to safe hold/copy.
 - No proof-upload onboarding requirement exists.
 
+### FBMVP-T04A Account Signup Code Confirmation
+
+Status: implemented pending review. See
+`docs/epochs/account-signup-code-confirmation-implementation.md`.
+
+Goal: make normal Supabase account email confirmation code-first where possible
+while preserving Supabase Auth as the source of truth.
+
+Implemented scope:
+
+- Signup success guides users to an account-code confirmation state.
+- Users enter account email plus a six-digit Supabase account confirmation code.
+- Account-code confirmation uses Supabase Auth verification.
+- Legacy `/auth/confirm` token-hash links and `/auth/callback` PKCE links remain
+  supported for compatibility and password reset.
+
+Out of scope:
+
+- Work-email / airline-email verification changes.
+- Beta invite-code changes.
+- Founder/admin/operator access changes.
+- Launch-mode changes.
+- Proof upload, badge upload, document upload, proof review, role/base claims,
+  or baseboard/community work.
+
+Migration created: no.
+
+Runtime validation expected:
+
+- Update the Supabase Confirm Signup template to the code-first `{{ .Token }}`
+  shape after review/deploy.
+- Runtime-prove fresh account signup code confirmation on the beta/stable test
+  surface without printing auth links, account codes, tokens, private emails, or
+  secrets.
+
 Runtime validation expected:
 
 - Verify signup/onboarding paths for supported and unsupported domains.

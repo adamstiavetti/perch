@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { AUTH_ROUTES, resolvePostAuthPath, sanitizeNextPath } from "./routes";
+import { resolveCurrentUserAppPath } from "../betaAccess/server";
 import { getEmailDomain } from "../securityEvents/securityEvents";
 import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
@@ -33,6 +34,10 @@ function toMessage(error: { message?: string } | null) {
   }
 
   return error.message;
+}
+
+function getConfirmationCode(formData: FormData) {
+  return getString(formData, "account_code").replace(/\s+/g, "");
 }
 
 async function getAuthOrigin() {
@@ -166,10 +171,92 @@ export async function signUpAction(formData: FormData) {
 
   redirect(
     buildRedirect(AUTH_ROUTES.signup, {
+      mode: "confirm",
       message:
-        "Check your email to confirm your account. Account creation does not equal beta approval or worker verification.",
+        "Check your account email. Enter the six-digit code we sent to finish creating your jmpseat account.",
     }),
   );
+}
+
+export async function confirmAccountCodeAction(formData: FormData) {
+  const env = getSupabaseBrowserEnv();
+
+  if (!env.enabled) {
+    redirect(
+      buildRedirect(AUTH_ROUTES.signup, {
+        mode: "confirm",
+        error:
+          "Supabase auth is not configured yet. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+      }),
+    );
+  }
+
+  const email = getString(formData, "email");
+  const confirmationCode = getConfirmationCode(formData);
+  const emailDomain = getEmailDomain(email);
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_up_attempt",
+    route: AUTH_ROUTES.signup,
+    result: "account_code_attempt",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
+
+  if (!email || !/^[0-9]{6}$/.test(confirmationCode)) {
+    await recordSecurityEvent({
+      eventType: "auth.sign_up_failed",
+      route: AUTH_ROUTES.signup,
+      result: "invalid_account_code_shape",
+      metadata: {
+        email_domain: emailDomain,
+      },
+    });
+    redirect(
+      buildRedirect(AUTH_ROUTES.signup, {
+        mode: "confirm",
+        error: "Enter the six-digit account confirmation code from your email.",
+      }),
+    );
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token: confirmationCode,
+    type: "email",
+  });
+
+  if (error) {
+    await recordSecurityEvent({
+      eventType: "auth.sign_up_failed",
+      route: AUTH_ROUTES.signup,
+      result: "account_code_verify_failed",
+      metadata: {
+        email_domain: emailDomain,
+      },
+    });
+    redirect(
+      buildRedirect(AUTH_ROUTES.signup, {
+        mode: "confirm",
+        error:
+          "That account confirmation code is invalid or expired. Please request a new code or sign up again.",
+      }),
+    );
+  }
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_up_success",
+    route: AUTH_ROUTES.signup,
+    result: "account_code_confirmed",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
+
+  const destination = await resolveCurrentUserAppPath(AUTH_ROUTES.app);
+  redirect(destination);
 }
 
 export async function requestPasswordResetAction(formData: FormData) {

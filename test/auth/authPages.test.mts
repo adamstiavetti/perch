@@ -31,6 +31,10 @@ test("auth pages and callback route exist", () => {
   assert.doesNotMatch(login, /publicly open|open to everyone|invite code alone grants access/i);
   assert.match(signup, /signup/i);
   assert.match(signup, /login email can be separate from your airline employee email/i);
+  assert.match(signup, /Check your account email/i);
+  assert.match(signup, /six-digit code/i);
+  assert.match(signup, /finish creating your jmpseat account/i);
+  assert.match(signup, /verify your airline employee email separately after signup/i);
   assert.match(signup, /airline employee email verification is required/i);
   assert.match(signup, /closed beta/i);
   assert.match(signup, /invite code/i);
@@ -60,4 +64,28 @@ test("auth actions keep signup and password reset routed through bounded auth ca
     /AUTH_ROUTES\.callback\}\?next=\$\{encodeURIComponent\(AUTH_ROUTES\.resetPassword\)\}&mode=update/,
   );
   assert.doesNotMatch(actions, /localhost:3000\/auth\/callback/);
+});
+
+test("account signup code confirmation stays Supabase-native and separate from access grants", () => {
+  const actions = readFileSync(
+    new URL("../../src/lib/auth/actions.ts", import.meta.url),
+    "utf8",
+  );
+  const signup = readFileSync(
+    new URL("../../app/signup/page.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(actions, /confirmAccountCodeAction/);
+  assert.match(actions, /auth\.verifyOtp\(\{\s*email,\s*token:\s*confirmationCode,\s*type:\s*"email"/s);
+  assert.match(actions, /resolveCurrentUserAppPath\(AUTH_ROUTES\.app\)/);
+  assert.match(actions, /That account confirmation code is invalid or expired/i);
+  assert.match(actions, /mode:\s*"confirm"/);
+  assert.doesNotMatch(actions, /metadata:\s*{[^}]*confirmationCode/is);
+  assert.doesNotMatch(actions, /metadata:\s*{[^}]*account_code/is);
+  assert.doesNotMatch(actions, /console\.(log|error)\([^)]*confirmationCode/is);
+  assert.doesNotMatch(actions, /airline_email_verified|beta_access|grant beta|role claim|base claim|proof_file/i);
+  assert.match(signup, /name="account_code"/);
+  assert.match(signup, /autoComplete="one-time-code"/);
+  assert.doesNotMatch(signup, /proof upload|badge upload|document upload/i);
 });
