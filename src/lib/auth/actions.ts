@@ -3,6 +3,12 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import {
+  clearPendingSignupEmail,
+  getPendingSignupEmail,
+  setPendingSignupEmail,
+} from "./pendingSignup";
+import { ACCOUNT_CONFIRMATION_CODE_PATTERN } from "./accountConfirmation";
 import { AUTH_ROUTES, resolvePostAuthPath, sanitizeNextPath } from "./routes";
 import { resolveCurrentUserAppPath } from "../betaAccess/server";
 import { getEmailDomain } from "../securityEvents/securityEvents";
@@ -169,6 +175,8 @@ export async function signUpAction(formData: FormData) {
     },
   });
 
+  await setPendingSignupEmail(email);
+
   redirect(
     buildRedirect(AUTH_ROUTES.signup, {
       mode: "confirm",
@@ -192,8 +200,10 @@ export async function confirmAccountCodeAction(formData: FormData) {
   }
 
   const email = getString(formData, "email");
+  const pendingEmail = await getPendingSignupEmail();
+  const accountEmail = pendingEmail || email;
   const confirmationCode = getConfirmationCode(formData);
-  const emailDomain = getEmailDomain(email);
+  const emailDomain = getEmailDomain(accountEmail);
 
   await recordSecurityEvent({
     eventType: "auth.sign_up_attempt",
@@ -204,7 +214,7 @@ export async function confirmAccountCodeAction(formData: FormData) {
     },
   });
 
-  if (!email || !/^[0-9]{6}$/.test(confirmationCode)) {
+  if (!accountEmail || !ACCOUNT_CONFIRMATION_CODE_PATTERN.test(confirmationCode)) {
     await recordSecurityEvent({
       eventType: "auth.sign_up_failed",
       route: AUTH_ROUTES.signup,
@@ -223,7 +233,7 @@ export async function confirmAccountCodeAction(formData: FormData) {
 
   const supabase = await createClient();
   const { error } = await supabase.auth.verifyOtp({
-    email,
+    email: accountEmail,
     token: confirmationCode,
     type: "email",
   });
@@ -255,8 +265,94 @@ export async function confirmAccountCodeAction(formData: FormData) {
     },
   });
 
+  await clearPendingSignupEmail();
+
   const destination = await resolveCurrentUserAppPath(AUTH_ROUTES.app);
   redirect(destination);
+}
+
+export async function resendAccountCodeAction() {
+  const env = getSupabaseBrowserEnv();
+
+  if (!env.enabled) {
+    redirect(
+      buildRedirect(AUTH_ROUTES.signup, {
+        mode: "confirm",
+        error:
+          "Supabase auth is not configured yet. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
+      }),
+    );
+  }
+
+  const email = await getPendingSignupEmail();
+  const emailDomain = getEmailDomain(email);
+
+  if (!email) {
+    redirect(
+      buildRedirect(AUTH_ROUTES.signup, {
+        error: "Start signup again so we know where to send your account code.",
+      }),
+    );
+  }
+
+  const origin = await getAuthOrigin();
+  const emailRedirectTo = new URL(AUTH_ROUTES.callback, origin).toString();
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_up_attempt",
+    route: AUTH_ROUTES.signup,
+    result: "account_code_resend_attempt",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: {
+      emailRedirectTo,
+    },
+  });
+
+  if (error) {
+    await recordSecurityEvent({
+      eventType: "auth.sign_up_failed",
+      route: AUTH_ROUTES.signup,
+      result: "account_code_resend_failed",
+      metadata: {
+        email_domain: emailDomain,
+      },
+    });
+    redirect(
+      buildRedirect(AUTH_ROUTES.signup, {
+        mode: "confirm",
+        error: "We could not send a new code yet. Please wait a moment and try again.",
+      }),
+    );
+  }
+
+  await recordSecurityEvent({
+    eventType: "auth.sign_up_attempt",
+    route: AUTH_ROUTES.signup,
+    result: "account_code_resend_success",
+    metadata: {
+      email_domain: emailDomain,
+    },
+  });
+
+  redirect(
+    buildRedirect(AUTH_ROUTES.signup, {
+      mode: "confirm",
+      message: "We sent a new code.",
+    }),
+  );
+}
+
+export async function changeSignupEmailAction() {
+  await clearPendingSignupEmail();
+  redirect(AUTH_ROUTES.signup);
 }
 
 export async function requestPasswordResetAction(formData: FormData) {

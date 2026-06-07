@@ -571,6 +571,138 @@
   line-height: 1.34;
 }
 
+.accountCodeCard {
+  display: grid;
+  gap: 0.82rem;
+}
+
+.accountCodeIntro {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.78rem;
+  align-items: start;
+}
+
+.accountCodeMarker {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: 999px;
+  background: #eaf1f8;
+  color: var(--color-text-primary);
+}
+
+.accountCodeMarker .loginFieldIcon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.accountCodeTitle {
+  margin: 0 0 0.24rem;
+  color: var(--color-text-primary);
+  font-size: 1.05rem;
+  line-height: 1.18;
+}
+
+.accountCodeCopy {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.accountCodeCopy strong {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
+.accountCodeFieldset {
+  display: grid;
+  gap: 0.46rem;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.accountCodeDigits {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.42rem;
+}
+
+.accountCodeDigit {
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  border: 1px solid var(--color-border);
+  border-radius: 0.72rem;
+  background: var(--color-white);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 1.18rem;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 0.7rem 1.7rem rgba(15, 23, 42, 0.04);
+}
+
+.accountCodeDigit:focus {
+  border-color: var(--color-amber-500);
+  outline: 0;
+  box-shadow:
+    0 0 0 3px rgba(245, 166, 35, 0.18),
+    0 0.7rem 1.7rem rgba(15, 23, 42, 0.04);
+}
+
+.accountCodeActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.72rem;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+}
+
+.accountCodeActions form {
+  display: contents;
+}
+
+.accountCodeActionButton {
+  border: 0;
+  background: transparent;
+  color: #1769bd;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.accountCodeActionButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.accountCodeActionButton:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.accountCodeFallback {
+  margin: 0;
+  padding: 0.72rem 0.82rem;
+  border-radius: 0.8rem;
+  background: var(--color-surface-soft);
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.accountCodeFallback p {
+  margin: 0;
+}
+
 .signupSigninLink {
   justify-self: center;
   color: #1769bd;
@@ -627,6 +759,7 @@
 
 .loginButton:focus-visible,
 .loginCreateButton:focus-visible,
+.accountCodeActionButton:focus-visible,
 .loginPasswordToggle:focus-visible,
 .loginLinks a:focus-visible,
 .loginWordmark:focus-visible,

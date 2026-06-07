@@ -11,6 +11,14 @@ test("auth pages and callback route exist", () => {
     new URL("../../app/signup/page.tsx", import.meta.url),
     "utf8",
   );
+  const accountCodeInput = readFileSync(
+    new URL("../../src/components/auth/AccountCodeInput.tsx", import.meta.url),
+    "utf8",
+  );
+  const accountConfirmation = readFileSync(
+    new URL("../../src/lib/auth/accountConfirmation.ts", import.meta.url),
+    "utf8",
+  );
   const reset = readFileSync(
     new URL("../../app/reset-password/page.tsx", import.meta.url),
     "utf8",
@@ -31,10 +39,21 @@ test("auth pages and callback route exist", () => {
   assert.doesNotMatch(login, /publicly open|open to everyone|invite code alone grants access/i);
   assert.match(signup, /signup/i);
   assert.match(signup, /login email can be separate from your airline employee email/i);
-  assert.match(signup, /Check your account email/i);
   assert.match(signup, /six-digit code/i);
   assert.match(signup, /finish creating your jmpseat account/i);
   assert.match(signup, /verify your airline employee email separately after signup/i);
+  assert.match(signup, /Verify your email address/i);
+  assert.match(signup, /A verification code has been sent to/i);
+  assert.match(signup, /maskedPendingSignupEmail/i);
+  assert.match(signup, /Resend code/i);
+  assert.match(signup, /Change email/i);
+  assert.match(accountConfirmation, /ACCOUNT_CONFIRMATION_CODE_LENGTH = 6/);
+  assert.match(accountCodeInput, /Array\(ACCOUNT_CONFIRMATION_CODE_LENGTH\)\.fill\(""\)/);
+  assert.match(accountCodeInput, /applyAccountCodeInput/);
+  assert.match(accountCodeInput, /name="account_code"/);
+  assert.match(accountCodeInput, /autoComplete=\{index === 0 \? "one-time-code" : "off"\}/);
+  assert.match(accountCodeInput, /onPaste=\{handlePaste\}/);
+  assert.match(accountCodeInput, /handleKeyDown/);
   assert.match(signup, /airline employee email verification is required/i);
   assert.match(signup, /closed beta/i);
   assert.match(signup, /invite code/i);
@@ -57,7 +76,6 @@ test("auth actions keep signup and password reset routed through bounded auth ca
     new URL("../../src/lib/auth/actions.ts", import.meta.url),
     "utf8",
   );
-
   assert.match(actions, /new URL\(AUTH_ROUTES\.callback,\s*origin\)/);
   assert.match(
     actions,
@@ -75,9 +93,35 @@ test("account signup code confirmation stays Supabase-native and separate from a
     new URL("../../app/signup/page.tsx", import.meta.url),
     "utf8",
   );
+  const accountCodeInput = readFileSync(
+    new URL("../../src/components/auth/AccountCodeInput.tsx", import.meta.url),
+    "utf8",
+  );
+  const accountConfirmation = readFileSync(
+    new URL("../../src/lib/auth/accountConfirmation.ts", import.meta.url),
+    "utf8",
+  );
+  const pendingSignup = readFileSync(
+    new URL("../../src/lib/auth/pendingSignup.ts", import.meta.url),
+    "utf8",
+  );
 
   assert.match(actions, /confirmAccountCodeAction/);
-  assert.match(actions, /auth\.verifyOtp\(\{\s*email,\s*token:\s*confirmationCode,\s*type:\s*"email"/s);
+  assert.match(pendingSignup, /PENDING_SIGNUP_EMAIL_COOKIE/);
+  assert.match(pendingSignup, /httpOnly:\s*true/);
+  assert.match(pendingSignup, /sameSite:\s*"lax"/);
+  assert.match(pendingSignup, /maxAge:\s*PENDING_SIGNUP_EMAIL_MAX_AGE_SECONDS/);
+  assert.match(actions, /setPendingSignupEmail\(email\)/);
+  assert.match(pendingSignup, /getPendingSignupEmail/);
+  assert.match(pendingSignup, /maskAccountEmail/);
+  assert.match(actions, /accountEmail = pendingEmail \|\| email/);
+  assert.match(accountConfirmation, /ACCOUNT_CONFIRMATION_CODE_PATTERN/);
+  assert.match(actions, /ACCOUNT_CONFIRMATION_CODE_PATTERN\.test\(confirmationCode\)/);
+  assert.match(actions, /auth\.verifyOtp\(\{\s*email:\s*accountEmail,\s*token:\s*confirmationCode,\s*type:\s*"email"/s);
+  assert.match(actions, /auth\.resend\(\{\s*type:\s*"signup",\s*email,/s);
+  assert.match(actions, /resendAccountCodeAction/);
+  assert.match(actions, /changeSignupEmailAction/);
+  assert.match(actions, /clearPendingSignupEmail\(\)/);
   assert.match(actions, /resolveCurrentUserAppPath\(AUTH_ROUTES\.app\)/);
   assert.match(actions, /That account confirmation code is invalid or expired/i);
   assert.match(actions, /mode:\s*"confirm"/);
@@ -85,7 +129,15 @@ test("account signup code confirmation stays Supabase-native and separate from a
   assert.doesNotMatch(actions, /metadata:\s*{[^}]*account_code/is);
   assert.doesNotMatch(actions, /console\.(log|error)\([^)]*confirmationCode/is);
   assert.doesNotMatch(actions, /airline_email_verified|beta_access|grant beta|role claim|base claim|proof_file/i);
-  assert.match(signup, /name="account_code"/);
-  assert.match(signup, /autoComplete="one-time-code"/);
+  assert.match(signup, /pendingSignupEmail \? null :/);
+  assert.match(signup, /Your pending signup session expired/i);
+  assert.match(signup, /disabled=\{!pendingSignupEmail\}/);
+  assert.match(accountCodeInput, /name="account_code"/);
+  assert.doesNotMatch(signup, /placeholder="000000"/);
+  assert.match(accountCodeInput, /aria-label=\{`Digit \$\{index \+ 1\} of \$\{ACCOUNT_CONFIRMATION_CODE_LENGTH\}`\}/);
+  assert.match(accountCodeInput, /if \(!incomingDigits\) \{\s*nextDigits\[startIndex\] = "";/s);
+  assert.match(accountCodeInput, /incomingDigits\.split\(""\)\.forEach/);
+  assert.match(accountCodeInput, /event\.clipboardData\.getData\("text"\)/);
+  assert.match(accountCodeInput, /const code = digits\.join\(""\)/);
   assert.doesNotMatch(signup, /proof upload|badge upload|document upload/i);
 });

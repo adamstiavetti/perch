@@ -8,10 +8,12 @@ Normal jmpseat account signup confirmation is now code-first where Supabase
 Auth supports it.
 
 After a user creates a jmpseat account with email and password, the signup
-surface guides them to an account-code confirmation state. The user enters
-their account email and the six-digit Supabase account confirmation code from
-the confirmation email. The app verifies that code with Supabase Auth and then
-continues through the existing profile and private-app gate flow.
+surface guides them to an account-code confirmation state. The app carries the
+pending signup email forward through a short-lived server-side cookie, shows a
+masked version of that account email, and asks the user to enter only the
+six-digit Supabase account confirmation code from the confirmation email. The
+app verifies that code with Supabase Auth and then continues through the
+existing profile and private-app gate flow.
 
 This is account email confirmation only. It is not airline employee email
 verification, beta invite-code redemption, founder/admin access, operator
@@ -23,8 +25,9 @@ Supabase Auth remains the source of truth for account confirmation.
 
 The app does not create an app-owned account-confirmation credential system and
 does not store account confirmation codes in app-owned tables. The confirmation
-action uses Supabase Auth email OTP verification for the submitted account email
-and six-digit code.
+action uses Supabase Auth email OTP verification for the pending account email
+and six-digit code. If the pending signup cookie is missing or expired, the UI
+falls back safely by asking for the account email again.
 
 The Confirm Signup email template should be updated in the Supabase dashboard
 after review and deployment.
@@ -41,6 +44,14 @@ Enter this code in jmpseat to finish creating your account.
 You'll verify your airline employee email separately after signup.
 ```
 
+Runtime template inspection confirmed the live Confirm Signup template uses
+`{{ .Token }}`, does not use `{{ .TokenHash }}` as the displayed account code,
+does not include a primary clickable confirmation link, and does not target
+localhost. Runtime Auth configuration also exposed `mailer_otp_length`; it was
+aligned to 6 so the Supabase-generated account confirmation token matches the
+six-digit product experience. Fresh inbox validation of the delivered code
+length is still required after beta deploy/runtime testing.
+
 Do not paste real auth links, confirmation links, reset links, magic links,
 tokens, six-digit account codes, private user emails, SMTP credentials, or
 environment values into docs, issue trackers, chat, logs, or screenshots.
@@ -50,7 +61,15 @@ environment values into docs, issue trackers, chat, logs, or screenshots.
 - `/signup` remains the account creation surface.
 - Successful signup redirects to `/signup` in an account-code confirmation
   state without putting the account email or code in the URL.
-- The account-code form accepts the account email and six-digit code.
+- The account-code form shows a masked account email when pending signup state
+  exists and accepts only the six-digit code.
+- The code entry UI uses six individual digit boxes with paste, auto-advance,
+  backspace navigation support, and explicit digit clearing so the submitted
+  hidden value matches the visible boxes after edits.
+- Resend code uses Supabase Auth's signup resend path and the pending account
+  email. It does not expose the full email in the URL.
+- Change email clears the pending signup handoff and returns the user to the
+  normal signup form. It does not delete accounts or mutate auth state.
 - Invalid, missing, or expired codes return safe generic account-code errors.
 - Successful code confirmation redirects through the existing post-auth
   profile/private-app gate resolution.

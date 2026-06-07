@@ -1,12 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { AccountCodeInput } from "../../src/components/auth/AccountCodeInput";
 import { PasswordInput } from "../../src/components/auth/PasswordInput";
 import styles from "../../src/components/auth/auth.module.css";
 import {
+  changeSignupEmailAction,
   confirmAccountCodeAction,
+  resendAccountCodeAction,
   signUpAction,
 } from "../../src/lib/auth/actions";
+import {
+  getPendingSignupEmail,
+  maskAccountEmail,
+} from "../../src/lib/auth/pendingSignup";
 import { AUTH_ROUTES } from "../../src/lib/auth/routes";
 
 type SignupPageProps = {
@@ -48,6 +55,12 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   const message = getValue(params.message);
   const mode = getValue(params.mode);
   const isConfirmingAccountCode = mode === "confirm";
+  const pendingSignupEmail = isConfirmingAccountCode
+    ? await getPendingSignupEmail()
+    : "";
+  const maskedPendingSignupEmail = pendingSignupEmail
+    ? maskAccountEmail(pendingSignupEmail)
+    : "";
 
   return (
     <main className={`${styles.loginPage} ${styles.signupPage}`}>
@@ -71,7 +84,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             <p className={styles.loginEyebrow}>PRIVATE BETA</p>
             <h1 id="signup-title" className={styles.loginTitle}>
               {isConfirmingAccountCode
-                ? "Check your account email"
+                ? "Verify your email address"
                 : "Create your jmpseat account"}
             </h1>
             <div className={styles.loginDivider} aria-hidden="true">
@@ -81,7 +94,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             </div>
             <p className={styles.loginLead}>
               {isConfirmingAccountCode
-                ? "Enter the six-digit code we sent to finish creating your jmpseat account."
+                ? "Enter the six-digit code to finish creating your jmpseat account."
                 : "Create your account to continue."}
             </p>
             <p className={styles.loginDescription}>
@@ -117,55 +130,97 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
           ) : null}
 
           {isConfirmingAccountCode ? (
-            <form className={styles.loginForm} action={confirmAccountCodeAction}>
-              <div className={styles.loginField}>
-                <label className={styles.loginLabel} htmlFor="email">
-                  Account email
-                </label>
-                <div className={styles.loginInputShell}>
+            <div className={styles.accountCodeCard}>
+              <div className={styles.accountCodeIntro}>
+                <span className={styles.accountCodeMarker} aria-hidden="true">
                   <MailIcon />
-                  <input
-                    className={styles.loginInput}
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    required
-                  />
+                </span>
+                <div>
+                  <h2 className={styles.accountCodeTitle}>
+                    Verify your email address
+                  </h2>
+                  <p className={styles.accountCodeCopy}>
+                    A verification code has been sent to{" "}
+                    {maskedPendingSignupEmail ? (
+                      <strong>{maskedPendingSignupEmail}</strong>
+                    ) : (
+                      "your account email"
+                    )}
+                    .
+                  </p>
+                  <p className={styles.accountCodeCopy}>
+                    Enter the six-digit code to finish creating your jmpseat
+                    account.
+                  </p>
                 </div>
               </div>
 
-              <div className={styles.loginField}>
-                <label className={styles.loginLabel} htmlFor="account_code">
-                  Six-digit code
-                </label>
-                <div className={styles.loginInputShell}>
-                  <input
-                    className={styles.loginInput}
-                    id="account_code"
-                    name="account_code"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    pattern="[0-9]{6}"
-                    maxLength={6}
-                    placeholder="000000"
-                    required
-                  />
-                </div>
+              <form className={styles.loginForm} action={confirmAccountCodeAction}>
+                {pendingSignupEmail ? null : (
+                  <div className={styles.loginField}>
+                    <label className={styles.loginLabel} htmlFor="email">
+                      Account email
+                    </label>
+                    <div className={styles.loginInputShell}>
+                      <MailIcon />
+                      <input
+                        className={styles.loginInput}
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder="you@example.com"
+                        required
+                      />
+                    </div>
+                    <p className={styles.signupHint}>
+                      Your pending signup session expired. Enter your account
+                      email once to continue.
+                    </p>
+                  </div>
+                )}
+
+                <AccountCodeInput />
+
+                <p className={styles.signupHint}>
+                  Account email confirmation does not verify airline eligibility,
+                  grant beta access, or replace airline employee email
+                  verification.
+                </p>
+
+                <button className={styles.loginButton} type="submit">
+                  <span>Verify</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </form>
+
+              <div className={styles.accountCodeActions}>
+                <form action={resendAccountCodeAction}>
+                  <button
+                    className={styles.accountCodeActionButton}
+                    type="submit"
+                    disabled={!pendingSignupEmail}
+                  >
+                    Resend code
+                  </button>
+                </form>
+                <span aria-hidden="true">|</span>
+                <form action={changeSignupEmailAction}>
+                  <button className={styles.accountCodeActionButton} type="submit">
+                    Change email
+                  </button>
+                </form>
               </div>
 
-              <p className={styles.signupHint}>
-                Account email confirmation does not verify airline eligibility,
-                grant beta access, or replace airline employee email verification.
-              </p>
-
-              <button className={styles.loginButton} type="submit">
-                <span>Confirm account</span>
-                <span aria-hidden="true">→</span>
-              </button>
-            </form>
+              {pendingSignupEmail ? null : (
+                <div className={styles.accountCodeFallback}>
+                  <p>
+                    If you need a new code, start signup again so we know where
+                    to send it.
+                  </p>
+                </div>
+              )}
+            </div>
           ) : (
             <form className={styles.loginForm} action={signUpAction}>
               <div className={styles.loginField}>
