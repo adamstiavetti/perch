@@ -122,26 +122,31 @@ It extends the allowed operator scope list with:
 
 No applied migration was edited.
 
-## Runtime Follow-Up
+## Runtime Proof
 
-Runtime validation is still pending after review/merge.
-
-The runtime proof was later blocked during preflight because the original
-operator grant/revoke audit metadata included raw target user identifiers in
-general security-event metadata. The narrow redaction follow-up is documented in:
+Runtime validation is recorded in:
 
 - `docs/ops/operator-grant-audit-metadata-redaction.md`
+- `docs/ops/e05-operator-grant-management-runtime-pass.md`
 
-Apply that redaction migration before rerunning the runtime proof.
+The linked runtime has the operator grant audit metadata redaction SQL applied,
+and the post-bootstrap grant path is runtime-proven through the existing
+`grant_operator_access(...)` RPC path used by `/app/admin/operator-access`.
 
-That runtime pass should confirm:
+The runtime pass confirmed:
 
-- an existing operator can grant the new internal scope through
-  `/app/admin/operator-access`
-- the founder/admin target account can enter `/app` through
-  `operator_internal`
+- an existing operator can grant the new internal scope
+- duplicate active grants return a safe idempotent result
+- a non-operator cannot grant operator access
+- an account with only `operator.internal_private_app_access` can enter `/app`
+  through `operator_internal`
+- that account cannot manage operator access without
+  `operator.manage_operator_access`
 - the target account still has no beta grant
 - the target account is still not `airline_email_verified`
 - no role/base/restricted-board claims are issued
-- the temporary `jmpseat.com` approved-domain workaround can be cleaned up
-  after this path is proven in runtime
+- grant and denied-attempt audit metadata remains redacted
+
+The runtime proof did not use a browser-authenticated form submission because
+this pass did not use or expose private credentials. It verified the protected
+route and the server-side grant/deny/audit path used by the page.

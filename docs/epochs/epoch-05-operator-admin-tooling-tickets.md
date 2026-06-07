@@ -19,6 +19,9 @@ Epoch 05 bridges the verification foundation and future claim-gated community fe
 Pivot status:
 
 - E05-T01 through E05-T07 are implemented and runtime-proven.
+- Post-bootstrap operator grant management is implemented and runtime-proven
+  through the linked runtime RPC/action path used by
+  `/app/admin/operator-access`.
 - Forward product direction has pivoted away from proof-upload verification.
 - E05-T08 should not proceed until the pivot planning docs are complete.
 - Future Codex tasks must not expand proof-upload verification or proof-cleanup
@@ -116,7 +119,7 @@ Runtime validation must confirm that privileged routes do not expose secrets, pr
 
 ### E05-T01 Operator Access Model Decision
 
-Status: not started.
+Status: implemented and runtime-proven.
 
 Type: docs/design only.
 
@@ -155,7 +158,7 @@ Acceptance criteria:
 
 ### E05-T02 Admin Shell And Navigation Foundation
 
-Status: not started.
+Status: implemented and runtime-proven.
 
 Objective:
 
@@ -184,7 +187,7 @@ Acceptance criteria:
 
 ### E05-T03 Approved Email Domain Management
 
-Status: not started.
+Status: implemented and runtime-proven.
 
 Objective:
 
@@ -400,6 +403,11 @@ Epoch 05 does not complete public launch readiness. The following remain tracked
 
 ## 10. Recommended First Ticket
 
-Start Epoch 05 with E05-T01: Operator Access Model Decision.
+Epoch 05 implementation should not restart at E05-T01. E05-T01 through E05-T07
+are implemented and runtime-proven, and post-bootstrap operator grant management
+has its own runtime pass.
 
-Do not implement admin tooling until the access model, self-escalation rules, RLS/RPC posture, and audit requirements are explicitly decided.
+If Epoch 05 is reopened, start with a narrow final handoff/index task or an
+explicitly approved follow-up. Do not expand proof-upload verification,
+proof-cleanup tooling, or community surfaces under Epoch 05 without a new
+planning decision.
