@@ -43,8 +43,15 @@ test("public waitlist page includes the research-derived optional survey without
   assert.match(sharedSource, /What best describes your aviation connection\?/);
   assert.match(sharedSource, /Which base or airport community should jmpseat prioritize first\?/);
   assert.match(sharedSource, /What would make jmpseat most useful to you first\?/);
+  assert.match(sharedSource, /Base tips from people who actually work there/);
+  assert.match(sharedSource, /Verified crew lounges based on role/);
+  assert.match(sharedSource, /Commuter or non-rev-adjacent tips/);
+  assert.match(sharedSource, /How comfortable would you be using your company airline email to verify your status and keep the community crew-only\?/);
+  assert.match(sharedSource, /Team outreach/);
   assert.match(sharedSource, /What tools or communities do you use today for airline-life information\?/);
   assert.match(sharedSource, /Any privacy or trust concern we should design around\?/);
+  assert.doesNotMatch(sharedSource, /Base intel|AI layover brief|Verified crew rooms|without flight loads|Founder or team outreach/);
+  assert.doesNotMatch(sharedSource, /—/);
   assert.match(pageSource, /Please keep this general\./);
   assert.doesNotMatch(
     `${pageSource}\n${sharedSource}`,
@@ -124,4 +131,26 @@ test("first-party waitlist migration creates RLS-protected signup and survey per
   assert.match(sql, /Comfortable using an airline employee email later/);
   assert.match(sql, /Commuter or non-rev-adjacent tips without flight loads/);
   assert.doesNotMatch(sql, /employee_id|portal_credential/i);
+});
+
+test("waitlist survey copy polish migration keeps runtime allowlists aligned", async () => {
+  const migrationsDir = path.join(rootDir, "supabase/migrations");
+  const migrationNames = await readdir(migrationsDir);
+  const polishMigrationName = migrationNames.find((name) =>
+    name.includes("polish_waitlist_survey_copy"),
+  );
+
+  assert.ok(polishMigrationName, "missing waitlist survey copy polish migration");
+
+  const sql = await readFile(path.join(migrationsDir, polishMigrationName), "utf8");
+
+  assert.match(sql, /Base tips from people who actually work there/);
+  assert.match(sql, /Verified crew lounges based on role/);
+  assert.match(sql, /Commuter or non-rev-adjacent tips/);
+  assert.match(sql, /Comfortable using my company airline email later/);
+  assert.match(sql, /Team outreach/);
+  assert.doesNotMatch(sql, /Base intel|AI layover brief|Verified crew rooms|without flight loads|Founder or team outreach/);
+  assert.doesNotMatch(sql, /—/);
+  assert.match(sql, /grant execute on function public\.submit_waitlist_survey_response[\s\S]*to service_role/i);
+  assert.doesNotMatch(sql, /grant execute on function public\.submit_waitlist_survey_response[\s\S]*to anon, authenticated/i);
 });
