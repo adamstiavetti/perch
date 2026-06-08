@@ -10,8 +10,7 @@ import {
 import { WAITLIST_SURVEY_QUESTIONS } from "../src/lib/waitlist/shared";
 
 const TRUST_ITEMS = [
-  "verified workers",
-  "private by design",
+  "verified privately",
   "built for airline life",
 ] as const;
 
@@ -19,7 +18,7 @@ const FEATURE_CARDS = [
   {
     label: "base",
     title: "Base Boards",
-    copy: "Trusted base intel for reserve life, new hires, parking, transit, food, errands, and how your base actually works.",
+    copy: "Base specific boards for practical questions, local tips, and shared knowledge around parking, commuting, reserve life, food, errands, and how each base actually works.",
     image: "/jmpseat/base-boards-v2.png",
     imageAlt:
       "Crew members rolling luggage through an airport base parking and shuttle area at blue hour.",
@@ -27,23 +26,23 @@ const FEATURE_CARDS = [
   {
     label: "layover",
     title: "Layover Boards",
-    copy: "Trusted layover intel for food, transportation, downtime, and airport-area know-how.",
+    copy: "City and airport area boards for food, transportation, downtime, safety aware recommendations, and the things crews figure out after a few trips.",
     image: "/jmpseat/layover-boards-v2.png",
     imageAlt:
       "A late-night airport-district street with a restaurant, traffic, and a traveler pulling luggage.",
   },
   {
     label: "rooms",
-    title: "Verified Rooms",
-    copy: "Verified discussion spaces for airline life, organized by base and topic.",
+    title: "Verified Lounges",
+    copy: "Verified discussion spaces for airline life, organized by base, role, and topic.",
     image: "/jmpseat/verified-rooms-v2.png",
     imageAlt:
       "A dim private lounge with conversational seating and warm low lighting.",
   },
   {
     label: "verified",
-    title: "Verified Entry",
-    copy: "A private beta built around trust, verified context, and careful access.",
+    title: "Verified Access",
+    copy: "A private access layer for airline workers, built to keep jmpseat’s boards, resources, and everyday airline life tools focused, useful, and safer.",
     image: "/jmpseat/verified-access-v2.png",
     imageAlt:
       "Travel documents and access materials arranged on a dark tray in warm light.",
@@ -318,8 +317,7 @@ function WaitlistPanel({
       ) : null}
       <WaitlistEmailForm attribution={attribution} formId={formId} />
       <p id={`${formId}-helper`} className={styles.helperText}>
-        Early waitlist access for airline-life communities. No account creation
-        or verification happens here.
+        Join the waitlist and help shape the direction of jmpseat.
       </p>
       <p className={styles.consentText}>
         By joining the waitlist, you agree to receive jmpseat updates about
@@ -364,9 +362,11 @@ export default async function Home({ searchParams }: HomeProps) {
                 <span className={styles.headlineAccent}>airline life.</span>
               </h1>
               <div className={styles.supportingCopy}>
-                <p>Trusted base intel and layover knowledge for airline life.</p>
-                <p>Verified privately. Private by design.</p>
-                <p>Built for life between trips.</p>
+                <p>
+                  A private hub for airline workers — bringing base questions,
+                  layover recommendations, crew conversations, and everyday
+                  resources into one place.
+                </p>
               </div>
 
               <ul className={styles.trustRow} aria-label="Trust highlights">
@@ -434,8 +434,9 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className={styles.bottomCtaEyebrow}>private beta waitlist</p>
             <h2 id="bottom-cta-title">Join the private beta waitlist.</h2>
             <p>
-              Get early access to trusted base intel, layover knowledge, and
-              verified discussion for airline life.
+              Be first in line as we build a private hub for airline workers.
+              Bringing base questions and answers, layover recommendations,
+              crew conversations, and everyday resources into one place.
             </p>
           </div>
           <WaitlistPanel

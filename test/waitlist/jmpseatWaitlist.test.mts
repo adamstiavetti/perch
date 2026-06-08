@@ -21,7 +21,14 @@ test("public waitlist page uses restored editorial card imagery and airline life
   const pageSource = await readFile(path.join(rootDir, "app/page.tsx"), "utf8");
 
   assert.match(pageSource, /headlineAccent}>airline life\./);
-  assert.match(pageSource, /Trusted base intel and layover knowledge for airline life\./);
+  assert.match(
+    pageSource,
+    /A private hub for airline workers .* bringing base questions,\s*layover recommendations,\s*crew conversations,\s*and everyday\s*resources into one place\./s,
+  );
+  assert.match(pageSource, /"verified privately"/);
+  assert.match(pageSource, /"built for airline life"/);
+  assert.doesNotMatch(pageSource, /"verified workers"|"private by design"/);
+  assert.doesNotMatch(pageSource, /Verified privately\. Private by design\.|Built for life between trips\./);
   assert.doesNotMatch(pageSource, /Beta Access/);
   assert.doesNotMatch(pageSource, /\/login\?next=\/app/);
   assert.doesNotMatch(pageSource, /NEXT_PUBLIC_WAITLIST_FORM_URL|tally\.so/i);
@@ -40,6 +47,11 @@ test("public waitlist page uses restored editorial card imagery and airline life
   assert.match(pageSource, /"\/jmpseat\/layover-boards-v2\.png"/);
   assert.match(pageSource, /"\/jmpseat\/verified-rooms-v2\.png"/);
   assert.match(pageSource, /"\/jmpseat\/verified-access-v2\.png"/);
+  assert.match(pageSource, /label:\s*"base"/);
+  assert.match(pageSource, /label:\s*"layover"/);
+  assert.match(pageSource, /label:\s*"rooms"/);
+  assert.match(pageSource, /label:\s*"verified"/);
+  assert.match(pageSource, /featureLabel}>\{card\.label}/);
 });
 
 test("public waitlist root metadata is launch-ready for jmpseat.com", async () => {
@@ -90,7 +102,19 @@ test("public legal pages use concrete launch-intent effective dates", async () =
 
   assert.match(privacySource, /Effective date: June 8, 2026/);
   assert.match(termsSource, /Effective date: June 8, 2026/);
+  assert.match(privacySource, /optional follow-up survey/);
+  assert.match(privacySource, /source and attribution information/);
+  assert.match(privacySource, /limited cookie or\s*token/);
+  assert.match(privacySource, /Retention/);
+  assert.match(privacySource, /reasonable technical and organizational safeguards/);
+  assert.match(termsSource, /public jmpseat\s*waitlist/);
+  assert.match(termsSource, /someone else's email address/);
+  assert.match(termsSource, /spam, scraping,\s*security testing, disruption/);
+  assert.match(termsSource, /may reject, remove, or ignore submissions/);
+  assert.match(termsSource, /may use that feedback to improve/);
   assert.doesNotMatch(combinedSource, /\[Add launch date\]|\[Add [^\]]+\]/);
+  assert.doesNotMatch(combinedSource, /Confirm that the final jmpseat domain email inboxes/);
+  assert.doesNotMatch(combinedSource, /preview phase|preview page/);
 });
 
 test("public waitlist page includes the research-derived optional survey without sensitive fields", async () => {
