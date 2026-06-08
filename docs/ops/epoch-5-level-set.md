@@ -4,6 +4,15 @@ Date: 2026-06-07
 
 Current baseline commit: `835972c fix: redact operator grant audit identifiers`
 
+## Final Closeout Update
+
+Epoch 5 is closed with explicit carry-forward items as of
+`docs/ops/epoch-5-final-closeout.md`.
+
+This level-set remains useful as the capability matrix. The final closeout doc
+is now the controlling handoff for what is closed, what is conditionally closed,
+and what carries forward.
+
 ## Summary
 
 Epoch 5 is the bounded operator/admin tooling foundation for running verification
@@ -34,6 +43,7 @@ approval.
 | Proof upload content validation | deployed / route-smoke-verified | `docs/ops/proof-upload-content-validation-fix.md`, `src/lib/verification/proofUpload.ts`, `src/lib/verification/actions.ts`, `test/verification/proofUpload.test.mts` | Redacted proof upload now requires server-side JPEG/PNG byte validation instead of trusting browser MIME/extension alone. Private proof bucket behavior and reviewer signed-URL controls remain unchanged. Beta/public route smoke passed after deploy at `329d238`; live authenticated proof-upload mutation remains pending until a safe founder-controlled test workflow is available. |
 | Security headers hardening | runtime-proven | `docs/ops/security-headers-hardening.md`, `next.config.ts`, `test/security-headers/securityHeaders.test.mts` | Adds app-owned `nosniff`, strict-origin referrer policy, restrictive permissions policy, enforced anti-framing, and report-only broad CSP. Vercel-provided HSTS is left unchanged. Runtime validation passed on apex, `www`, and beta at `8558d2d`; no CSP report endpoint is configured yet. |
 | Beta Vercel env scoping | runtime-verified | `docs/ops/beta-vercel-env-scoping.md` | `beta.jmpseat.com` is a Preview deployment while apex/`www` use Production. The required Supabase env names now exist persistently in Preview, and a normal beta Preview deploy without deployment-scoped Supabase env injection returned healthy beta auth redirects with apex/`www` preserved. |
+| Epoch 5 final closeout | closed with carry-forward items | `docs/ops/epoch-5-final-closeout.md` | Closes the bounded operator/admin/security hardening lane while carrying forward the safe live proof-upload mutation test, CSP reporting/enforcement planning, Vercel deployment-model maturity, Supabase migration drift handling, auth email branding/custom SMTP, and community-access/moderation bridge. |
 | Proof cleanup monitoring | runtime-proven | `docs/epochs/e05-proof-cleanup-monitoring.md`, `docs/ops/proof-cleanup-monitoring-runtime-pass.md`, `app/app/admin/proof-cleanup/page.tsx`, `src/lib/admin/proofCleanupMonitoring.ts`, `supabase/migrations/20260605233000_add_operator_proof_cleanup_monitoring.sql`, `test/admin/proofCleanupMonitoring.test.mts` | Read-only cleanup health, failures, and bounded cleanup audit visibility are runtime-proven. |
 | Protected manual proof cleanup controls | runtime-proven | `docs/epochs/e05-protected-manual-proof-cleanup-controls.md`, `docs/ops/protected-manual-proof-cleanup-controls-runtime-pass.md`, `src/lib/admin/proofCleanupControls.ts`, `src/lib/admin/proofCleanupControlsCore.ts`, `supabase/migrations/20260605234500_add_operator_manual_proof_cleanup_controls.sql`, `test/admin/proofCleanupControls.test.mts` | Manual cleanup runs only through the existing helper with bounded controls and summary-only audit. Runtime proof did not force a destructive delete because there were zero eligible expired proof rows. |
 | Proof upload/review forward product state | deferred | `docs/strategy/proof-system-freeze-deprecation-plan.md`, `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`, `docs/EPOCH_ROADMAP.md`, `docs/BUILD_TICKETS.md` | Proof upload/review infrastructure remains historical and safety-preserved. Forward user-facing proof expansion is frozen unless explicitly reopened. |
@@ -64,51 +74,59 @@ Relevant auth-detour artifacts that remain useful to Epoch 5:
 - The closeout record confirming temporary domain cleanup.
 - The auth design-system docs for future admin/login consistency checks.
 
-## Open Epoch 5 Gaps
+## Carry-Forward Items
 
-1. The admin shell is implemented and covered, but signed-in visual/browser
-   runtime proof for every scoped admin route is scattered across individual
-   runtime passes rather than gathered into one final handoff artifact.
-2. Proof upload content-validation runtime validation did not perform a live
+The final closeout doc is now the source of truth for carry-forward items.
+Current carry-forward items are:
+
+1. Proof upload content-validation runtime validation did not perform a live
    authenticated mutation because no safe founder-controlled proof-upload test
    workflow was available in this run. Code-level validation, deployment, beta
    route smoke, public preservation smoke, and reviewer-access regression tests
    passed.
-3. Proof cleanup runtime validation did not perform a live destructive delete,
+2. Future CSP reporting/enforcement remains pending; the broad CSP is
+   report-only and has no report endpoint.
+3. Future Vercel deployment-model maturity remains pending: decide whether to
+   keep CLI/manual deploys, connect the project to Git, or split public and
+   beta into separate projects.
+4. Existing remote Supabase migration-history drift remains documented and
+   should continue to use targeted migration apply until explicitly resolved.
+5. Proof cleanup runtime validation did not perform a live destructive delete,
    because there were no eligible expired proof rows. This is acceptable and
    documented, but it remains a precision caveat.
-4. The post-bootstrap operator grant management runtime proof used the
+6. The post-bootstrap operator grant management runtime proof used the
    server-side RPC/action path with authenticated runtime context simulation; a
    live browser-authenticated form submission remains optional if a safe operator
    session is available.
-5. E05-T08 is paused by product pivot and should not be treated as a feature
+7. E05-T08 is paused by product pivot and should not be treated as a feature
    ticket until the pivot direction explicitly calls for it.
 
 ## Recommended Next Ticket
 
 Recommended next single ticket:
 
-`E05 Final Handoff Index And Epoch 6 Bridge`
+`Private Beta Readiness Bridge`
 
 Goal:
 
-Create one final Epoch 5 handoff index that points to each runtime proof and
-then bridge planning to the next community-access/moderation lane.
+Move from Epoch 5 closeout into narrow private beta readiness work without
+reopening proof-upload, broad operator/admin tooling, or community boards.
 
 Scope:
 
-- Create a single index of Epoch 5 runtime-pass docs and caveats.
+- If final security signoff requires it first, run the safe live authenticated
+  proof-upload mutation test with founder-controlled data and cleanup.
+- Continue the manual auth email branding/custom SMTP plan.
 - Keep E05-T08 paused unless explicitly reactivated.
-- Carry forward only the remaining production/operator follow-ups.
-- Define the next community-access/moderation planning lane without adding app
-  code.
+- Bridge to the next community-access/moderation planning lane.
 
 Why this is the highest-leverage next ticket:
 
-The original Epoch 5 operator/admin tools and the newer post-bootstrap operator
-grant management path are now runtime-proven. The highest-leverage next step is
-to make the handoff easy to follow and avoid accidentally reopening auth,
-proof-upload, or broad operator tooling detours.
+The original Epoch 5 operator/admin tools, security closeout items, and
+post-bootstrap operator grant management path are now documented and
+runtime-proven or explicitly carried forward. The highest-leverage next step is
+to move into private beta readiness without reopening broad operator/admin,
+proof-upload, or auth detours.
 
 Optional follow-ups after that ticket:
 

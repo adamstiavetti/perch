@@ -75,6 +75,13 @@ Current post-E05 update:
   Supabase env injection returned healthy beta auth redirects, with apex/`www`
   preserved. No DNS, Supabase settings, runtime data, beta grants, or app code
   were changed.
+- Epoch 5 is closed with explicit carry-forward items in
+  `ops/epoch-5-final-closeout.md`. The public/beta domain split, waitlist
+  hardening, operator private-app scope gate, trusted security-events boundary,
+  proof-upload content validation deployment, security headers, and beta Preview
+  env scoping are recorded there. The main conditional carry-forward is a safe
+  live authenticated proof-upload mutation test when a founder-controlled
+  account/workflow and cleanup path are available.
 - Duplicate-survey-token hardening is migrated, deployed, and runtime-proven on
   apex and `www`: duplicate waitlist submissions no longer receive existing
   survey tokens or edit another signup's optional survey answers. The app still
