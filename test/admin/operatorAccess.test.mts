@@ -7,6 +7,7 @@ import {
   buildAdminNavigation,
   getGrantedOperatorScopes,
   hasAnyOperatorScope,
+  hasOperatorPrivateAppAccess,
   hasOperatorScope,
   isOperatorGrantActive,
 } from "../../src/lib/admin/access.ts";
@@ -82,6 +83,38 @@ test("wrong scope does not count", () => {
       scope: "operator.manage_approved_domains",
     }),
     false,
+  );
+});
+
+test("private-app operator override requires the dedicated internal scope", () => {
+  assert.equal(hasOperatorPrivateAppAccess([]), false);
+  assert.equal(hasOperatorPrivateAppAccess(["operator.read_audit"]), false);
+  assert.equal(
+    hasOperatorPrivateAppAccess(["operator.view_waitlist_contacts"]),
+    false,
+  );
+  assert.equal(
+    hasOperatorPrivateAppAccess([
+      "operator.read_audit",
+      "operator.view_waitlist_contacts",
+      "operator.manage_approved_domains",
+      "operator.manage_reviewer_scopes",
+      "operator.monitor_proof_cleanup",
+      "operator.run_proof_cleanup",
+      "operator.manage_operator_access",
+    ]),
+    false,
+  );
+  assert.equal(
+    hasOperatorPrivateAppAccess(["operator.internal_private_app_access"]),
+    true,
+  );
+  assert.equal(
+    hasOperatorPrivateAppAccess([
+      "operator.read_audit",
+      "operator.internal_private_app_access",
+    ]),
+    true,
   );
 });
 

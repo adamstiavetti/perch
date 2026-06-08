@@ -28,6 +28,9 @@ export const OPERATOR_SCOPE_VALUES = [
 
 export type OperatorScope = (typeof OPERATOR_SCOPE_VALUES)[number];
 
+export const OPERATOR_INTERNAL_PRIVATE_APP_ACCESS_SCOPE =
+  "operator.internal_private_app_access" as const satisfies OperatorScope;
+
 export const OPERATOR_ACCESS_NOT_READY_MESSAGE =
   "Operator access is not ready yet. Apply the operator grants foundation migration to this Supabase project before using operator-only admin sections.";
 
@@ -88,6 +91,15 @@ export function hasOperatorScope(input: {
   scope: OperatorScope;
 }) {
   return filterOperatorScopes(input.scopes).includes(input.scope);
+}
+
+export function hasOperatorPrivateAppAccess(
+  scopes: readonly string[] | null | undefined,
+) {
+  return hasOperatorScope({
+    scopes,
+    scope: OPERATOR_INTERNAL_PRIVATE_APP_ACCESS_SCOPE,
+  });
 }
 
 export function hasAnyOperatorScope(input: {

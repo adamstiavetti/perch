@@ -1,6 +1,9 @@
 import type { User } from "@supabase/supabase-js";
 
-import { filterOperatorScopes } from "../admin/access";
+import {
+  filterOperatorScopes,
+  hasOperatorPrivateAppAccess,
+} from "../admin/access";
 import { AUTH_ROUTES, sanitizeNextPath } from "../auth/routes";
 import { getPrivateAppGateResult } from "../privateApp/access";
 import { getJmpseatLaunchMode, type JmpseatLaunchMode } from "../privateApp/launchMode";
@@ -249,7 +252,7 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
     launchMode,
     betaStatus,
     betaActive: isBetaAccessActive(betaStatus),
-    operatorPrivateAppAccess: operatorScopes.length > 0,
+    operatorPrivateAppAccess: hasOperatorPrivateAppAccess(operatorScopes),
     airlineEmailAccessState,
     profileLoadError: profileResult.error
       ? "Profile storage is not ready yet. Apply the profiles migration to this Supabase project before using account profiles."

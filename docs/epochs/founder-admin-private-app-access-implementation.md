@@ -22,9 +22,13 @@ That is not the correct long-term founder/admin access model because:
 
 The source of truth remains the existing `public.operator_grants` foundation and the `current_user_operator_scopes()` RPC.
 
-The app now derives `operatorPrivateAppAccess` from an active explicit operator grant:
+The app now derives `operatorPrivateAppAccess` from an active explicit operator
+grant that includes the dedicated internal private-app scope:
 
-- any active operator grant counts as explicit internal/operator authorization
+- `operator.internal_private_app_access` counts as explicit
+  internal/operator private-app authorization
+- unrelated operator/admin tooling scopes do not grant private-app entry by
+  themselves
 - reviewer scopes alone do not count
 - beta access records do not count
 - airline-email verification state does not count
@@ -48,7 +52,8 @@ Normal users keep the current gate rules exactly:
 
 Internal/operator users now get one narrow exception:
 
-- if the account has explicit operator access, private-app entry is allowed during `private_testing` and `internal_test`
+- if the account has `operator.internal_private_app_access`, private-app entry
+  is allowed during `private_testing` and `internal_test`
 - this bypass is limited to app entry and placeholder-shell access
 - it does not broaden access for normal users
 - it does not change `first_base_launch` or `broader_launch`
@@ -109,8 +114,9 @@ That runtime pass should confirm:
 
 ## Follow-Up Path
 
-The original founder/admin private-app access change assumed an explicit
-operator grant could already be aligned for the target account.
+The original founder/admin private-app access change assumed the dedicated
+internal private-app operator scope could already be aligned for the target
+account.
 
 After runtime inspection, the missing gap was post-bootstrap grant management:
 

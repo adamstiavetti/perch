@@ -446,6 +446,8 @@ test("server access context derives airline-email state without loading proof st
   assert.match(source, /JMPSEAT_LAUNCH_MODE|getJmpseatLaunchMode/);
   assert.match(source, /current_user_operator_scopes/);
   assert.match(source, /operatorPrivateAppAccess/);
+  assert.match(source, /hasOperatorPrivateAppAccess\(operatorScopes\)/);
   assert.match(source, /request_id, evidence_type, status, uploaded_at, metadata/);
+  assert.doesNotMatch(source, /operatorPrivateAppAccess:\s*operatorScopes\.length\s*>\s*0/);
   assert.doesNotMatch(source, /storage_bucket|storage_path|signedUrl|publicUrl|proofFile|objectKey|SUPABASE_SERVICE_ROLE/i);
 });
