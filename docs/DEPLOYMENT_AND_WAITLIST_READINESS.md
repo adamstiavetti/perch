@@ -34,8 +34,10 @@ Current post-E05 update:
 - W05A addressed the prior metadata/legal blockers in code.
 - The merged public-waitlist copy polish now also aligns the homepage, Privacy,
   and Terms copy with the actual public waitlist and optional survey behavior.
-- A fresh readiness rerun now moves the launch lane to ready with final manual
-  visual QA before any root cutover decision.
+- Founder manual visual QA passed, and the public root cutover is now
+  runtime-proven on `https://jmpseat.com`.
+- Root `jmpseat.com` serves the public waitlist/marketing page only, while
+  `beta.jmpseat.com` remains the private beta/auth/admin/operator surface.
 - W05A also adds a dedicated `1200 x 630` social preview image so Open Graph
   and Twitter metadata match the actual asset dimensions.
 
@@ -224,26 +226,28 @@ Production checks:
   public waitlist page.
 - Verify no new features or data collection paths are present.
 
-Do not deploy production until the founder or designated reviewer approves the preview.
+Root production cutover has been completed and runtime-proven for the apex
+`https://jmpseat.com`. `www.jmpseat.com` remains outside the cutover until its
+DNS is configured and Vercel reports it ready.
 
 ## 10. Deployment Acceptance Checklist
 
-- [ ] Page loads at `/`.
-- [ ] Mobile layout works.
-- [ ] Waitlist email submit works.
-- [ ] Duplicate waitlist email submit is safe and friendly.
-- [ ] Optional survey submit works.
-- [ ] Optional survey skip works.
-- [ ] Public waitlist form does not request sensitive data.
-- [ ] No badge upload, ID upload, schedule, portal credential, exact hotel, passenger info, live location, or confidential document field exists.
-- [ ] No-official-affiliation disclaimer is visible.
-- [ ] Working-name/legal-trademark caveat is visible.
-- [ ] Public root metadata has title, description, Open Graph, Twitter card,
+- [x] Page loads at `/`.
+- [x] Mobile layout works.
+- [x] Waitlist email submit works.
+- [x] Duplicate waitlist email submit is safe and friendly.
+- [x] Optional survey submit works.
+- [x] Optional survey skip works.
+- [x] Public waitlist form does not request sensitive data.
+- [x] No badge upload, ID upload, schedule, portal credential, exact hotel, passenger info, live location, or confidential document field exists.
+- [x] No-official-affiliation disclaimer is visible.
+- [x] Working-name/legal-trademark caveat is visible.
+- [x] Public root metadata has title, description, Open Graph, Twitter card,
       canonical URL handling, and indexable robots posture.
-- [ ] Privacy and Terms pages use concrete effective dates.
-- [ ] `/app` remains the private beta app surface and is not exposed from the
+- [x] Privacy and Terms pages use concrete effective dates.
+- [x] `/app` remains the private beta app surface and is not exposed from the
       public waitlist page.
-- [ ] No public auth entry, verification uploads, community features, AI,
+- [x] No public auth entry, verification uploads, community features, AI,
       payments, third-party analytics SDK, airline integrations, schedule
       scraping, flight-load requests, nearby crew tracking, or dating/swiping
       were added.

@@ -16,10 +16,11 @@ Baseline commits:
 - `9af7a91 polish: prepare public waitlist metadata`
 - `44b1115 polish: refine public waitlist launch copy`
 - `66f0127 fix: escape terms apostrophe`
+- `2cc1cc6 docs: record beta waitlist capture runtime pass`
 
 ## Readiness Status
 
-Status: `Ready with final manual visual QA`
+Status: `Root cutover complete`
 
 Summary:
 
@@ -36,15 +37,16 @@ Summary:
 - Open Graph and Twitter metadata now point at a dedicated `1200 x 630`
   `public/jmpseat/social-preview.png` asset whose file dimensions match the
   declared social-card metadata.
-- Root-domain cutover to `jmpseat.com` still has not happened. Launch readiness
-  remains gated only by final manual visual QA and an explicit cutover
-  decision. No code/docs blockers remain in this audit.
+- Founder final manual visual QA passed on stable beta.
+- Root-domain cutover to `jmpseat.com` is complete and runtime-proven.
+- `www.jmpseat.com` remains outside this cutover until its DNS record is added
+  and Vercel reports it ready.
 
 ## Checklist
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Public/private domain split | Pass | Public root is intended to stay waitlist/marketing-only while `beta.jmpseat.com` remains the private beta/auth/admin surface. |
+| Public/private domain split | Pass | Public root serves waitlist/marketing-only while `beta.jmpseat.com` remains the private beta/auth/admin surface. |
 | No public Beta Access exposure | Pass | Public page/tests confirm no Beta Access button and no `/login?next=/app` root entry. |
 | Email-first waitlist capture | Pass | Email field appears above the main CTA and submit state is runtime-proven. |
 | Invalid email handling | Pass | Safe invalid-email state is implemented and test-covered. |
@@ -79,22 +81,22 @@ Summary:
    Privacy, and Terms language with the real public waitlist and optional
    survey flow.
 
-## Remaining Manual QA
+## Remaining Follow-Up
 
-- Do one final manual visual pass on a root-domain preview or cutover candidate
-  to confirm mobile spacing, contrast, CTA/focus affordances, and footer-link
-  rendering.
-- Verify the final root deployment shows the expected social preview, canonical
-  URL, and legal/footer surfaces in the production domain context.
+- Add DNS for `www.jmpseat.com` if the `www` hostname should serve the public
+  waitlist. Vercel reported the required record as
+  `A www.jmpseat.com 76.76.21.21`.
+- Keep monitoring root waitlist capture and beta private-route protection after
+  launch.
 
 ## Public / Private Domain Split
 
-- Future `jmpseat.com` target: public waitlist/marketing only.
-- Future `jmpseat.com` must not expose Beta Access.
-- Future `jmpseat.com` must not route visitors into `/login?next=/app` from the
+- `jmpseat.com` target: public waitlist/marketing only.
+- `jmpseat.com` must not expose Beta Access.
+- `jmpseat.com` must not route visitors into `/login?next=/app` from the
   public waitlist page.
 - `beta.jmpseat.com` remains the private beta/auth/admin/operator surface.
-- Root cutover must not disturb beta auth, admin, or operator tooling on
+- Root cutover did not disturb beta auth, admin, or operator tooling on
   `beta.jmpseat.com`.
 
 ## Waitlist Flow Summary
@@ -133,8 +135,8 @@ Current public waitlist metadata coverage:
 - W05A adds canonical URL handling for the future `https://jmpseat.com` root.
 - W05A sets the public root waitlist to indexable robots posture.
 
-These metadata changes are now merged on `main`. The remaining step is final
-manual visual QA before root cutover approval.
+These metadata changes are merged on `main` and runtime-proven on
+`https://jmpseat.com`.
 
 ## Mobile / Accessibility Summary
 
@@ -148,17 +150,14 @@ Code review indicates the public waitlist page is structurally in good shape:
 - Fieldsets/legends are present for grouped survey choices.
 - Focus styles exist for primary form controls.
 
-Remaining manual QA:
-
-- Recheck mobile/footer affordances visually on the root launch target before
-  cutover.
+Founder manual visual QA passed before root cutover.
 
 ## Final Root Cutover Checklist
 
-1. Confirm the current production target serves the latest reviewed `main`.
-2. Do one final manual mobile/desktop visual pass on the root cutover target.
-3. Point `jmpseat.com` at the public waitlist deployment only.
-4. Keep `beta.jmpseat.com` pointed at the private beta/auth/admin deployment.
+1. Confirm the current production target serves the latest reviewed `main`. Done.
+2. Do one final manual mobile/desktop visual pass on the root cutover target. Done.
+3. Point `jmpseat.com` at the public waitlist deployment only. Done.
+4. Keep `beta.jmpseat.com` pointed at the private beta/auth/admin deployment. Done.
 5. Verify root `jmpseat.com` has no Beta Access button or `/login?next=/app`
    entry path.
 6. Verify a non-sensitive waitlist signup succeeds on root.
@@ -182,13 +181,11 @@ Remaining manual QA:
 
 Recommended next task:
 
-`W05C Root Cutover Manual QA And Approval`
+`W05D Root Launch Monitoring And Www DNS Decision`
 
 Scope:
 
-- Run the final manual mobile/desktop visual check on the root launch target.
-- Confirm root-domain public waitlist behavior and footer/legal rendering.
-- Approve or reject root cutover as a separate explicit task.
-
-Root cutover to `jmpseat.com` should happen only after that manual QA is
-complete and explicitly approved.
+- Monitor `jmpseat.com` public waitlist capture and social preview behavior
+  after launch.
+- Decide whether to configure `www.jmpseat.com`; if yes, add the Vercel-reported
+  DNS record and run a small `www` smoke test.
