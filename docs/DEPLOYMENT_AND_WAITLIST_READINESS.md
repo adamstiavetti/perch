@@ -27,9 +27,10 @@ Current post-E05 update:
 - First-party jmpseat capture is the public waitlist path.
 - Tally is backup/research-only unless intentionally reintroduced later.
 - First-party waitlist funnel metrics and the operator/admin dashboard are now
-  implemented through existing waitlist signup/survey data, with runtime
-  validation pending before the public waitlist launch is considered fully
-  instrumented.
+  implemented and runtime-proven through existing waitlist signup/survey data.
+- Use `ops/public-waitlist-launch-readiness-check.md` as the current W05
+  cutover-readiness source of truth before moving the public waitlist to
+  `jmpseat.com`.
 
 ## 2. Current App Scope
 

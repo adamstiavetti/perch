@@ -18,6 +18,17 @@ waitlist dashboard implementation is tracked in
 root-domain cutover, deployment, DNS changes, Vercel changes, Supabase runtime
 settings changes, native-app work, or runtime mutations.
 
+Current status update:
+
+- W01 first-party public waitlist capture is implemented and runtime-proven.
+- W02 public waitlist runtime validation is complete.
+- W03 dedicated event capture remains optional.
+- W04 admin waitlist dashboard is implemented and runtime-proven, including the
+  founder-confirmed full-contact mode for authorized admin use.
+- W05 cutover readiness is tracked in
+  `ops/public-waitlist-launch-readiness-check.md` and is currently blocked on
+  metadata/legal launch polish rather than waitlist-flow functionality.
+
 ## Domain Split
 
 Current intent:
@@ -235,16 +246,18 @@ Native:
    if needed after runtime review.
 
 4. `W04 Admin Waitlist Metrics Dashboard`
-   Status: implemented on branch. Add `/app/admin/waitlist` as an
+   Status: implemented and runtime-proven. `/app/admin/waitlist` is an
    operator/admin-scoped viewer for signup totals, survey completion,
    sources/referrers, aggregate survey responses, and authorized contact/survey
    detail without exposing internal IDs, tokens, or public waitlist data.
-   Runtime validation remains pending.
 
 5. `W05 Public Domain Cutover To jmpseat.com`
    Prepare and execute the reversible production-domain cutover so the public
    waitlist page serves from `jmpseat.com` while `beta.jmpseat.com` remains the
    private beta/auth/admin surface.
+   Status: launch-readiness audit exists in
+   `ops/public-waitlist-launch-readiness-check.md`; current blockers are
+   metadata/legal polish, not waitlist-flow/runtime correctness.
 
 6. `W06 Native App Architecture Readiness Note / Expo Prep`
    Document the eventual Expo/EAS path, shared Supabase backend contracts, and
