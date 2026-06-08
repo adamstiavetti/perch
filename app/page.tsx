@@ -51,9 +51,40 @@ const FEATURE_CARDS = [
 ] as const;
 
 export const metadata: Metadata = {
-  title: "jmpseat. | Private waitlist",
+  metadataBase: new URL("https://jmpseat.com"),
+  title: "jmpseat | Private aviation-worker waitlist",
   description:
-    "jmpseat. is the off-duty network for airline workers, built for trusted base intel, layover knowledge, and verified discussion.",
+    "Join the waitlist for jmpseat, an independent aviation-worker community built around bases, layovers, commuting, and crew-specific knowledge.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "jmpseat | Private aviation-worker waitlist",
+    description:
+      "Join the waitlist for jmpseat, an independent aviation-worker community built around bases, layovers, commuting, and crew-specific knowledge.",
+    url: "https://jmpseat.com",
+    siteName: "jmpseat",
+    type: "website",
+    images: [
+      {
+        url: "/jmpseat/social-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "jmpseat public waitlist for airline-life communities.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "jmpseat | Private aviation-worker waitlist",
+    description:
+      "Join the waitlist for jmpseat, an independent aviation-worker community built around bases, layovers, commuting, and crew-specific knowledge.",
+    images: ["/jmpseat/social-preview.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 type HomeProps = {
@@ -119,6 +150,7 @@ function WaitlistEmailForm({
           name="email"
           type="email"
           autoComplete="email"
+          aria-describedby={`${formId}-helper`}
           placeholder="you@example.com"
           required
         />

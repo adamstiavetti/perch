@@ -8,6 +8,15 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "../..");
 
+async function readPngDimensions(filePath: string) {
+  const image = await readFile(filePath);
+
+  return {
+    width: image.readUInt32BE(16),
+    height: image.readUInt32BE(20),
+  };
+}
+
 test("public waitlist page uses restored editorial card imagery and airline life marketing copy", async () => {
   const pageSource = await readFile(path.join(rootDir, "app/page.tsx"), "utf8");
 
@@ -31,6 +40,57 @@ test("public waitlist page uses restored editorial card imagery and airline life
   assert.match(pageSource, /"\/jmpseat\/layover-boards-v2\.png"/);
   assert.match(pageSource, /"\/jmpseat\/verified-rooms-v2\.png"/);
   assert.match(pageSource, /"\/jmpseat\/verified-access-v2\.png"/);
+});
+
+test("public waitlist root metadata is launch-ready for jmpseat.com", async () => {
+  const pageSource = await readFile(path.join(rootDir, "app/page.tsx"), "utf8");
+
+  assert.match(pageSource, /title:\s*"jmpseat \| Private aviation-worker waitlist"/);
+  assert.match(
+    pageSource,
+    /Join the waitlist for jmpseat, an independent aviation-worker community built around bases, layovers, commuting, and crew-specific knowledge\./,
+  );
+  assert.match(pageSource, /metadataBase:\s*new URL\("https:\/\/jmpseat\.com"\)/);
+  assert.match(pageSource, /alternates:\s*{\s*canonical:\s*"\/"/s);
+  assert.match(pageSource, /openGraph:\s*{/);
+  assert.match(pageSource, /url:\s*"https:\/\/jmpseat\.com"/);
+  assert.match(pageSource, /url:\s*"\/jmpseat\/social-preview\.png"/);
+  assert.match(pageSource, /twitter:\s*{/);
+  assert.match(pageSource, /card:\s*"summary_large_image"/);
+  assert.match(pageSource, /images:\s*\["\/jmpseat\/social-preview\.png"\]/);
+  assert.match(pageSource, /robots:\s*{\s*index:\s*true,\s*follow:\s*true/s);
+  assert.match(pageSource, /width:\s*1200/);
+  assert.match(pageSource, /height:\s*630/);
+  assert.doesNotMatch(pageSource, /images:\s*\[[^\]]*"\/jmpseat\/hero-runway\.png"/);
+  assert.doesNotMatch(pageSource, /metadata[\s\S]*Beta Access/);
+  assert.doesNotMatch(pageSource, /metadata[\s\S]*\/login\?next=\/app/);
+});
+
+test("public waitlist social preview asset matches declared metadata dimensions", async () => {
+  const previewPath = path.join(rootDir, "public/jmpseat/social-preview.png");
+  const dimensions = await readPngDimensions(previewPath);
+
+  assert.deepEqual(dimensions, {
+    width: 1200,
+    height: 630,
+  });
+});
+
+test("public waitlist email input is described by its helper text", async () => {
+  const pageSource = await readFile(path.join(rootDir, "app/page.tsx"), "utf8");
+
+  assert.match(pageSource, /aria-describedby={`\$\{formId\}-helper`}/);
+  assert.match(pageSource, /id={`\$\{formId\}-helper`}/);
+});
+
+test("public legal pages use concrete launch-intent effective dates", async () => {
+  const privacySource = await readFile(path.join(rootDir, "app/privacy/page.tsx"), "utf8");
+  const termsSource = await readFile(path.join(rootDir, "app/terms/page.tsx"), "utf8");
+  const combinedSource = `${privacySource}\n${termsSource}`;
+
+  assert.match(privacySource, /Effective date: June 8, 2026/);
+  assert.match(termsSource, /Effective date: June 8, 2026/);
+  assert.doesNotMatch(combinedSource, /\[Add launch date\]|\[Add [^\]]+\]/);
 });
 
 test("public waitlist page includes the research-derived optional survey without sensitive fields", async () => {

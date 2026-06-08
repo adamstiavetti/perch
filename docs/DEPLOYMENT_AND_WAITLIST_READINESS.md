@@ -31,6 +31,10 @@ Current post-E05 update:
 - Use `ops/public-waitlist-launch-readiness-check.md` as the current W05
   cutover-readiness source of truth before moving the public waitlist to
   `jmpseat.com`.
+- W05A addresses the prior metadata/legal blockers in code, but root cutover
+  still needs a fresh readiness rerun after review and merge.
+- W05A also adds a dedicated `1200 x 630` social preview image so Open Graph and
+  Twitter metadata match the actual asset dimensions.
 
 ## 2. Current App Scope
 
@@ -159,6 +163,11 @@ Local verification checks:
 - Optional survey appears only after email capture.
 - Optional survey can be submitted or skipped.
 - Footer disclaimer is visible.
+- Launch-ready root metadata is present for title, description, Open Graph,
+  Twitter card, canonical URL handling, and indexable robots posture.
+- Open Graph and Twitter image metadata points at a dedicated social preview
+  asset whose file dimensions match the declared `1200 x 630` card size.
+- `/privacy` and `/terms` render concrete effective dates.
 - No public Beta Access entry appears.
 - `/app/admin/waitlist` remains operator/admin-only and, when reviewed by an
   authorized founder/admin user, may show contact emails plus bounded survey
@@ -205,6 +214,9 @@ Production checks:
 - Verify the first-party waitlist email form works.
 - Verify the optional survey submit and skip states work.
 - Verify footer disclaimers are visible.
+- Verify launch metadata and social preview posture are correct for
+  `https://jmpseat.com`.
+- Verify `/privacy` and `/terms` render concrete effective dates.
 - Verify `/app` remains the private beta app surface and is not exposed from the
   public waitlist page.
 - Verify no new features or data collection paths are present.
@@ -223,6 +235,9 @@ Do not deploy production until the founder or designated reviewer approves the p
 - [ ] No badge upload, ID upload, schedule, portal credential, exact hotel, passenger info, live location, or confidential document field exists.
 - [ ] No-official-affiliation disclaimer is visible.
 - [ ] Working-name/legal-trademark caveat is visible.
+- [ ] Public root metadata has title, description, Open Graph, Twitter card,
+      canonical URL handling, and indexable robots posture.
+- [ ] Privacy and Terms pages use concrete effective dates.
 - [ ] `/app` remains the private beta app surface and is not exposed from the
       public waitlist page.
 - [ ] No public auth entry, verification uploads, community features, AI,

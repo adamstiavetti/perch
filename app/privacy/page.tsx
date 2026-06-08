@@ -22,7 +22,7 @@ export default function PrivacyPage() {
             This page explains how jmpseat. handles information collected
             through the public waitlist.
           </p>
-          <p className={styles.effective}>Effective date: [Add launch date]</p>
+          <p className={styles.effective}>Effective date: June 8, 2026</p>
 
           <section className={styles.section}>
             <h2>What we collect</h2>

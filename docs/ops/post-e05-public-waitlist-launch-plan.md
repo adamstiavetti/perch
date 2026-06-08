@@ -26,8 +26,9 @@ Current status update:
 - W04 admin waitlist dashboard is implemented and runtime-proven, including the
   founder-confirmed full-contact mode for authorized admin use.
 - W05 cutover readiness is tracked in
-  `ops/public-waitlist-launch-readiness-check.md` and is currently blocked on
-  metadata/legal launch polish rather than waitlist-flow functionality.
+  `ops/public-waitlist-launch-readiness-check.md`. W05A addresses the prior
+  metadata/legal launch blockers in code, and root cutover still needs a
+  readiness rerun after review and merge.
 
 ## Domain Split
 
@@ -256,8 +257,9 @@ Native:
    waitlist page serves from `jmpseat.com` while `beta.jmpseat.com` remains the
    private beta/auth/admin surface.
    Status: launch-readiness audit exists in
-   `ops/public-waitlist-launch-readiness-check.md`; current blockers are
-   metadata/legal polish, not waitlist-flow/runtime correctness.
+   `ops/public-waitlist-launch-readiness-check.md`; W05A addresses the prior
+   metadata/legal blockers in code, and cutover remains pending until the
+   readiness check is rerun after review and merge.
 
 6. `W06 Native App Architecture Readiness Note / Expo Prep`
    Document the eventual Expo/EAS path, shared Supabase backend contracts, and

@@ -16,7 +16,7 @@ Baseline commits:
 
 ## Readiness Status
 
-Status: `blocked`
+Status: `pending review and readiness rerun`
 
 Summary:
 
@@ -24,9 +24,13 @@ Summary:
 - The operator/admin waitlist dashboard is implemented and runtime-proven,
   including founder-confirmed full-contact mode for authorized admin use.
 - The public/private domain split is clear in code, tests, and current docs.
-- Root-domain cutover to `jmpseat.com` should not happen yet because the public
-  waitlist surface still needs production-grade metadata polish and the linked
-  legal pages still contain placeholder effective dates.
+- W05A code now addresses the prior launch blockers by adding launch-ready
+  public waitlist metadata, replacing placeholder Privacy/Terms effective
+  dates, and tying the email helper text to the email input.
+- W05A also adds a dedicated `1200 x 630` social preview image so Open Graph and
+  Twitter metadata no longer point at the wider runway hero crop.
+- Root-domain cutover to `jmpseat.com` still has not happened. Launch readiness
+  should be rerun after W05A review and merge before any root-domain cutover.
 
 ## Checklist
 
@@ -43,27 +47,26 @@ Summary:
 | Admin waitlist dashboard | Pass | `/app/admin/waitlist` exists, is not public, and supports masked audit mode plus contact-authorized detail mode. |
 | Contact-detail permission split | Pass | `operator.read_audit` remains masked/aggregate only; `operator.view_waitlist_contacts` is required for raw contact-detail mode. |
 | Public copy safety boundaries | Pass | No proof upload, badge upload, manual review, role/base claim, or guaranteed beta-access language appears on the public page. |
-| Responsive layout and form semantics | Pass with follow-up | Layout, headings, labels, alerts, and success states are in place; a small helper-text association polish remains optional. |
-| SEO/social metadata | Blocked | Public root page currently lacks final launch metadata coverage such as Open Graph, Twitter card, canonical URL, and explicit robots posture. |
-| Linked legal page readiness | Blocked | Privacy and Terms pages still show `Effective date: [Add launch date]`. |
+| Responsive layout and form semantics | Addressed in W05A | Layout, headings, labels, alerts, and success states are in place; W05A adds `aria-describedby` from the email input to its helper text. |
+| SEO/social metadata | Addressed in W05A | W05A adds launch-ready title, description, Open Graph, Twitter card, canonical root URL handling, indexable robots posture, and a dedicated `1200 x 630` social preview image for `jmpseat.com`. |
+| Linked legal page readiness | Addressed in W05A | W05A replaces the Privacy and Terms placeholder effective dates with a concrete launch-intent date. |
 
-## Blockers
+## Prior Blockers Addressed In W05A
 
 1. Public waitlist metadata is not launch-ready.
-   Current public-page metadata includes a title and description, but the page
-   still lacks confirmed launch-ready Open Graph metadata, Twitter card
-   metadata, canonical URL handling, and an explicit robots/noindex posture for
-   the root-launch plan.
+   W05A adds launch-ready public root metadata for `jmpseat.com`, including
+   title, description, Open Graph title/description/URL, Twitter card
+   title/description/card type, canonical root URL handling, and indexable
+   robots posture. It also replaces the mismatched runway hero image reference
+   with `public/jmpseat/social-preview.png`, a dedicated `1200 x 630` PNG that
+   matches the declared social-card dimensions.
 
 2. Linked legal pages still contain placeholder effective dates.
-   `/privacy` and `/terms` currently render `Effective date: [Add launch date]`,
-   which should be resolved before the root domain becomes the public waitlist
-   surface.
+   W05A replaces `/privacy` and `/terms` placeholder effective dates with
+   `Effective date: June 8, 2026`.
 
 ## Non-Blocking Follow-Ups
 
-- Add `aria-describedby` from the public email field to its helper text so the
-  form guidance is more explicitly tied to the input for assistive technology.
 - Do one final manual visual pass on a root-domain preview after metadata/legal
   polish lands to confirm mobile spacing, contrast, and footer-link focus
   affordances.
@@ -106,17 +109,18 @@ Summary:
 
 ## SEO / Metadata Summary
 
-Current public waitlist metadata state is not sufficient for root launch:
+W05A public waitlist metadata coverage:
 
-- Page title exists.
-- Page description exists.
-- Open Graph title/description are not yet confirmed on the public route.
-- Twitter card metadata is not yet confirmed on the public route.
-- Canonical URL handling is not yet confirmed on the public route.
-- Explicit robots/noindex posture is not yet confirmed for the root-launch
-  target.
+- W05A adds launch-ready page title and description.
+- W05A adds Open Graph title, description, and URL metadata.
+- W05A adds Twitter summary-card metadata.
+- W05A points Open Graph and Twitter image metadata at the dedicated
+  `1200 x 630` `public/jmpseat/social-preview.png` asset.
+- W05A adds canonical URL handling for the future `https://jmpseat.com` root.
+- W05A sets the public root waitlist to indexable robots posture.
 
-This should be handled in a focused code task before root cutover.
+These changes still need review, merge, and a fresh launch-readiness rerun
+before root cutover.
 
 ## Mobile / Accessibility Summary
 
@@ -132,24 +136,26 @@ Code review indicates the public waitlist page is structurally in good shape:
 
 Non-blocking polish remains:
 
-- Explicitly associate email helper text with the email input.
 - Recheck mobile/footer affordances visually after final launch metadata/legal
   polish.
 
 ## Final Root Cutover Checklist
 
-1. Merge and deploy the focused metadata/legal readiness task to production.
-2. Confirm the current production target serves the latest reviewed `main`.
-3. Point `jmpseat.com` at the public waitlist deployment only.
-4. Keep `beta.jmpseat.com` pointed at the private beta/auth/admin deployment.
-5. Verify root `jmpseat.com` has no Beta Access button or `/login?next=/app`
+1. Review and merge W05A metadata/legal/accessibility polish.
+2. Rerun this launch-readiness check against the reviewed branch or deployment
+   candidate.
+3. Deploy the reviewed public waitlist build to the production target.
+4. Confirm the current production target serves the latest reviewed `main`.
+5. Point `jmpseat.com` at the public waitlist deployment only.
+6. Keep `beta.jmpseat.com` pointed at the private beta/auth/admin deployment.
+7. Verify root `jmpseat.com` has no Beta Access button or `/login?next=/app`
    entry path.
-6. Verify a non-sensitive waitlist signup succeeds on root.
-7. Verify optional survey submit and skip still work on root.
-8. Verify `/privacy` and `/terms` render final effective dates and launch-ready
+8. Verify a non-sensitive waitlist signup succeeds on root.
+9. Verify optional survey submit and skip still work on root.
+10. Verify `/privacy` and `/terms` render final effective dates and launch-ready
    copy.
-9. Verify social preview/canonical/robots behavior on the root deployment.
-10. Verify `beta.jmpseat.com/app/admin/waitlist` still works for authorized
+11. Verify social preview/canonical/robots behavior on the root deployment.
+12. Verify `beta.jmpseat.com/app/admin/waitlist` still works for authorized
     operator/admin users.
 
 ## Rollback Plan
@@ -165,13 +171,14 @@ Non-blocking polish remains:
 
 Recommended next task:
 
-`W05A Public Waitlist Metadata And Legal Launch Polish`
+`W05B Public Waitlist Launch Readiness Rerun`
 
 Scope:
 
-- Add launch-ready root metadata for the public waitlist page.
-- Resolve placeholder effective dates on the linked Privacy and Terms pages.
-- Re-run launch-readiness verification after that polish.
+- Review and merge W05A.
+- Rerun launch-readiness verification against the reviewed branch or deployment
+  candidate.
+- Decide whether root cutover is approved as a separate task.
 
-Root cutover to `jmpseat.com` should happen only after that focused readiness
-task is complete and reviewed.
+Root cutover to `jmpseat.com` should happen only after that rerun is complete
+and explicitly approved.

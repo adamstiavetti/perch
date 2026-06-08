@@ -22,7 +22,7 @@ export default function TermsPage() {
             These plain-language terms apply to the public jmpseat. waitlist
             page during the preview phase.
           </p>
-          <p className={styles.effective}>Effective date: [Add launch date]</p>
+          <p className={styles.effective}>Effective date: June 8, 2026</p>
 
           <section className={styles.section}>
             <h2>Current status</h2>
