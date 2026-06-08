@@ -117,9 +117,18 @@ Runtime checks confirmed:
   full contact email and bounded per-submission survey detail for authorized
   founder/admin invite/contact workflow
 
-Authenticated founder/admin browser rendering should now use the
-contact-authorized mode. A manual browser refresh by the founder/admin can
-confirm the visual presentation in the live session.
+Founder manual browser confirmation now covers the live contact-authorized
+dashboard presentation on stable beta. The founder confirmed that the
+founder/admin account can open `/app/admin/waitlist` in the authorized
+contact-detail mode and see:
+
+- full contact email for authorized admin invite/contact use
+- per-person survey detail
+- aggregate waitlist metrics
+- demand, source, and desired-feature signals
+
+No actual emails, survey answers, row IDs, UUIDs, tokens, or private
+identifiers are recorded in this note.
 
 ## Public And Private Regression Checks
 
@@ -152,9 +161,6 @@ Passed:
 
 ## Remaining Follow-Up
 
-- Founder/admin should manually refresh `/app/admin/waitlist` in the existing
-  authenticated browser session to confirm the live visual contact-authorized
-  dashboard presentation.
 - If needed, create a dedicated audit-only operator browser session to prove the
   masked-only UI path at browser level. The server-side runtime data path and
   automated UI/source tests already cover this boundary.
