@@ -66,13 +66,16 @@ decision note for Home Base and Board Follow behavior before implementing
 
 The MVP user experience is personalized:
 
-- users must set a Home Base for the current MVP onboarding/profile-completion
-  path, but Home Base is personalization state, not authorization truth
+- users may set a Home Base for personalization, but Home Base is not required
+  app access state and not authorization truth
 - the initial rollout should not show a fake one-option Home Base picker
-- after work-email verification in the DFW-only rollout, users should confirm
-  or start with DFW
-- that DFW-start step should set Home Base to DFW and automatically follow the
-  DFW Base Board
+- after work-email verification in the DFW-only rollout, users should choose
+  Start with DFW or Skip for now
+- Start with DFW should set Home Base to DFW and automatically follow the DFW
+  Base Board
+- Skip for now should create no Home Base preference, require no automatic
+  board follow, and still allow app entry when the real gates pass
+- users without Home Base should later see an exploratory/default experience
 - users can follow other base boards
 - users can follow layover boards
 - users can follow Verified Lounges only when access/membership permits
@@ -90,8 +93,10 @@ Canonical onboarding order for the initial DFW-only rollout:
 2. Confirm account
 3. Complete basic profile
 4. Verify work email
-5. Confirm or start with DFW as the initial Home Base
-6. Enter the jmpseat Home dashboard
+5. Choose Start with DFW or Skip for now
+6. If starting with DFW, set Home Base to DFW and auto-follow DFW Base Board
+7. If skipping, keep no Home Base preference and no required auto-follow
+8. Enter the jmpseat Home dashboard or exploratory/default app experience
 
 Canonical onboarding order for a future multi-base rollout:
 
@@ -99,8 +104,8 @@ Canonical onboarding order for a future multi-base rollout:
 2. Confirm account
 3. Complete basic profile
 4. Verify work email
-5. Select Home Base from active bases
-6. Enter the jmpseat Home dashboard
+5. Select Home Base from active bases, or skip if Home Base remains optional
+6. Enter the jmpseat Home dashboard or exploratory/default app experience
 
 ## 4. Utility Layer / Board Intel
 
@@ -190,8 +195,28 @@ Current implementation note:
 - T06 should follow the Home Base / Board Follow decision note, including the
   rule that Home Base auto-follows the matching Base Board while neither Home
   Base nor board follows grant restricted access.
-- T06 should implement the initial DFW-start behavior first and leave real
-  multi-base selection/switching support ready for later active-base rollout.
+- T06 should support the optional initial DFW-start behavior first and leave
+  real multi-base selection/switching support ready for later active-base
+  rollout.
+
+Current T06 implementation note:
+
+- T06 is implemented locally/review-ready as the Home Base preference and board
+  follow data foundation.
+- It adds optional Home Base preference state, board follows, an authenticated
+  `set_user_home_base(p_base_code text)` RPC, and server-only helpers.
+- The RPC sets the authenticated user's active Home Base and auto-follows the
+  matching active Base Board.
+- If the user skips the initial DFW-start choice, no Home Base preference or
+  automatic board follow is required.
+- Missing Home Base must not block app access after work-email and other real
+  app-entry gates pass.
+- It keeps old board follows when Home Base changes.
+- It does not implement onboarding UI, dashboard UI, manual follow/unfollow UI,
+  restricted lounge membership/access approval, posts, comments, saves,
+  reactions, search, reports, or moderation.
+- Runtime migration apply remains pending review and must be targeted because
+  known Supabase migration-history drift remains.
 
 Rationale:
 
@@ -210,7 +235,7 @@ Rationale:
 The current implementation sequence is:
 
 1. `FBMVP-T05` base, board, and board-type data model, merged and runtime-applied
-2. `FBMVP-T06` Home Base preference and board-follow foundation
+2. `FBMVP-T06` Home Base preference and board-follow foundation, local/review-ready
 3. `FBMVP-T07` restricted lounge membership/access request/community-admin model
 4. `FBMVP-T08` DFW Base Board read-only dashboard shell
 5. `FBMVP-T09` board/layover discovery and follow UI shell

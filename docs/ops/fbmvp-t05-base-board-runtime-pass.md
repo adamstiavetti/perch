@@ -97,7 +97,19 @@ The next implementation lane after the T05 runtime pass is:
 
 - `FBMVP-T06: Home Base Preference + Board Follow Foundation`
 
-Use these controlling docs before starting T06:
+Current T06 note:
+
+- T06 is implemented locally/review-ready in
+  `docs/ops/fbmvp-t06-home-base-board-follows.md`.
+- Runtime migration apply remains pending review.
+- The T06 foundation keeps Home Base and board follows as personalization
+  state only and does not grant restricted access.
+- No Home Base is a valid initial DFW-only rollout state. Skipping the
+  DFW-start choice creates no Home Base preference, requires no automatic board
+  follow, and must not block app access.
+
+Use these controlling docs when reviewing T06 or extending the board/home-base
+foundation:
 
 - `docs/strategy/home-base-board-follow-decision.md`
 - `docs/strategy/base-board-product-definition.md`
@@ -105,9 +117,11 @@ Use these controlling docs before starting T06:
 
 Initial rollout note:
 
-- T06 should start with DFW-only Home Base onboarding behavior
-- the user confirms or starts with DFW after work-email verification
-- Home Base is set to DFW
-- the system auto-follows the DFW Base Board
+- T06 should start with optional DFW-only Home Base onboarding behavior
+- the user chooses Start with DFW or Skip for now after work-email verification
+- if the user starts with DFW, Home Base is set to DFW
+- if the user starts with DFW, the system auto-follows the DFW Base Board
+- if the user skips, no Home Base preference is created and no automatic board
+  follow is required
 - future multi-base Home Base selection and switching remains part of the same
   T06 lane without making Home Base an authorization grant

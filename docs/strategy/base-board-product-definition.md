@@ -101,10 +101,12 @@ The personalized app experience should eventually use home base, followed
 Base Boards, followed Layover Boards, saved/useful content, followed users, and
 Verified Lounge memberships to shape what a user sees first.
 
-For the initial DFW-only rollout, the app should use a DFW-start confirmation
-step after work-email verification rather than a fake one-option Home Base
-picker. Future multi-base rollout can introduce real active-base selection and
-switching behavior.
+For the initial DFW-only rollout, the app should use a DFW-start choice after
+work-email verification rather than a fake one-option Home Base picker. Users
+can start with DFW or skip for now. Skipping creates no Home Base preference,
+requires no automatic board follow, and should lead to an exploratory/default
+experience rather than blocking app access. Future multi-base rollout can
+introduce real active-base selection and switching behavior.
 
 ## 7. AI-Assisted Intel Boundary
 

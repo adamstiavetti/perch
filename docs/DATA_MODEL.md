@@ -49,8 +49,8 @@ Current 05B note:
 
 - `claimed_airline`, `claimed_role`, and `claimed_base` remain self-declared
   onboarding/profile fields only.
-- Future Home Base state should be treated as required personalization
-  preference for the MVP path, not authorization truth.
+- Future Home Base state should be treated as optional personalization
+  preference in the initial DFW-only rollout, not authorization truth.
 - Home Base should not verify employment, airline, role, base assignment, or
   restricted-board eligibility.
 - Self-declared airline text may be editable in profile, but future
@@ -271,19 +271,43 @@ Relationships:
 
 ## HomeBasePreference
 
-Planned 05B/T06 concept.
+Current T06 implementation note:
 
-Home Base is the user's primary base preference for personalization and MVP
-profile completion. It should not be treated as proof of employment, airline,
-role, base assignment, or restricted-board eligibility.
+`user_home_base_preferences` is added by the local T06 migration. Runtime apply
+is pending review.
+
+Home Base is the user's primary base preference for personalization when the
+user chooses one. It is optional in the initial DFW-only rollout and is not
+proof of employment, airline, role, base assignment, or restricted-board
+eligibility.
+
+Important fields:
+
+- user_id
+- base_id
+- selected_at
+- updated_at
+
+Relationships:
+
+- Belongs to User.
+- Belongs to Base.
+- The row is set through `set_user_home_base(p_base_code text)`, which requires
+  an authenticated user and active base.
 
 Expected behavior:
 
-- A user has one current Home Base preference.
-- In the initial DFW-only rollout, onboarding should use a DFW-start
-  confirmation step rather than a fake one-option Home Base picker.
+- A user may have one current Home Base preference.
+- In the initial DFW-only rollout, onboarding should use a DFW-start choice
+  rather than a fake one-option Home Base picker.
 - In that first rollout, confirming or starting with DFW should set Home Base
   to DFW and ensure the DFW Base Board is followed.
+- If the user skips the DFW-start step, no Home Base preference is created and
+  no automatic board follow is required.
+- No Home Base is a valid initial DFW-only rollout state and must not block app
+  access.
+- Users without Home Base should later receive an exploratory/default
+  experience until they set Home Base or follow boards.
 - Setting Home Base should ensure the base's main Base Board is followed.
 - Future multi-base rollout should allow selection from active bases and later
   Home Base switching.
@@ -293,13 +317,41 @@ Expected behavior:
 
 ## BoardFollow
 
-Planned 05B/T06 concept.
+Current T06 implementation note:
+
+`board_follows` is added by the local T06 migration. Runtime apply is pending
+review.
 
 A board follow is a personalization signal, not an access grant.
 
 Users may follow Base Boards, Layover Boards, and Verified Lounges where access
 or membership permits. Following a restricted board must not bypass membership,
 visibility, posting, moderation, or launch gates.
+
+Important fields:
+
+- id
+- user_id
+- board_id
+- source
+- notification_level
+- is_favorite
+- followed_at
+- updated_at
+
+Relationships:
+
+- Belongs to User.
+- Belongs to Board.
+- Unique per `(user_id, board_id)`.
+
+T06 constrains `source` to `manual`, `home_base`, `onboarding`, or `system`.
+It constrains `notification_level` to `default`, `muted`, or `important`.
+
+The T06 Home Base RPC auto-follows the active Base Board for the selected
+active base and preserves older follows. Manual follow/unfollow behavior,
+favorite editing, restricted lounge follows, notification behavior, and
+membership/access approval remain later tickets.
 
 ## Airport
 

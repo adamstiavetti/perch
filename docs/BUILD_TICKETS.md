@@ -36,12 +36,13 @@ Supplemental epoch-specific ticket packs:
 - [Proof-System Freeze / Deprecation Plan](strategy/proof-system-freeze-deprecation-plan.md) - freezes proof upload as a forward product path while preserving legacy cleanup, audit, and data-retirement safety.
 - [First-Base MVP Scope](strategy/first-base-mvp-scope.md) - defines the first complete base launch package, including airline-email access, boards, posting/Q&A, moderation expectations, trust copy, and launch boundaries.
 - [Base Board Product Definition](strategy/base-board-product-definition.md) - canonical definition of a Base Board as the main verified hub/container for an aviation base, combining structured base intel, posts/comments, useful/trending knowledge, related Layover Boards, and restricted Verified Lounges while preserving safety boundaries and T05 model validity.
-- [Home Base And Board Follow Decision](strategy/home-base-board-follow-decision.md) - canonical T06 product decision that Home Base is required personalization state, not authorization truth; setting Home Base auto-follows the matching Base Board; users may follow many boards; follows and self-declared profile fields do not grant restricted-board access.
+- [Home Base And Board Follow Decision](strategy/home-base-board-follow-decision.md) - canonical T06 product decision that Home Base is optional personalization state in the initial DFW-only rollout, not authorization truth; setting Home Base auto-follows the matching Base Board; users may follow many boards; follows and self-declared profile fields do not grant restricted-board access.
 - [Community Admin Responsibilities / Disclaimer Policy](strategy/community-admin-responsibilities-disclaimer-policy.md) - defines board-scoped community-admin responsibilities, limits, privacy boundaries, non-sponsorship disclaimers, abuse controls, and escalation expectations.
 - [Launch-Readiness Gate Transition Plan](strategy/launch-readiness-gate-transition-plan.md) - defines the explicit transition from private-testing beta gates to first-base launch gates without removing beta too early, requiring one-by-one beta grants, or bypassing airline-email verification.
 - [Beta Invite-Code Foundation Decision](strategy/beta-invite-code-foundation-decision.md) - defines batch-generated, single-use beta invite codes as private-testing capacity control that must not bypass airline-email verification or become a first-base launch requirement.
 - [05B First-Base MVP Planning](ops/05b-first-base-mvp-planning.md) - controlling narrow-lane planning note for the current 05B implementation start; use this doc so older broad beta/V1 planning does not pull the first slice too wide.
 - [FBMVP-T05 Base Board Runtime Pass](ops/fbmvp-t05-base-board-runtime-pass.md) - records targeted runtime application of `20260609020355 create_base_board_model` to the intended `jmpseat` Supabase project, confirms only T05 was recorded in migration history, preserves known migration drift handling, and verifies DFW/base-board seed state plus RLS on the new metadata tables.
+- [FBMVP-T06 Home Base And Board Follows](ops/fbmvp-t06-home-base-board-follows.md) - local/review-ready foundation for optional Home Base preference state, board follows as personalization state, and the authenticated `set_user_home_base` RPC that auto-follows the matching active Base Board without granting restricted access.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
@@ -136,11 +137,11 @@ Use `ops/05b-first-base-mvp-planning.md` as the controlling note for the
 current 05B implementation start.
 
 Use `strategy/base-board-product-definition.md` as the canonical product
-definition for what a Base Board is before applying the T05 migration or
-starting T06.
+definition for what a Base Board is when extending the T05/T06 foundation.
 
 Use `strategy/home-base-board-follow-decision.md` as the canonical product
-decision for Home Base and Board Follow behavior before implementing T06.
+decision for Home Base and Board Follow behavior in T06 and later follow
+surfaces.
 
 Current first code ticket:
 
@@ -154,11 +155,28 @@ Current T05 implementation status:
 - Adds `bases`, `board_types`, and `boards`.
 - Seeds DFW as the first launch base and DFW Base Board as the first available
   board.
-- Initial rollout remains DFW-only; T06 should use a DFW-start confirmation
-  step instead of a fake one-option Home Base picker.
+- Initial rollout remains DFW-only; T06 should use an optional DFW-start choice
+  instead of a fake one-option Home Base picker.
 - Seeds board types `base_board`, `layover_board`, and `verified_lounge`.
 - Does not implement follows, home-base preferences, memberships, access
   requests, posts, comments, saves, reactions, search, reports, or moderation.
+
+Current T06 implementation status:
+
+- Local/review-ready on the active T06 branch.
+- Adds `user_home_base_preferences` and `board_follows`.
+- Adds an authenticated `set_user_home_base(p_base_code text)` RPC to set the
+  current user's Home Base and auto-follow the matching active Base Board.
+- Adds server-side helper functions for reading Home Base/follows and setting
+  Home Base through the RPC.
+- Keeps missing Home Base as a valid initial DFW-only rollout state that does
+  not block app access.
+- Keeps Home Base and follows as personalization/subscription state only.
+- Does not grant restricted access, create lounge memberships, create access
+  requests, or rely on self-declared `claimed_base`, `claimed_airline`, or
+  `claimed_role`.
+- Runtime migration apply remains pending review and must be targeted because
+  known Supabase migration-history drift remains.
 
 DFW is the first launch base and the DFW Base Board is the first available base
 board. DFW is not the whole product concept. The data model should support many

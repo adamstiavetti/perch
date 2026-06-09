@@ -28,14 +28,17 @@ boards, and board types, but it does not implement the Base Board UI,
 posts/comments, follows, search, Verified Lounge access flows, or board
 intel/wiki content.
 
-Use `docs/strategy/home-base-board-follow-decision.md` for the follow-on T06
-product decision: Home Base is required personalization state, setting it should
-auto-follow the base's main Base Board, and neither Home Base nor board follows
-grant restricted access.
+Use `docs/strategy/home-base-board-follow-decision.md` and
+`docs/ops/fbmvp-t06-home-base-board-follows.md` for the follow-on T06 product
+and implementation notes: Home Base is optional personalization state in the
+initial DFW-only rollout, setting it auto-follows the base's main Base Board,
+and neither Home Base nor board follows grant restricted access.
 
-The initial T06 rollout should use a DFW-start confirmation step after
-work-email verification rather than a fake one-option Home Base picker. Future
-multi-base selection and switching can follow once more active bases exist.
+The initial T06 rollout should use a DFW-start choice after work-email
+verification rather than a fake one-option Home Base picker. Users can start
+with DFW or skip for now; skipping creates no Home Base preference, requires no
+automatic board follow, and must not block app access. Future multi-base
+selection and switching can follow once more active bases exist.
 
 ## 2. Implemented Scope
 
@@ -67,8 +70,8 @@ Runtime-proven metadata state:
 
 The following remain later tickets:
 
-- board follows
-- home-base preferences
+- manual board follow/unfollow UI
+- Home Base onboarding UI
 - verified lounge memberships
 - board access requests
 - community-admin grants

@@ -8,8 +8,8 @@ employer unless explicitly obtained and documented.
 
 ## 1. Decision Summary
 
-Home Base is required for the current MVP onboarding/profile-completion path.
-It is a personalization preference, not authorization truth.
+Home Base is optional personalization state during the initial DFW-only
+rollout. It is not required app access state and it is not authorization truth.
 
 The initial rollout is DFW-only.
 
@@ -22,7 +22,7 @@ require separate board membership or access approval.
 
 Because DFW is the only live base at first, onboarding should not present a
 fake one-option "choose your Home Base" selector. The initial rollout should
-use a DFW-start confirmation step instead.
+use a DFW-start choice instead: start with DFW or skip for now.
 
 ## 2. Home Base Meaning
 
@@ -34,7 +34,7 @@ Home Base can help shape:
 - the default app home experience
 - the first Base Board shown after onboarding
 - base-specific prompts, search defaults, and useful/trending content
-- later onboarding completion checks
+- later onboarding or personalization completion prompts
 
 Home Base does not verify:
 
@@ -55,12 +55,13 @@ must not grant restricted access. Future airline-specific boards or lounges
 should rely on verified airline or approved-domain logic, not self-declared
 airline text.
 
-## 3. Required But Not Authoritative
+## 3. Optional And Not Authoritative
 
-For the current MVP path, Home Base should be treated as required profile or
-onboarding state because the product needs a useful default base context.
+For the initial DFW-only rollout, Home Base is optional personalization state.
+The app should allow a valid "no Home Base yet" state because forcing non-DFW
+users to choose DFW could imply false base assignment.
 
-That requirement must remain separate from app and board authorization:
+The optional preference must remain separate from app and board authorization:
 
 - App entry still depends on the active launch-mode gates, airline-email
   eligibility, beta requirements where applicable, account state, and profile
@@ -74,6 +75,9 @@ That requirement must remain separate from app and board authorization:
 
 Home Base is not proof that the user works at that base or should be allowed
 into any restricted board under that base.
+
+Missing Home Base must not block app access after the user satisfies the
+actual app-entry gates.
 
 ## 4. Initial DFW-Only Rollout
 
@@ -90,10 +94,16 @@ see a DFW-start step that clearly says jmpseat is opening with DFW first.
 
 That step should:
 
-- let the user confirm or start with DFW
-- set Home Base to DFW
-- auto-follow the DFW Base Board
-- route the user into the personalized jmpseat Home dashboard
+- let the user start with DFW
+- let the user skip for now
+- if the user starts with DFW, set Home Base to DFW
+- if the user starts with DFW, auto-follow the DFW Base Board
+- if the user skips, create no Home Base preference
+- if the user skips, require no automatic board follow
+- route the user into the app either way
+
+When the user skips, the dashboard should later show an exploratory/default
+experience until the user sets a Home Base or follows boards.
 
 Canonical onboarding order for the initial DFW-only rollout:
 
@@ -101,8 +111,10 @@ Canonical onboarding order for the initial DFW-only rollout:
 2. Confirm account
 3. Complete basic profile
 4. Verify work email
-5. Confirm or start with DFW as the initial Home Base
-6. Enter the jmpseat Home dashboard
+5. Choose Start with DFW or Skip for now
+6. If starting with DFW, set Home Base to DFW and auto-follow DFW Base Board
+7. If skipping, keep no Home Base preference and no required auto-follow
+8. Enter the jmpseat Home dashboard or exploratory/default app experience
 
 ## 5. Future Multi-Base Rollout
 
@@ -111,7 +123,8 @@ Base from active bases.
 
 Future multi-base behavior should be:
 
-- users can select Home Base from active bases during onboarding
+- users can select Home Base from active bases during onboarding or skip if the
+  product intentionally keeps Home Base optional
 - users can switch Home Base later
 - switching Home Base updates personalization
 - switching Home Base auto-follows the new base's main Base Board
@@ -123,8 +136,8 @@ Canonical onboarding order for a future multi-base rollout:
 2. Confirm account
 3. Complete basic profile
 4. Verify work email
-5. Select Home Base from active bases
-6. Enter the jmpseat Home dashboard
+5. Select Home Base from active bases, or skip if Home Base remains optional
+6. Enter the jmpseat Home dashboard or exploratory/default app experience
 
 ## 6. Board Follow Meaning
 
@@ -178,7 +191,9 @@ The home dashboard should eventually use:
 - access-aware search and results
 
 These signals should shape what the user sees first without exposing restricted
-content the user is not allowed to access.
+content the user is not allowed to access. If the user has no Home Base yet,
+the dashboard should use an exploratory/default experience rather than blocking
+app access.
 
 ## 10. Reaction Terminology Boundary
 
@@ -196,24 +211,40 @@ Final user-facing copy can choose jmpseat terminology later.
 
 ## 11. T06 Implementation Implication
 
-`FBMVP-T06` should likely introduce:
+`FBMVP-T06` introduces the local/review-ready data foundation for:
 
 - a Home Base preference model
 - a board-follow model
-- initial DFW-start behavior for the single-base rollout
+- optional initial DFW-start behavior for the single-base rollout
 - future switchable Home Base support across active bases
 - auto-follow behavior when Home Base is set
 - tests proving Home Base and follows are not authorization grants
 - conservative handling for restricted boards
 
-T06 should not implement posts, comments, lounge access requests, memberships,
-community-admin tools, saves, reactions, search, reports, moderation, or broad
-member-generated content exposure unless a newer controlling ticket explicitly
-changes scope.
+Implementation notes:
 
-This document does not prescribe the exact SQL shape. The implementation should
-inspect the current T05 schema and choose the smallest model that preserves the
-decisions above.
+- `user_home_base_preferences` stores one current Home Base per user.
+- `board_follows` stores followed boards as personalization/subscription state.
+- `set_user_home_base(p_base_code text)` sets the authenticated user's Home
+  Base and auto-follows the matching active Base Board.
+- no Home Base preference is created when the user skips the initial DFW-start
+  choice.
+- no Home Base is a valid initial DFW-only rollout state and must not block app
+  access.
+- changing Home Base keeps old follows unless the user manually unfollows them
+  in a later UI/helper.
+- direct client writes are conservative; manual follow/unfollow and restricted
+  lounge follow behavior remain later work.
+
+T06 does not implement posts, comments, lounge access requests, memberships,
+community-admin tools, saves, reactions, search, reports, moderation, dashboard
+UI, onboarding UI, or broad member-generated content exposure.
+
+Runtime migration apply remains pending review.
+
+The current T06 migration is the first SQL shape for these decisions. Later
+tickets should extend it narrowly rather than treating follows, Home Base, or
+self-declared profile fields as authorization grants.
 
 ## 12. Product Boundaries
 

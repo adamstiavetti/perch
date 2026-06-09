@@ -443,11 +443,15 @@ turning Home Base or follows into authorization grants.
 
 Scope:
 
-- Create the Home Base preference model.
+- Create the optional Home Base preference model.
 - Create the board-follow model.
-- For the initial DFW-only rollout, use a DFW-start confirmation step after
-  work-email verification instead of a fake one-option Home Base picker.
-- Setting Home Base should auto-follow the corresponding main Base Board.
+- For the initial DFW-only rollout, use a DFW-start choice after work-email
+  verification instead of a fake one-option Home Base picker.
+- Users can start with DFW or skip for now.
+- Starting with DFW should set Home Base to DFW and auto-follow the DFW Base
+  Board.
+- Skipping should create no Home Base preference, require no automatic board
+  follow, and still allow app entry when real app-entry gates pass.
 - Changing Home Base later should keep the old board follow by default unless
   manually unfollowed.
 - Preserve future multi-base selection and switching support once more active
