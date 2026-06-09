@@ -16,6 +16,12 @@ And Board-Type Data Model Design`.
 T05 creates the database/model foundation for the First-Base MVP. It does not
 build the app UI or later community interaction features.
 
+Runtime apply status:
+
+- T05 is merged on `main`.
+- The T05 Supabase runtime apply pass is recorded in
+  `docs/ops/fbmvp-t05-base-board-runtime-pass.md`.
+
 Use `docs/strategy/base-board-product-definition.md` for the canonical product
 definition of a Base Board. T05 supports that definition by modeling bases,
 boards, and board types, but it does not implement the Base Board UI,
@@ -43,6 +49,15 @@ T05 adds:
 DFW is the first MVP launch base and first available base board. It is not the
 whole product concept, and the schema supports many bases and boards from the
 start.
+
+Runtime-proven metadata state:
+
+- `public.bases`, `public.board_types`, and `public.boards` exist in the
+  intended `jmpseat` Supabase project
+- RLS is enabled on all three tables
+- DFW is seeded as the first active base
+- `base_board`, `layover_board`, and `verified_lounge` are seeded
+- `DFW Base Board` is seeded with slug `dfw`
 
 ## 3. Deferred Scope
 

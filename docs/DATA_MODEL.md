@@ -158,6 +158,8 @@ Current T05 implementation note:
 
 - `bases` is implemented as the First-Base MVP base/airport community anchor
   table.
+- The T05 runtime apply pass is recorded in
+  `docs/ops/fbmvp-t05-base-board-runtime-pass.md`.
 - DFW is seeded as the first launch base, but the table is designed for many
   bases from the start.
 - Self-declared profile base text remains separate and must not become
@@ -191,6 +193,8 @@ Relationships:
 Current T05 implementation note:
 
 - `board_types` is implemented as controlled board taxonomy.
+- The T05 runtime apply pass records seeded runtime board types for
+  `base_board`, `layover_board`, and `verified_lounge`.
 - Seeded types are `base_board`, `layover_board`, and `verified_lounge`.
 - Verified Lounges are modeled as a board type.
 - Board wiki/intel is not a board type; it should be structured content
@@ -219,6 +223,8 @@ Current T05 implementation note:
 
 - `boards` is implemented as the user-facing board-space table.
 - DFW Base Board is seeded as the first available board.
+- The T05 runtime apply pass confirms the seeded `DFW Base Board` row exists as
+  active metadata in the intended Supabase runtime.
 - The table is designed for many base boards, layover boards, and restricted
   lounge boards over time.
 - The canonical Base Board product definition is in

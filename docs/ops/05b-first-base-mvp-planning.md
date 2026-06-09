@@ -148,13 +148,15 @@ marketplace surface.
 
 ## 8. First Code Ticket
 
-The first code ticket after this docs pass is:
+The first implemented code ticket in this lane is:
 
 - `FBMVP-T05: Base, Board, And Board-Type Data Model Design`
 
 Current implementation note:
 
 - T05 creates the initial database/model foundation only.
+- T05 is merged in repo history and the targeted Supabase runtime apply pass is
+  recorded in `docs/ops/fbmvp-t05-base-board-runtime-pass.md`.
 - T05 seeds DFW as the first launch base and DFW Base Board as the first
   available board.
 - T05 seeds the controlled board types `base_board`, `layover_board`, and
@@ -182,7 +184,7 @@ Rationale:
 
 The current implementation sequence is:
 
-1. `FBMVP-T05` base, board, and board-type data model
+1. `FBMVP-T05` base, board, and board-type data model, merged and runtime-applied
 2. `FBMVP-T06` board follow/home-base preference foundation
 3. `FBMVP-T07` restricted lounge membership/access request/community-admin model
 4. `FBMVP-T08` DFW Base Board read-only dashboard shell

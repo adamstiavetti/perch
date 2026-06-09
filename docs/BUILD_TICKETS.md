@@ -41,6 +41,7 @@ Supplemental epoch-specific ticket packs:
 - [Launch-Readiness Gate Transition Plan](strategy/launch-readiness-gate-transition-plan.md) - defines the explicit transition from private-testing beta gates to first-base launch gates without removing beta too early, requiring one-by-one beta grants, or bypassing airline-email verification.
 - [Beta Invite-Code Foundation Decision](strategy/beta-invite-code-foundation-decision.md) - defines batch-generated, single-use beta invite codes as private-testing capacity control that must not bypass airline-email verification or become a first-base launch requirement.
 - [05B First-Base MVP Planning](ops/05b-first-base-mvp-planning.md) - controlling narrow-lane planning note for the current 05B implementation start; use this doc so older broad beta/V1 planning does not pull the first slice too wide.
+- [FBMVP-T05 Base Board Runtime Pass](ops/fbmvp-t05-base-board-runtime-pass.md) - records targeted runtime application of `20260609020355 create_base_board_model` to the intended `jmpseat` Supabase project, confirms only T05 was recorded in migration history, preserves known migration drift handling, and verifies DFW/base-board seed state plus RLS on the new metadata tables.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
@@ -148,6 +149,8 @@ Current first code ticket:
 Current T05 implementation status:
 
 - Merged on `main` at `87b7693`.
+- Runtime-applied to the intended `jmpseat` Supabase project through the
+  targeted T05 pass recorded in `ops/fbmvp-t05-base-board-runtime-pass.md`.
 - Adds `bases`, `board_types`, and `boards`.
 - Seeds DFW as the first launch base and DFW Base Board as the first available
   board.
