@@ -289,6 +289,8 @@ Product definition:
 - `strategy/verified-lounge-access-model.md` is the canonical product decision
   for Verified Lounge access before implementing the next restricted-access
   ticket.
+- `FBMVP-T07` implements the local schema foundation in
+  `20260609220055_create_lounge_access_foundation.sql`.
 - A Verified Lounge is modeled as a restricted board associated with a base,
   role, airline, or other approved aviation-worker criteria.
 - It is not a public feed, not a direct-message system, and not proof that the
@@ -300,16 +302,29 @@ Product definition:
   schema may use neutral names such as `community_admin`, `board_admin`, or
   `board_moderator`.
 
-Future model concepts:
+Implemented T07 model concepts:
 
-- lounge membership
-- lounge access request
-- request lifecycle: `not_requested`, `pending`, `approved`, `denied`,
-  `revoked`, with optional later `expired` and `withdrawn`
-- request thread or request comments scoped to a single access request
-- scoped Crew Lead grants for specific lounges/boards
-- audit events for request creation, approval, denial, revocation, and request
-  messages
+- `lounge_memberships`
+- `lounge_access_requests`
+- `lounge_request_comments`
+- `lounge_admin_grants`
+
+`lounge_memberships` stores approved/revoked membership for restricted lounge
+boards. Active membership is the T07 access truth for future restricted lounge
+content. Approved membership does not publicly verify airline, role, or base.
+
+`lounge_access_requests` tracks a user's request to join a restricted lounge.
+Requesting access does not grant access. T07 prevents multiple active pending
+requests for the same board/user while preserving prior request history.
+
+`lounge_request_comments` stores limited request-thread comments attached to a
+specific lounge access request. It is not a full direct-message or chat system.
+
+`lounge_admin_grants` stores board-scoped Crew Lead authority using a neutral
+internal table name. Crew Leads remain separate from platform operators/admins.
+
+Future server-side mutation paths should add audit events for request
+creation, approval, denial, revocation, and request messages.
 
 Privacy boundaries:
 
@@ -324,10 +339,12 @@ Privacy boundaries:
 
 Current scope:
 
-- No lounge membership tables are implemented yet.
-- No access request tables are implemented yet.
+- T07 is a local migration and source-test foundation.
+- Runtime migration apply is pending after review/merge.
 - No request UI or Crew Lead panel exists yet.
 - No full direct-message system exists or is implied.
+- No direct client write policies are added; request/review/comment mutations
+  should use later server-side/RPC-controlled paths with audit events.
 - No proof-upload scope is reintroduced.
 
 ## HomeBasePreference

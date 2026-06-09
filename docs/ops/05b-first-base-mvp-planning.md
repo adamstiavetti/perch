@@ -264,6 +264,30 @@ Current T06 implementation note:
 - Future runtime schema changes must still use targeted apply because known
   Supabase migration-history drift remains.
 
+Current T07 implementation note:
+
+- T07 is implemented locally as the Verified Lounge membership/access request
+  data foundation.
+- It adds `lounge_memberships`, `lounge_access_requests`,
+  `lounge_request_comments`, and `lounge_admin_grants`.
+- `lounge_memberships` is the future restricted lounge access truth.
+- `lounge_access_requests` records request state, but requesting access does
+  not grant access.
+- `lounge_request_comments` is a request-scoped thread model, not full direct
+  messaging.
+- `lounge_admin_grants` is the neutral internal table for board-scoped Crew
+  Lead grants.
+- The migration enables RLS and adds conservative authenticated read policies
+  for users and active Crew Leads.
+- Direct write policies are intentionally deferred; request creation, review,
+  approval, denial, revocation, and comments should use later server-side or
+  RPC-controlled paths with audit events.
+- T07 does not implement dashboard UI, request UI, Crew Lead panel UI,
+  restricted lounge content gates, posts, comments, saves, reactions, search,
+  reports, moderation, AI, marketplace/deals, or proof-upload scope.
+- Runtime migration apply is pending after review/merge and must use targeted
+  apply only because known Supabase migration-history drift remains.
+
 Rationale:
 
 - no current board/community schema exists
@@ -282,7 +306,7 @@ The current implementation sequence is:
 
 1. `FBMVP-T05` base, board, and board-type data model, merged and runtime-applied
 2. `FBMVP-T06` Home Base preference and board-follow foundation, merged and runtime-hardened
-3. `FBMVP-T07` restricted lounge membership/access request/community-admin model
+3. `FBMVP-T07` restricted lounge membership/access request/Crew Lead foundation
 4. `FBMVP-T08` DFW Base Board read-only dashboard shell
 5. `FBMVP-T09` board/layover discovery and follow UI shell
 6. `FBMVP-T10` text posts/comments foundation

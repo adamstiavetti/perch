@@ -212,7 +212,24 @@ See `docs/strategy/home-dashboard-product-definition.md` for the Home
 Dashboard hierarchy and `docs/strategy/base-board-product-definition.md` for
 how Verified Lounges relate to Base Boards.
 
-## 10. Out Of Scope
+## 10. T07 Foundation
+
+`FBMVP-T07` adds the local schema foundation for:
+
+- lounge memberships
+- lounge access requests
+- request-scoped comments
+- board-scoped Crew Lead grants
+
+The implementation uses neutral internal table names such as
+`lounge_admin_grants` while keeping `Crew Lead` as the product-facing role
+name.
+
+T07 is schema/RLS foundation only. Request creation, approval, denial,
+revocation, request comments, Crew Lead panel UI, and dashboard lounge cards
+remain later server/UI work.
+
+## 11. Out Of Scope
 
 This document does not implement:
 
