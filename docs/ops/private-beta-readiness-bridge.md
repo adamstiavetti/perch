@@ -39,7 +39,8 @@ community/baseboard implementation.
 The bridge exists to:
 
 - confirm what is actually implemented today
-- keep conditional security follow-up visible
+- keep deprecated proof-system safety obligations visible without treating proof
+  uploads as the active product path
 - track deferred auth/email trust, deliverability, and polish work
 - prevent broader beta docs from being misread as current-ready scope
 - define the stop conditions before moving into `05B`
@@ -65,7 +66,9 @@ Current implemented/runtime-proven baseline:
 - Private-app operator override now requires the dedicated
   `operator.internal_private_app_access` scope.
 - Trusted `security_events` boundary hardening is deployed and runtime-proven.
-- Proof-upload content validation is deployed and test-covered.
+- Proof-upload content validation is deployed and test-covered as historical
+  hardening, but proof uploads are deprecated/out of current scope for the
+  active private beta / 05B path.
 - Security headers are live on public and beta routes.
 - Beta Preview Supabase env scoping is fixed persistently in Vercel Preview.
 
@@ -83,17 +86,20 @@ Closed live:
 - security headers hardening
 - persistent beta Preview Supabase env scoping
 
-Conditionally closed:
+Historical / deprecated for the current path:
 
-- proof-upload content validation is deployed and test-covered, but a safe live
-  authenticated proof-upload mutation test remains pending
+- proof-upload content validation is deployed and test-covered. The old safe
+  live authenticated proof-upload mutation test is no longer an active next
+  task, blocker, or prerequisite before 05B because proof uploads are not part
+  of the current product path.
 
 ## 5. What Private Beta Readiness Means Right Now
 
 Narrowly, private beta readiness now means:
 
 - the repo has a truthful post-Epoch-5 operating baseline
-- the remaining conditional security item is explicitly tracked
+- proof-upload code/storage/artifacts, if still present, remain covered by the
+  historical privacy/security controls without becoming active product scope
 - branded sender/custom SMTP/email template polish is tracked as a deferred
   beta-readiness TODO, not as missing auth-flow implementation
 - beta deployment/runtime caveats are documented
@@ -105,7 +111,7 @@ It does not yet mean:
 - jmpseat is ready for a real broad private beta invite wave
 - the broader private-beta feature set in older docs is fully implemented
 - community boards, posting, moderation, or community-admin tools are ready
-- proof-upload validation has full live authenticated runtime proof
+- proof uploads are part of the current verification path
 
 ## 6. What Private Beta Readiness Explicitly Does Not Mean Yet
 
@@ -145,10 +151,12 @@ belong to `05B / Community Access Architecture`, not this bridge.
 
 ## 8. Carry-Forward Items From Epoch 5
 
-These remain active carry-forward items:
+These remain current carry-forward items:
 
-1. Safe live authenticated proof-upload mutation test with a founder-controlled
-   workflow and cleanup path.
+1. Proof uploads remain deprecated/out of current scope. The old safe live
+   authenticated proof-upload mutation test is no longer active. Historical
+   proof-upload hardening and privacy/security requirements still apply to any
+   existing code, storage, or artifacts.
 2. Deferred branded sender/custom SMTP/email template polish for trust,
    deliverability, and product quality. This is not an auth-flow implementation
    blocker by itself.
@@ -165,8 +173,7 @@ Recommended bridge tasks:
 
 1. `Private Beta Readiness Checklist Reconciliation`
 2. `Auth Email Branding / Confirmation Template Deferred TODO Tracking`
-3. `Safe Live Proof-Upload Mutation Validation`, if final security signoff
-   requires it before broader beta readiness claims
+3. `Proof Upload Deprecated Scope Alignment`
 4. `Post-Bridge 05B Entry Decision`
 
 Task notes:
@@ -175,8 +182,9 @@ Task notes:
   TODO. It should not be described as building auth emails from scratch.
 - The current readiness package for that task lives in
   `docs/ops/auth-email-branding-confirmation-template-plan.md`.
-- The proof-upload live mutation task remains important, but it should only run
-  when a safe founder-controlled account/workflow and cleanup path exist.
+- Proof upload live mutation testing is no longer an active next task or
+  blocker. Any future manual-proof/document-upload workflow requires a fresh
+  scope decision and privacy/security review.
 - The Vercel deployment-model decision is intentionally not a bridge blocker.
 
 ## 10. Which Task Should Come First And Why
@@ -193,20 +201,18 @@ Why:
 - password reset remains link-driven through the existing recovery flow
 - branded sender/custom SMTP/email template polish is deferred trust and
   deliverability work, not the next active auth implementation task
+- proof uploads are deprecated/out of current scope, so the old live mutation
+  test should not gate 05B
 - checklist reconciliation is narrower and lower-risk than moving directly into
   05B implementation
-
-Exception:
-
-If final security signoff requires a live authenticated proof-upload mutation
-test before any further beta-readiness claim, run that validation first.
 
 ## 11. Required User Decisions Before Implementation
 
 Before implementation starts, the user should decide:
 
-1. Whether the safe live authenticated proof-upload mutation test is mandatory
-   before any further beta-readiness work.
+1. Whether any future manual-proof/document-upload workflow should ever be
+   reactivated. If yes, it needs a fresh scope decision and privacy/security
+   review before any runtime work.
 2. Whether to keep auth email branding/custom SMTP deferred or explicitly
    activate a later docs/settings ops task for trust and deliverability polish.
 3. Whether the broader private-beta docs should remain aspirational references
@@ -218,10 +224,10 @@ Before implementation starts, the user should decide:
 
 Do not move into broader `05B / Community Access Architecture` work if:
 
-- the user wants the live proof-upload mutation validation completed first and
-  no safe founder-controlled workflow exists yet
 - repo docs still misstate the existing auth email flows or treat deferred
   sender/template polish as missing auth implementation
+- repo docs still present proof-upload mutation testing as an active blocker or
+  prerequisite rather than historical/deprecated proof-system scope
 - the repo docs still imply a broader current beta scope than the product
   actually supports
 - the user has not decided whether the broader beta docs remain aspirational or

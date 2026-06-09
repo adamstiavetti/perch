@@ -15,6 +15,10 @@ Current scope note:
 - Use `docs/ops/private-beta-readiness-bridge.md` for the current narrow bridge
   between the closed Epoch 5 baseline and broader `05B / Community Access
   Architecture` work.
+- Current private beta / 05B direction does not use proof uploads. Work-email
+  verification and private beta access gates are the active verification path.
+  If manual-proof or document-upload workflows are ever reactivated, they need
+  a fresh scope decision plus privacy/security review before runtime work.
 
 ## How to Use This Checklist
 
@@ -69,15 +73,17 @@ Required for private beta:
 - [ ] Tier 0: unverified / waitlist is documented.
 - [ ] Tier 1: basic email verified is documented.
 - [ ] Tier 2: aviation work email verified is documented.
-- [ ] Tier 3: manual document or badge verified is documented.
+- [ ] Tier 3: manual non-upload review is documented; document/badge upload
+      review remains out of current scope unless separately reactivated.
 - [ ] Tier 4: peer-vouched by verified members is documented as gated/supplemental.
 - [ ] Tier 5: employment/payroll/API verified later is documented as later-stage only.
 - [ ] V1 supports only practical verification paths: basic email, aviation work email where available, and manual review.
-- [ ] Manual verification review workflow exists before real verification uploads are accepted.
+- [ ] Manual verification review workflow exists for the active non-upload path.
 - [ ] Admin verification dashboard exists or private beta has a documented manual admin process.
 - [ ] Verification rejection and request-more-info states are defined.
 - [ ] Work-email privacy caveat is disclosed to users before they use work email verification.
-- [ ] Verification document retention/deletion policy exists before accepting real uploads.
+- [ ] Verification document retention/deletion policy exists before any future
+      upload workflow is reactivated.
 - [ ] Verification artifact access is limited to authorized admins.
 - [ ] Verification decisions are logged.
 - [ ] No AI approves verification.
@@ -92,7 +98,7 @@ Required before public launch:
 
 The product must protect aviation identity, public anonymity, verification evidence, and location-sensitive crew information.
 
-Required for private beta:
+Required only if upload workflows are reactivated:
 
 - [ ] Private identity is separated from public handle.
 - [ ] Public handle can be shown without revealing private verification evidence.
@@ -238,6 +244,16 @@ Required before public launch:
 
 Verification uploads are sensitive and should not be accepted until file handling is safe enough for real user documents.
 
+Current status:
+
+- Proof uploads are deprecated/out of current scope for the current private
+  beta / 05B path.
+- The checklist below is preserved as a future-gate reference only. It is not
+  an active prerequisite before 05B.
+- Existing proof-upload code/storage/artifacts, if still present, remain subject
+  to these privacy/security expectations until removed or retired through a
+  reviewed plan.
+
 Required for private beta:
 
 - [ ] Verification uploads enforce allowed file types.
@@ -310,7 +326,8 @@ Required for private beta:
 - [ ] ModerationAction is accounted for.
 - [ ] AIBrief is accounted for.
 - [ ] SecurityEvent is accounted for.
-- [ ] UploadArtifact is accounted for.
+- [ ] UploadArtifact is accounted for only as historical/future conditional
+      scope, not as part of the current private beta / 05B path.
 - [ ] Subscription is explicitly deferred because V1 does not include payments.
 - [ ] AuditLog is accounted for either as a distinct entity or explicitly covered by SecurityEvent, ModerationAction, and verification decision history.
 - [ ] Sensitive entities have privacy/security notes: User, Profile, Verification, TrustLevel, Report, ModerationAction, AIBrief, SecurityEvent, UploadArtifact.
@@ -323,7 +340,9 @@ Required for private beta:
 Required before public launch:
 
 - [ ] Data retention fields are reviewed and tested.
-- [ ] Audit trail coverage is reviewed for verification, moderation, upload, admin, and AI safety events.
+- [ ] Audit trail coverage is reviewed for verification, moderation, admin, and
+      AI safety events; upload audit review is required only if upload workflows
+      are reactivated.
 - [ ] Subscription model is designed before any paid subscription work begins.
 
 ## 11. Monetization Gate
@@ -394,7 +413,9 @@ Do not launch beta if:
 These decisions must be answered before real users are invited.
 
 - [ ] What is the exact verification-document retention period?
-- [ ] Are manual badge uploads accepted in private beta, or is private beta limited to work email/manual non-upload review?
+- [ ] Confirm private beta remains limited to work email/private-access gates
+      and non-upload review. Any future manual badge/document upload workflow
+      requires a fresh scope decision plus privacy/security review.
 - [ ] What is the target first base/community?
 - [ ] What is the initial ambassador strategy?
 - [ ] Who are the first 50 beta users?

@@ -15,6 +15,10 @@ Current scope note:
   real private beta users.
 - Use `docs/ops/private-beta-readiness-bridge.md` for the immediate narrow
   post-Epoch-5 readiness lane.
+- Current private beta / 05B direction does not use proof uploads. Work-email
+  verification and private beta access gates are the active verification path.
+  Manual-proof, badge-upload, or document-upload workflows would require a fresh
+  scope decision plus privacy/security review before activation.
 
 ## 1. Purpose
 
@@ -66,7 +70,8 @@ Verification completion:
 
 - Median verification review time under 24 hours during active admin coverage.
 - Fewer than 20% of users abandon because the verification path feels confusing.
-- No unresolved verification artifact privacy incidents.
+- No unresolved verification privacy incidents; if a future reviewed upload
+  workflow accepts artifacts, no unresolved artifact privacy incidents.
 
 Moderation load:
 
@@ -202,14 +207,24 @@ Accepted verification methods:
 - Basic email verification.
 - Aviation work email verification where the user is comfortable using it.
 - Tier 3 manual verification through non-upload manual review when upload controls are not ready.
-- Manual badge/document upload verification only as a controlled exception after upload safety controls are ready.
+- Manual badge/document upload verification is deprecated/out of current scope;
+  any future reactivation would be a controlled exception after a fresh scope
+  decision, privacy/security review, and upload safety validation.
 - Founder/admin-known verification for a limited number of trusted first-wave users.
 - Peer vouching only as a supplemental signal, not as the sole verification method for unknown users.
 
 Decision on manual badge/document uploads:
 
-- Manual badge/document uploads may be allowed in private beta only after private storage, upload validation, short-lived admin links, access logging, and deletion-after-review process are ready.
-- If those controls are not ready, manual badge/document uploads are deferred and replaced with non-upload manual review, founder/admin-known verification, work email plus manual context, live call review, or non-stored visual confirmation that does not retain artifacts.
+- Manual badge/document uploads are not part of the current private beta / 05B
+  path.
+- Existing proof-upload hardening remains historically documented. If
+  proof-upload code, storage, or artifacts still exist, they remain subject to
+  private storage, upload validation, short-lived admin links, access logging,
+  and deletion-after-review expectations.
+- The active path uses work-email verification, private beta access gates,
+  founder/admin-known verification where appropriate, non-upload manual review,
+  live call review, or non-stored visual confirmation that does not retain
+  artifacts.
 - Badge uploads, IDs, schedules, or other sensitive verification documents must not be collected on the public waitlist page.
 
 Minimum-safe handling rules if uploads are allowed:
@@ -233,7 +248,9 @@ Verification review steps:
 5. Admin reviews only the minimum necessary information.
 6. Admin approves, rejects, or requests more information.
 7. System records method, status, reviewer, timestamp, and tier.
-8. Raw artifact is deleted after review unless a documented safety/fraud reason requires temporary retention.
+8. If a future reviewed upload workflow is active, raw artifact is deleted
+   after review unless a documented safety/fraud reason requires temporary
+   retention.
 9. User receives outcome.
 
 ## 7. Verification Artifact Retention Decision
@@ -562,6 +579,8 @@ Alternative documentation-only task:
 - First 50 beta users.
 - Ambassador roster.
 - Exact verification-document retention period after legal/privacy review.
-- Whether private beta uses only non-upload Tier 3 manual review or upload controls are ready enough for manual badge/document uploads.
+- Confirm that private beta uses work-email verification/private-access gates
+  and non-upload manual review only. Any manual badge/document upload workflow
+  requires a fresh scope decision plus privacy/security review.
 - Policy owner for terms, privacy policy, community guidelines, verification consent, and AI disclaimer.
 - Legal/trademark clearance path for the jmpseat working name.

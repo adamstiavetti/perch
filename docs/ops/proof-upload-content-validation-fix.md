@@ -2,6 +2,24 @@
 
 Date: 2026-06-08
 
+## Current Status
+
+Proof uploads are deprecated and out of current scope for the active private
+beta / 05B product path. Current verification direction should prioritize
+work-email verification, private beta access gates, and the proof-system
+freeze/deprecation plan.
+
+This document remains the historical security record for the proof-upload
+hardening that was already implemented. If proof-upload code, private storage,
+or historical proof artifacts still exist, they remain subject to the privacy,
+authorization, retention, cleanup, and audit controls documented here and in
+the related proof-retention/proof-access docs.
+
+The old safe live authenticated proof-upload mutation test is no longer an
+active next task, release blocker, or prerequisite before 05B. Any future
+manual-proof, badge-upload, document-upload, or proof-upload workflow would
+require a fresh scope decision plus privacy/security review before activation.
+
 ## Summary
 
 This patch hardens redacted proof upload validation so the server no longer
@@ -163,7 +181,8 @@ Public preservation smoke:
 
 Live proof-upload mutation:
 
-- Not performed in this pass.
+- Not performed in this pass and now deprecated as an active follow-up for the
+  current product path.
 - Reason: no safe authenticated proof-upload test workflow/account was
   available in this run, and forcing a live mutation would risk creating proof
   rows or private Storage objects without a controlled cleanup path.
@@ -173,10 +192,13 @@ Live proof-upload mutation:
 Closure status:
 
 - Code-level and deployed-route validation are complete.
-- The metadata-spoof finding is conditionally closed pending one future live
-  authenticated proof-upload mutation test with founder-controlled test data.
-- That future live test should verify valid PNG/JPEG acceptance, fake-image
-  rejection before Storage upload, safe generic error copy, and cleanup of any
-  founder-controlled test artifacts with sensitive details redacted.
+- The metadata-spoof hardening remains historically documented.
+- The former future live mutation test is not required before 05B and should
+  not be treated as an active security-closeout blocker while proof uploads are
+  out of current product scope.
+- If a future scope decision reactivates proof upload, new validation should
+  verify valid PNG/JPEG acceptance, fake-image rejection before Storage upload,
+  safe generic error copy, and cleanup of any controlled test artifacts with
+  sensitive details redacted.
 
-This finding remains part of the security closeout before final Epoch 5 close.
+This finding no longer blocks the current private beta / 05B planning lane.

@@ -8,8 +8,8 @@ Epoch 5 is closed with explicit carry-forward items.
 
 The bounded operator/admin tooling foundation is implemented, documented, and
 runtime-proven across its original operator/admin surfaces. The recent
-security/access-control closeout items are either closed live or conditionally
-closed with a named remaining validation path.
+security/access-control closeout items are either closed live or preserved as
+historical/deprecated proof-system records.
 
 This closeout does not claim the broader jmpseat product is ready for open
 community launch. It closes the current Epoch 5 operator/admin/security
@@ -81,20 +81,22 @@ Private-app access and operator/admin tooling remain separate:
 | Duplicate waitlist survey-token | Closed live | Duplicate public waitlist submissions no longer receive existing survey tokens or edit another signup's optional survey answers. |
 | Operator private-app scope gate | Closed live | Private-app operator override now requires `operator.internal_private_app_access`; unrelated operator/admin scopes do not grant app entry. |
 | `security_events` audit forgery | Closed live | Direct authenticated/anon inserts into trusted audit rows are removed; operator/admin audit readers filter to trusted server-produced rows. |
-| Proof upload metadata trust | Conditionally closed | Code is deployed and test-covered with server-side JPEG/PNG structural validation, but live authenticated proof-upload mutation remains pending until a safe founder-controlled workflow and cleanup path are available. |
+| Proof upload metadata trust | Historical / deprecated for current path | Code is deployed and test-covered with server-side JPEG/PNG structural validation. The former live authenticated proof-upload mutation test is no longer an active next task or blocker because proof uploads are out of current private beta / 05B scope. Existing proof code/storage/artifacts, if present, remain subject to the documented privacy/security controls. |
 | Security headers | Closed live | App-owned `nosniff`, referrer, permissions, anti-framing, and CSP headers are live on public and beta routes. |
 | Broad CSP policy | Carry-forward | Anti-framing is enforced now; broader CSP remains report-only pending a reporting/enforcement plan. |
-| Proof upload decode/re-encode | Carry-forward | Current fix uses bounded structural validation; full decode/re-encode remains a future hardening option after dependency/runtime compatibility review. |
+| Proof upload decode/re-encode | Future only if reactivated | Current fix uses bounded structural validation; full decode/re-encode is not part of the active lane and would require a fresh proof-upload scope decision plus dependency/runtime compatibility review. |
 
 ## Carry-Forward Items
 
 Carry forward exactly these items from this closeout:
 
-1. Run a safe live authenticated proof-upload mutation test with a
-   founder-controlled account/workflow and explicit cleanup path. The test
-   should verify valid PNG/JPEG acceptance, fake-image rejection before Storage
-   upload, safe error copy, and cleanup of any founder-controlled test
-   artifacts with sensitive details redacted.
+1. Keep proof uploads deprecated/out of current scope for the active private
+   beta / 05B product path. The old safe live authenticated proof-upload
+   mutation test is no longer an active next task or blocker. Existing
+   proof-upload hardening, private proof storage, access, retention, cleanup,
+   and audit requirements remain historically documented and still apply to any
+   proof artifacts that may exist. Any future manual-proof or document-upload
+   workflow requires a fresh scope decision and privacy/security review.
 2. Define a future CSP reporting/enforcement plan. The current broad CSP is
    report-only and has no report endpoint.
 3. Decide the future Vercel deployment model: keep CLI/manual deploys, connect
@@ -157,9 +159,7 @@ Additional relevant commits:
 
 Recommended next lane:
 
-1. Complete the safe live authenticated proof-upload mutation test first if
-   final security validation requires that live proof before moving on.
-2. Otherwise move to the narrow private beta readiness lane: checklist
+1. Move to the narrow private beta readiness lane: checklist
    reconciliation, beta verification/admin workflow polish, deferred auth email
    branding/custom SMTP TODO tracking, and the bridge into
    community-access/moderation planning.

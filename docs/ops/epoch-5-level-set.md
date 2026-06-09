@@ -41,11 +41,11 @@ approval.
 | Verification review/admin queue | runtime-proven | `app/app/admin/verification/page.tsx`, `src/lib/verification/review.ts`, `src/lib/verification/reviewActions.ts`, `docs/epochs/epoch-04-human-review-queue-foundation-implementation.md`, `docs/ops/verification-runtime-pass-american-airlines.md`, `test/verification/review.test.mts` | Existing reviewer-scope based queue remains separate from operator/admin access. No proof review expansion is part of the current forward path. |
 | Verification audit and event inspection | runtime-proven | `docs/epochs/e05-verification-audit-inspection.md`, `docs/ops/verification-audit-inspection-runtime-pass.md`, `app/app/admin/audit/page.tsx`, `src/lib/admin/verificationAudit.ts`, `supabase/migrations/20260605223000_add_operator_verification_audit_inspection.sql`, `test/admin/verificationAudit.test.mts` | Metadata-only inspection exists. It excludes raw proof, persistent proof locations, and sensitive runtime values. |
 | Security events trust boundary | runtime-proven | `docs/ops/security-events-trust-boundary-fix.md`, `src/lib/securityEvents/server.ts`, `supabase/migrations/20260608201541_harden_security_events_trust_boundary.sql`, `test/security-events/securityEventsTrustBoundary.test.mts` | Direct authenticated/anon inserts into trusted `security_events` are removed, legacy rows are marked unverified, future server rows default to trusted, operator/admin audit readers filter to trusted server-produced rows, and the deployed server recorder path is runtime-proven through service-role insertion. |
-| Proof upload content validation | deployed / route-smoke-verified | `docs/ops/proof-upload-content-validation-fix.md`, `src/lib/verification/proofUpload.ts`, `src/lib/verification/actions.ts`, `test/verification/proofUpload.test.mts` | Redacted proof upload now requires server-side JPEG/PNG byte validation instead of trusting browser MIME/extension alone. Private proof bucket behavior and reviewer signed-URL controls remain unchanged. Beta/public route smoke passed after deploy at `329d238`; live authenticated proof-upload mutation remains pending until a safe founder-controlled test workflow is available. |
+| Proof upload content validation | historical / deprecated for current path | `docs/ops/proof-upload-content-validation-fix.md`, `src/lib/verification/proofUpload.ts`, `src/lib/verification/actions.ts`, `test/verification/proofUpload.test.mts` | Redacted proof upload now requires server-side JPEG/PNG byte validation instead of trusting browser MIME/extension alone. Private proof bucket behavior and reviewer signed-URL controls remain unchanged. Proof uploads are now out of current product scope, so the old live authenticated mutation test is not an active next task or blocker. |
 | Security headers hardening | runtime-proven | `docs/ops/security-headers-hardening.md`, `next.config.ts`, `test/security-headers/securityHeaders.test.mts` | Adds app-owned `nosniff`, strict-origin referrer policy, restrictive permissions policy, enforced anti-framing, and report-only broad CSP. Vercel-provided HSTS is left unchanged. Runtime validation passed on apex, `www`, and beta at `8558d2d`; no CSP report endpoint is configured yet. |
 | Beta Vercel env scoping | runtime-verified | `docs/ops/beta-vercel-env-scoping.md` | `beta.jmpseat.com` is a Preview deployment while apex/`www` use Production. The required Supabase env names now exist persistently in Preview, and a normal beta Preview deploy without deployment-scoped Supabase env injection returned healthy beta auth redirects with apex/`www` preserved. |
-| Epoch 5 final closeout | closed with carry-forward items | `docs/ops/epoch-5-final-closeout.md` | Closes the bounded operator/admin/security hardening lane while carrying forward the safe live proof-upload mutation test, CSP reporting/enforcement planning, Vercel deployment-model maturity, Supabase migration drift handling, auth email branding/custom SMTP, and community-access/moderation bridge. |
-| Private beta readiness bridge | planned / docs-ready | `docs/ops/private-beta-readiness-bridge.md`, `docs/ops/epoch-5-final-closeout.md`, `docs/ops/auth-email-branding-confirmation-template-plan.md` | Reconciles the current post-Epoch-5 runtime baseline with the broader private-beta docs, keeps live proof-upload mutation as an explicit carry-forward item, and defines the narrow lane before 05B / community-access implementation. |
+| Epoch 5 final closeout | closed with carry-forward items | `docs/ops/epoch-5-final-closeout.md` | Closes the bounded operator/admin/security hardening lane while carrying forward deprecated proof-upload scope, CSP reporting/enforcement planning, Vercel deployment-model maturity, Supabase migration drift handling, auth email branding/custom SMTP, and community-access/moderation bridge. |
+| Private beta readiness bridge | planned / docs-ready | `docs/ops/private-beta-readiness-bridge.md`, `docs/ops/epoch-5-final-closeout.md`, `docs/ops/auth-email-branding-confirmation-template-plan.md` | Reconciles the current post-Epoch-5 runtime baseline with the broader private-beta docs, keeps proof uploads out of the active lane while preserving historical privacy/security requirements, and defines the narrow lane before 05B / community-access implementation. |
 | Proof cleanup monitoring | runtime-proven | `docs/epochs/e05-proof-cleanup-monitoring.md`, `docs/ops/proof-cleanup-monitoring-runtime-pass.md`, `app/app/admin/proof-cleanup/page.tsx`, `src/lib/admin/proofCleanupMonitoring.ts`, `supabase/migrations/20260605233000_add_operator_proof_cleanup_monitoring.sql`, `test/admin/proofCleanupMonitoring.test.mts` | Read-only cleanup health, failures, and bounded cleanup audit visibility are runtime-proven. |
 | Protected manual proof cleanup controls | runtime-proven | `docs/epochs/e05-protected-manual-proof-cleanup-controls.md`, `docs/ops/protected-manual-proof-cleanup-controls-runtime-pass.md`, `src/lib/admin/proofCleanupControls.ts`, `src/lib/admin/proofCleanupControlsCore.ts`, `supabase/migrations/20260605234500_add_operator_manual_proof_cleanup_controls.sql`, `test/admin/proofCleanupControls.test.mts` | Manual cleanup runs only through the existing helper with bounded controls and summary-only audit. Runtime proof did not force a destructive delete because there were zero eligible expired proof rows. |
 | Proof upload/review forward product state | deferred | `docs/strategy/proof-system-freeze-deprecation-plan.md`, `docs/epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md`, `docs/EPOCH_ROADMAP.md`, `docs/BUILD_TICKETS.md` | Proof upload/review infrastructure remains historical and safety-preserved. Forward user-facing proof expansion is frozen unless explicitly reopened. |
@@ -81,11 +81,11 @@ Relevant auth-detour artifacts that remain useful to Epoch 5:
 The final closeout doc is now the source of truth for carry-forward items.
 Current carry-forward items are:
 
-1. Proof upload content-validation runtime validation did not perform a live
-   authenticated mutation because no safe founder-controlled proof-upload test
-   workflow was available in this run. Code-level validation, deployment, beta
+1. Proof upload live mutation testing is deprecated/out of current scope for
+   the active private beta / 05B path. Code-level validation, deployment, beta
    route smoke, public preservation smoke, and reviewer-access regression tests
-   passed.
+   remain historically documented. Existing proof artifacts, if present, remain
+   subject to privacy/security controls.
 2. Future CSP reporting/enforcement remains pending; the broad CSP is
    report-only and has no report endpoint.
 3. Future Vercel deployment-model maturity remains pending: decide whether to
@@ -119,8 +119,9 @@ Scope:
 
 - Keep auth email branding/custom SMTP documented as a deferred
   trust/deliverability/polish TODO.
-- If final security signoff requires it first, run the safe live authenticated
-  proof-upload mutation test with founder-controlled data and cleanup.
+- Keep proof uploads deprecated/out of current scope unless a future scope
+  decision and privacy/security review explicitly reactivate manual-proof or
+  document-upload workflows.
 - Keep E05-T08 paused unless explicitly reactivated.
 - Bridge to the next community-access/moderation planning lane.
 
@@ -131,9 +132,8 @@ post-bootstrap operator grant management path are now documented and
 runtime-proven or explicitly carried forward. Account signup confirmation and
 work-email verification are already code-first, password reset remains
 link-driven, and auth email branding/custom SMTP is deferred polish. The
-highest-leverage next step is therefore checklist reconciliation unless the
-pending live proof-upload mutation validation is required first for final
-security signoff.
+highest-leverage next step is therefore checklist reconciliation; proof-upload
+live mutation validation should not gate the current path.
 
 Optional follow-ups after that ticket:
 
@@ -197,4 +197,5 @@ Optional follow-ups after that ticket:
 8. Highest-leverage next step is the documented private-beta-readiness bridge.
    Auth email branding/custom SMTP is now tracked as deferred
    trust/deliverability polish unless the user explicitly activates that ops
-   task later.
+   task later. Proof uploads are deprecated/out of current scope unless a fresh
+   scope decision and privacy/security review explicitly reactivate them.

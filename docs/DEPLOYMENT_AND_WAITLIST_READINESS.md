@@ -60,8 +60,9 @@ Current post-E05 update:
   server-side JPEG/PNG byte validation before private Storage upload. Proof
   bucket privacy, reviewer signed-URL controls, public waitlist behavior, and
   security-events trust-boundary behavior remain unchanged. No migration or
-  Supabase setting change was required. Live authenticated proof-upload mutation
-  remains pending until a safe founder-controlled test workflow is available.
+  Supabase setting change was required. Proof uploads are now deprecated/out of
+  current scope for the active product path; the old live authenticated
+  proof-upload mutation test is no longer an active next task or blocker.
 - Security-headers hardening is merged, deployed, and runtime-proven at
   `8558d2d`: public and beta routes now receive app-owned `nosniff`,
   strict-origin referrer policy, restrictive permissions policy, enforced
@@ -80,9 +81,9 @@ Current post-E05 update:
   `ops/epoch-5-final-closeout.md`. The public/beta domain split, waitlist
   hardening, operator private-app scope gate, trusted security-events boundary,
   proof-upload content validation deployment, security headers, and beta Preview
-  env scoping are recorded there. The main conditional carry-forward is a safe
-  live authenticated proof-upload mutation test when a founder-controlled
-  account/workflow and cleanup path are available.
+  env scoping are recorded there. Proof-upload live mutation testing is now
+  deprecated/out of current scope and should not gate the private beta / 05B
+  planning lane.
 - Public Vercel Analytics instrumentation is prepared in
   `ops/public-vercel-analytics-readiness.md`: the app mounts
   `@vercel/analytics` only through a public host/path allowlist for apex/`www`
@@ -101,6 +102,7 @@ Current post-E05 update:
   narrow, treats the broader private-beta docs as fuller later targets rather
   than immediate implementation scope, tracks auth email branding/custom SMTP as
   deferred trust/deliverability polish rather than missing auth implementation,
+  keeps proof-upload mutation testing out of the active lane,
   and leaves broader 05B community/baseboard implementation to the next lane
   after the bridge.
 - Duplicate-survey-token hardening is migrated, deployed, and runtime-proven on
