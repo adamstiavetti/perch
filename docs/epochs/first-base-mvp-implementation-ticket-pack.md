@@ -51,7 +51,7 @@ Recommended order:
 4. `FBMVP-T03A` Beta invite-code foundation. Implemented and runtime-proven on the linked Supabase runtime; see `docs/strategy/beta-invite-code-foundation-decision.md`, `docs/epochs/fbmvp-t03a-beta-invite-code-foundation-implementation.md`, and `docs/ops/beta-invite-code-foundation-runtime-pass.md`.
 5. `FBMVP-T04` Onboarding/signup flow update. Implemented and merged; see `docs/epochs/fbmvp-t04-onboarding-signup-flow-update.md`.
 6. App-generated work-email confirmation email flow. Historical implementation doc remains at `docs/epochs/work-email-confirmation-email-flow-implementation.md`, but newer roadmap/auth-closeout docs now treat the current work-email/auth flow as implemented and founder-confirmed on beta. Treat this ticket-pack item as historical context, not the immediate next lane.
-7. Auth email branding / confirmation template manual ops. Planned; see `docs/ops/auth-email-branding-confirmation-template-plan.md`. This remains the next recommended auth-readiness task before public-ish Closed Beta Login entry, but the immediate post-Epoch-5 lane is first reconciled in `docs/ops/private-beta-readiness-bridge.md`.
+7. Auth email branding / confirmation template manual ops. Deferred TODO; see `docs/ops/auth-email-branding-confirmation-template-plan.md`. This is trust/deliverability/polish work for already-working auth email flows, not the active next auth-flow implementation task.
 8. `FBMVP-T05` Base and board data model design.
 9. `FBMVP-T06` Board membership and access request model.
 10. `FBMVP-T07` Community-admin role model.
@@ -898,9 +898,9 @@ Rationale:
 
 Next ticket after `FBMVP-T03`: `FBMVP-T03A Beta Invite-Code Foundation`, because private testing still needs a clear batch/single-use invite-code model before onboarding and access-hold copy depend on invite redemption behavior.
 
-Next auth-flow task after `FBMVP-T04`: app-generated work-email confirmation is implemented in `docs/epochs/work-email-confirmation-email-flow-implementation.md` pending review, merge, migration apply, and runtime validation. Continue to use `docs/ops/auth-email-branding-confirmation-template-plan.md` for Supabase Auth confirmation/reset branding, custom SMTP or sender-domain decisions, redirect URLs, and safe test-email behavior before public-ish waitlist login entry.
+Auth-flow status after `FBMVP-T04`: app-generated work-email confirmation is implemented in `docs/epochs/work-email-confirmation-email-flow-implementation.md`, account signup confirmation is code-first through Supabase Auth-native six-digit codes, and password reset remains link-driven. Continue to use `docs/ops/auth-email-branding-confirmation-template-plan.md` only as the deferred TODO for Supabase Auth confirmation/reset branding, custom SMTP or sender-domain decisions, redirect URLs, and safe test-email behavior.
 
-The public landing Closed Beta Login entry remains deferred until that auth email plan is executed and reviewed.
+The public landing Closed Beta Login entry remains deferred by the broader launch/readiness lane, not solely by custom SMTP or auth email template polish.
 
 ## 8. Validation Standards
 

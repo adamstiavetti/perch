@@ -1,4 +1,4 @@
-# Auth Email Branding / Confirmation Template Readiness
+# Auth Email Branding / Confirmation Template Deferred TODO
 
 Date: 2026-06-08
 
@@ -8,10 +8,30 @@ not claim legal or trademark clearance for the name.
 jmpseat is not affiliated with or endorsed by any airline, airport, union, or
 employer unless explicitly obtained and documented.
 
+## Deferred / Current Status
+
+This is a deferred beta-readiness TODO for branded sender, custom SMTP, and
+email-template polish. It is a trust, deliverability, and product-polish item,
+not an auth-flow implementation blocker.
+
+Current auth email flows already exist and work:
+
+- Account signup confirmation is Supabase Auth-native and code-first: users
+  enter a six-digit account confirmation code in jmpseat.
+- Work-email verification is app-owned and code-first: users enter a
+  six-digit airline employee email verification code on `/app/access-hold`.
+- Password reset remains link-driven through the existing recovery callback and
+  `/reset-password` update flow.
+
+Do not read this plan as "build auth emails from scratch." It only documents
+future branding/sender/template polish and the manual checks needed if that
+TODO is picked up later.
+
 ## 1. Decision Summary
 
-Auth email branding must be improved before broader non-founder private-beta
-testing.
+Auth email branding/custom SMTP is deferred. It remains useful before a more
+polished beta invite wave, but the current account confirmation, password
+reset, and work-email verification flows are already implemented.
 
 The current product state supports:
 
@@ -204,7 +224,7 @@ be the stable beta host, not the public waitlist root.
 
 ## 6. Sender / From Name / Domain Requirements
 
-Before broader beta:
+For deferred beta-readiness polish:
 
 - use a branded sender name such as `jmpseat`
 - use a branded from address on a controlled jmpseat domain
@@ -425,7 +445,7 @@ Do not paste:
 
 ## 10. Manual Provider / Sender Steps
 
-Before broader beta:
+When this deferred TODO is picked up:
 
 1. Decide the sender domain and mailbox
 2. Configure SPF, DKIM, and DMARC

@@ -102,8 +102,9 @@ Carry forward exactly these items from this closeout:
 4. Keep handling Supabase migration-history drift with targeted migration apply
    until the drift is explicitly resolved. Do not run broad `supabase db push`
    while the drift remains.
-5. Continue the manual auth email branding/custom SMTP plan before broader
-   public-ish Closed Beta Login entry.
+5. Keep branded sender/custom SMTP/email template polish as a deferred
+   beta-readiness TODO for trust and deliverability. Existing auth email flows
+   already work; this is not an auth-flow implementation blocker by itself.
 6. Keep community boards, restricted-board gates, community-admin tooling, and
    posting/moderation work in the next product lane, not in Epoch 5.
 
@@ -158,9 +159,10 @@ Recommended next lane:
 
 1. Complete the safe live authenticated proof-upload mutation test first if
    final security validation requires that live proof before moving on.
-2. Otherwise move to the narrow private beta readiness lane: auth email
-   branding/custom SMTP, beta verification/admin workflow polish, and the
-   bridge into community-access/moderation planning.
+2. Otherwise move to the narrow private beta readiness lane: checklist
+   reconciliation, beta verification/admin workflow polish, deferred auth email
+   branding/custom SMTP TODO tracking, and the bridge into
+   community-access/moderation planning.
 
 Do not reopen Epoch 5 for broad proof-upload expansion, community boards,
 posting, role/base claims, restricted-board gates, or unrelated operator/admin

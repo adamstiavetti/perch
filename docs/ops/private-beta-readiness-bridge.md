@@ -40,7 +40,7 @@ The bridge exists to:
 
 - confirm what is actually implemented today
 - keep conditional security follow-up visible
-- complete near-term auth/email operational readiness
+- track deferred auth/email trust, deliverability, and polish work
 - prevent broader beta docs from being misread as current-ready scope
 - define the stop conditions before moving into `05B`
 
@@ -94,7 +94,8 @@ Narrowly, private beta readiness now means:
 
 - the repo has a truthful post-Epoch-5 operating baseline
 - the remaining conditional security item is explicitly tracked
-- auth email branding/custom SMTP work is treated as near-term readiness work
+- branded sender/custom SMTP/email template polish is tracked as a deferred
+  beta-readiness TODO, not as missing auth-flow implementation
 - beta deployment/runtime caveats are documented
 - the roadmap clearly separates immediate readiness work from later 05B
   community/baseboard implementation
@@ -148,8 +149,9 @@ These remain active carry-forward items:
 
 1. Safe live authenticated proof-upload mutation test with a founder-controlled
    workflow and cleanup path.
-2. Auth email branding/custom SMTP readiness before broader Closed Beta Login
-   exposure.
+2. Deferred branded sender/custom SMTP/email template polish for trust,
+   deliverability, and product quality. This is not an auth-flow implementation
+   blocker by itself.
 3. Future CSP reporting/enforcement planning. The broad CSP remains
    report-only.
 4. Future Vercel deployment-model maturity decision. This is deferred ops work,
@@ -161,16 +163,16 @@ These remain active carry-forward items:
 
 Recommended bridge tasks:
 
-1. `Auth Email Branding / Confirmation Template Readiness`
-2. `Private Beta Readiness Checklist Reconciliation`
+1. `Private Beta Readiness Checklist Reconciliation`
+2. `Auth Email Branding / Confirmation Template Deferred TODO Tracking`
 3. `Safe Live Proof-Upload Mutation Validation`, if final security signoff
    requires it before broader beta readiness claims
 4. `Post-Bridge 05B Entry Decision`
 
 Task notes:
 
-- The auth email branding/custom SMTP task is near-term readiness work before
-  broader Closed Beta Login exposure.
+- Auth email branding/custom SMTP is a deferred trust/deliverability/polish
+  TODO. It should not be described as building auth emails from scratch.
 - The current readiness package for that task lives in
   `docs/ops/auth-email-branding-confirmation-template-plan.md`.
 - The proof-upload live mutation task remains important, but it should only run
@@ -181,14 +183,18 @@ Task notes:
 
 Recommended first task:
 
-`Auth Email Branding / Confirmation Template Readiness`
+`Private Beta Readiness Checklist Reconciliation`
 
 Why:
 
-- newer docs already treat it as the next near-term auth-readiness task
-- it is a real blocker for broader non-founder auth exposure
-- it is narrower and lower-risk than moving directly into 05B implementation
-- it does not require reopening proof-upload, operator/admin, or board work
+- auth email flows already exist and work
+- account signup confirmation and work-email verification are code-first with
+  six-digit codes
+- password reset remains link-driven through the existing recovery flow
+- branded sender/custom SMTP/email template polish is deferred trust and
+  deliverability work, not the next active auth implementation task
+- checklist reconciliation is narrower and lower-risk than moving directly into
+  05B implementation
 
 Exception:
 
@@ -201,8 +207,8 @@ Before implementation starts, the user should decide:
 
 1. Whether the safe live authenticated proof-upload mutation test is mandatory
    before any further beta-readiness work.
-2. Whether the immediate next task should be auth email branding/custom SMTP,
-   assuming the proof-upload mutation test is not mandatory first.
+2. Whether to keep auth email branding/custom SMTP deferred or explicitly
+   activate a later docs/settings ops task for trust and deliverability polish.
 3. Whether the broader private-beta docs should remain aspirational references
    or be narrowed later to reflect a smaller near-term beta target.
 4. Whether 05B should begin immediately after the bridge or pause for more
@@ -214,8 +220,8 @@ Do not move into broader `05B / Community Access Architecture` work if:
 
 - the user wants the live proof-upload mutation validation completed first and
   no safe founder-controlled workflow exists yet
-- auth email branding/custom SMTP is still not ready for broader Closed Beta
-  Login exposure
+- repo docs still misstate the existing auth email flows or treat deferred
+  sender/template polish as missing auth implementation
 - the repo docs still imply a broader current beta scope than the product
   actually supports
 - the user has not decided whether the broader beta docs remain aspirational or

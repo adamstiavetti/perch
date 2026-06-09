@@ -99,9 +99,10 @@ Current post-E05 update:
 - The immediate post-Epoch-5 planning lane is now captured in
   `ops/private-beta-readiness-bridge.md`. That bridge keeps the next scope
   narrow, treats the broader private-beta docs as fuller later targets rather
-  than immediate implementation scope, keeps auth email branding/custom SMTP as
-  near-term readiness work, and leaves broader 05B community/baseboard
-  implementation to the next lane after the bridge.
+  than immediate implementation scope, tracks auth email branding/custom SMTP as
+  deferred trust/deliverability polish rather than missing auth implementation,
+  and leaves broader 05B community/baseboard implementation to the next lane
+  after the bridge.
 - Duplicate-survey-token hardening is migrated, deployed, and runtime-proven on
   apex and `www`: duplicate waitlist submissions no longer receive existing
   survey tokens or edit another signup's optional survey answers. The app still

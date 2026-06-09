@@ -107,16 +107,18 @@ Current carry-forward items are:
 
 Recommended next single ticket:
 
-`Auth Email Branding / Confirmation Template Readiness`
+`Private Beta Readiness Checklist Reconciliation`
 
 Goal:
 
 Finish the next narrow private-beta-readiness task after the bridge without
-reopening proof-upload, broad operator/admin tooling, or community boards.
+reopening proof-upload, broad operator/admin tooling, community boards, or auth
+email implementation work.
 
 Scope:
 
-- Continue the manual auth email branding/custom SMTP plan.
+- Keep auth email branding/custom SMTP documented as a deferred
+  trust/deliverability/polish TODO.
 - If final security signoff requires it first, run the safe live authenticated
   proof-upload mutation test with founder-controlled data and cleanup.
 - Keep E05-T08 paused unless explicitly reactivated.
@@ -126,15 +128,17 @@ Why this is the highest-leverage next ticket:
 
 The original Epoch 5 operator/admin tools, security closeout items, and
 post-bootstrap operator grant management path are now documented and
-runtime-proven or explicitly carried forward. The bridge is now documented, so
-the highest-leverage next step is the first concrete readiness task inside that
-bridge: auth email branding/custom SMTP, unless the pending live proof-upload
-mutation validation is required first for final security signoff.
+runtime-proven or explicitly carried forward. Account signup confirmation and
+work-email verification are already code-first, password reset remains
+link-driven, and auth email branding/custom SMTP is deferred polish. The
+highest-leverage next step is therefore checklist reconciliation unless the
+pending live proof-upload mutation validation is required first for final
+security signoff.
 
 Optional follow-ups after that ticket:
 
-- Continue the manual auth email branding/custom SMTP plan before broader
-  closed-beta entry.
+- Activate the manual auth email branding/custom SMTP plan later only if the
+  user explicitly chooses to work on trust/deliverability polish.
 - Begin the next non-Epoch-5 product lane only after the current roadmap says
   it is time.
 
@@ -190,6 +194,7 @@ Optional follow-ups after that ticket:
    and `jmpseat.com` cleanup documentation.
 7. `jmpseat.com` temporary approved-domain cleanup is documented as closed in
    `docs/ops/auth-detour-closeout-runtime-pass.md`.
-8. Highest-leverage next step is the documented private-beta-readiness bridge,
-   followed by auth email branding/custom SMTP unless the safe live
-   proof-upload mutation test is required first.
+8. Highest-leverage next step is the documented private-beta-readiness bridge.
+   Auth email branding/custom SMTP is now tracked as deferred
+   trust/deliverability polish unless the user explicitly activates that ops
+   task later.
