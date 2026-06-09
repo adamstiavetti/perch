@@ -88,6 +88,10 @@ Verified Lounges are restricted boards under or associated with a base. They
 require scoped membership/access approval and should not be opened by airline
 email alone.
 
+Use `docs/strategy/verified-lounge-access-model.md` as the canonical product
+definition for lounge access, request lifecycle, Crew Lead scope, and privacy
+boundaries before implementing restricted lounge membership or request flows.
+
 Layover Boards are separate board-type spaces. They may be related to a base,
 but they are independently discoverable and followable.
 

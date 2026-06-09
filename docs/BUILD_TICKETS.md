@@ -38,6 +38,7 @@ Supplemental epoch-specific ticket packs:
 - [Base Board Product Definition](strategy/base-board-product-definition.md) - canonical definition of a Base Board as the main verified hub/container for an aviation base, combining structured base intel, posts/comments, useful/trending knowledge, related Layover Boards, and restricted Verified Lounges while preserving safety boundaries and T05 model validity.
 - [Home Base And Board Follow Decision](strategy/home-base-board-follow-decision.md) - canonical T06 product decision that Home Base is optional personalization state in the initial DFW-only rollout, not authorization truth; setting Home Base auto-follows the matching Base Board; users may follow many boards; follows and self-declared profile fields do not grant restricted-board access.
 - [Home Dashboard Product Definition](strategy/home-dashboard-product-definition.md) - canonical definition of the first private-app Home Dashboard as a utility dashboard, not a generic feed, with persistent search followed by Home Base, Crew Picks, Following, Your Lounges, and Saved.
+- [Verified Lounge Access Model](strategy/verified-lounge-access-model.md) - canonical definition for restricted lounge access before `FBMVP-T07`, including request lifecycle, Crew Lead scope, request-thread limits, privacy boundaries, and the rule that Home Base, board follows, and self-declared profile fields do not grant lounge access.
 - [Community Admin Responsibilities / Disclaimer Policy](strategy/community-admin-responsibilities-disclaimer-policy.md) - defines board-scoped community-admin responsibilities, limits, privacy boundaries, non-sponsorship disclaimers, abuse controls, and escalation expectations.
 - [Launch-Readiness Gate Transition Plan](strategy/launch-readiness-gate-transition-plan.md) - defines the explicit transition from private-testing beta gates to first-base launch gates without removing beta too early, requiring one-by-one beta grants, or bypassing airline-email verification.
 - [Beta Invite-Code Foundation Decision](strategy/beta-invite-code-foundation-decision.md) - defines batch-generated, single-use beta invite codes as private-testing capacity control that must not bypass airline-email verification or become a first-base launch requirement.
@@ -149,6 +150,10 @@ Use `strategy/home-dashboard-product-definition.md` as the canonical product
 definition for the first private-app Home Dashboard before implementing
 restricted lounge access or the DFW Base Board dashboard shell.
 
+Use `strategy/verified-lounge-access-model.md` as the canonical product
+definition for Verified Lounge access, request lifecycle, Crew Lead scope, and
+privacy boundaries before implementing `FBMVP-T07`.
+
 Current first code ticket:
 
 - `FBMVP-T05: Base, Board, And Board-Type Data Model Design`
@@ -208,7 +213,7 @@ Current sequence:
    the Home Base and Board Follow decision note
 3. Home Dashboard product definition, governing the first private-app screen
    hierarchy before `FBMVP-T07`/`FBMVP-T08`
-4. `FBMVP-T07` restricted lounge membership/access request/community-admin model
+4. `FBMVP-T07` restricted lounge membership/access request/Crew Lead model
 5. `FBMVP-T08` DFW Base Board read-only dashboard shell
 6. `FBMVP-T09` board/layover discovery and follow UI shell
 7. `FBMVP-T10` text posts/comments foundation

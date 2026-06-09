@@ -131,6 +131,10 @@ Following a board does not grant restricted access.
 Your Lounges is the future restricted-space section for joined, pending, or
 available Verified Lounges.
 
+Use `docs/strategy/verified-lounge-access-model.md` as the canonical product
+definition for Verified Lounge access before implementing lounge membership,
+request, or Crew Lead tooling.
+
 Dashboard preview:
 
 - show joined lounges when membership exists

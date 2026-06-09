@@ -242,6 +242,11 @@ Current T05 implementation note:
   `strategy/base-board-product-definition.md`: a Base Board is a hub/container
   for structured base intel, posts, useful/trending knowledge, related Layover
   Boards, and restricted Verified Lounges.
+- The canonical Verified Lounge access model is in
+  `strategy/verified-lounge-access-model.md`: a Verified Lounge is a
+  restricted board associated with a base, role, airline, or other approved
+  aviation-worker criteria, with approved membership required before content
+  access.
 - Posting, comments, follows, memberships, access requests, saves, reactions,
   search, reports, and moderation remain later tickets.
 - `strategy/home-base-board-follow-decision.md` defines the T06 product
@@ -276,6 +281,54 @@ Relationships:
   moderation actions, and search indexing.
 - Later has board intel/wiki structured content attached to the board. Board
   intel/wiki is not a board type.
+
+## VerifiedLoungeAccess
+
+Product definition:
+
+- `strategy/verified-lounge-access-model.md` is the canonical product decision
+  for Verified Lounge access before implementing the next restricted-access
+  ticket.
+- A Verified Lounge is modeled as a restricted board associated with a base,
+  role, airline, or other approved aviation-worker criteria.
+- It is not a public feed, not a direct-message system, and not proof that the
+  user works for a specific airline, role, or base.
+- Lounge access requires approved membership.
+- Home Base, board follows, and self-declared `claimed_airline`,
+  `claimed_role`, or `claimed_base` must not grant lounge access.
+- Product-facing lounge/community admins are `Crew Leads`. Internally, future
+  schema may use neutral names such as `community_admin`, `board_admin`, or
+  `board_moderator`.
+
+Future model concepts:
+
+- lounge membership
+- lounge access request
+- request lifecycle: `not_requested`, `pending`, `approved`, `denied`,
+  `revoked`, with optional later `expired` and `withdrawn`
+- request thread or request comments scoped to a single access request
+- scoped Crew Lead grants for specific lounges/boards
+- audit events for request creation, approval, denial, revocation, and request
+  messages
+
+Privacy boundaries:
+
+- Crew Leads should see only the minimum data needed to review a request,
+  including public handle, display name if used, email domain or verified
+  work-email status if available, clearly labeled self-declared profile fields,
+  request message, and request history for that lounge.
+- Crew Leads should not see proof uploads, private verification artifacts,
+  unrelated account security data, unrelated lounge memberships, platform admin
+  notes, sensitive internal audit details, exact live location/schedule data,
+  or passenger/private company information by default.
+
+Current scope:
+
+- No lounge membership tables are implemented yet.
+- No access request tables are implemented yet.
+- No request UI or Crew Lead panel exists yet.
+- No full direct-message system exists or is implied.
+- No proof-upload scope is reintroduced.
 
 ## HomeBasePreference
 

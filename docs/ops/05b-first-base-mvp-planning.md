@@ -66,6 +66,10 @@ Use `docs/strategy/home-dashboard-product-definition.md` as the canonical
 product definition for the first private-app Home Dashboard before
 implementing `FBMVP-T07` or `FBMVP-T08`.
 
+Use `docs/strategy/verified-lounge-access-model.md` as the canonical product
+definition for Verified Lounge access, request lifecycle, and Crew Lead scope
+before implementing `FBMVP-T07`.
+
 ## 3. Personalized App Experience
 
 The MVP user experience is personalized:
@@ -150,6 +154,20 @@ role-based, or otherwise restricted spaces with scoped access rules.
 Board/community admins can be appointed to approve or deny access to these
 spaces. Community-admin powers are scoped and separate from operator/platform
 admin powers.
+
+The product-facing name for lounge/community admins is `Crew Lead`. Crew Leads
+are scoped to specific lounges or boards and must not receive platform
+operator/admin powers, proof-system access, waitlist metrics access, or
+unrelated moderation authority.
+
+Any verified jmpseat user may request access to a visible/requestable lounge,
+but requesting access does not mean the user qualifies. Lounge access requires
+approved membership. Home Base, board follows, and self-declared
+`claimed_airline`, `claimed_role`, or `claimed_base` must not grant lounge
+access.
+
+Use request threads or request comments for limited access-review messages.
+Do not model lounge requests as a general direct-message system.
 
 ## 6. Posting, Engagement, And Search
 
