@@ -281,7 +281,8 @@ or retroactively mark the local T06 file; use targeted follow-up migrations for
 runtime hardening. The first follow-up is
 `20260609200310_harden_home_base_rpc_execute_grants.sql`, which removes `anon`
 EXECUTE from the T06 RPCs while preserving authenticated/service-role
-execution.
+execution. The targeted runtime pass is recorded in
+`docs/ops/fbmvp-t06-home-base-board-follows-runtime-pass.md`.
 
 Home Base is the user's primary base preference for personalization when the
 user chooses one. It is optional in the initial DFW-only rollout and is not
@@ -330,7 +331,9 @@ Current T06 implementation note:
 Supabase runtime under the remote migration ledger version
 `20260609194858 create_home_base_board_follows`. The local repo file remains
 `20260609130534_create_home_base_board_follows.sql` and should not be
-re-applied or retroactively marked applied.
+re-applied or retroactively marked applied. The targeted runtime pass for the
+follow-up RPC execute-grant hardening is recorded in
+`docs/ops/fbmvp-t06-home-base-board-follows-runtime-pass.md`.
 
 A board follow is a personalization signal, not an access grant.
 

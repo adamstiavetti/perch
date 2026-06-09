@@ -212,7 +212,8 @@ Current T06 implementation note:
 - Follow-up migration
   `20260609200310_harden_home_base_rpc_execute_grants.sql` removes explicit
   `anon` EXECUTE from the three T06 RPCs while preserving authenticated and
-  service-role execution.
+  service-role execution. That hardening is runtime-applied and recorded in
+  `docs/ops/fbmvp-t06-home-base-board-follows-runtime-pass.md`.
 - It adds optional Home Base preference state, board follows, an authenticated
   `set_user_home_base(p_base_code text)` RPC, and server-only helpers.
 - The RPC sets the authenticated user's active Home Base and auto-follows the
@@ -225,7 +226,7 @@ Current T06 implementation note:
 - It does not implement onboarding UI, dashboard UI, manual follow/unfollow UI,
   restricted lounge membership/access approval, posts, comments, saves,
   reactions, search, reports, or moderation.
-- Any remaining runtime hardening apply must be targeted because known
+- Future runtime schema changes must still use targeted apply because known
   Supabase migration-history drift remains.
 
 Rationale:
@@ -245,7 +246,7 @@ Rationale:
 The current implementation sequence is:
 
 1. `FBMVP-T05` base, board, and board-type data model, merged and runtime-applied
-2. `FBMVP-T06` Home Base preference and board-follow foundation, merged with follow-up RPC execute-grant hardening pending targeted apply
+2. `FBMVP-T06` Home Base preference and board-follow foundation, merged and runtime-hardened
 3. `FBMVP-T07` restricted lounge membership/access request/community-admin model
 4. `FBMVP-T08` DFW Base Board read-only dashboard shell
 5. `FBMVP-T09` board/layover discovery and follow UI shell

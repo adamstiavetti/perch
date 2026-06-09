@@ -39,7 +39,8 @@ Runtime apply status:
 - A follow-up least-privilege migration,
   `20260609200310_harden_home_base_rpc_execute_grants.sql`, removes explicit
   `anon` EXECUTE grants from the T06 RPCs while preserving authenticated and
-  service-role execution.
+  service-role execution, and that hardening is now runtime-applied. See
+  `docs/ops/fbmvp-t06-home-base-board-follows-runtime-pass.md`.
 
 ## 2. Implemented Scope
 
@@ -195,11 +196,12 @@ Local validation for this branch should include:
 - `npm run lint`
 - `npm run build`
 
-Runtime validation is pending until the T06 migration is approved for targeted
-follow-up apply of the RPC execute-grant hardening migration. The base T06
-schema/functions are already present remotely under migration ledger version
-`20260609194858`; the local `20260609130534` migration must not be re-applied
-or retroactively marked applied.
+Runtime validation is recorded in
+`docs/ops/fbmvp-t06-home-base-board-follows-runtime-pass.md`.
+
+The base T06 schema/functions remain present remotely under migration ledger
+version `20260609194858`; the local `20260609130534` migration must not be
+re-applied or retroactively marked applied.
 
 ## 9. Next Lane
 
