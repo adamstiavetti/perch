@@ -130,6 +130,17 @@ The first code ticket after this docs pass is:
 
 - `FBMVP-T05: Base, Board, And Board-Type Data Model Design`
 
+Current implementation note:
+
+- T05 creates the initial database/model foundation only.
+- T05 seeds DFW as the first launch base and DFW Base Board as the first
+  available board.
+- T05 seeds the controlled board types `base_board`, `layover_board`, and
+  `verified_lounge`.
+- T05 does not add board follows, home-base preferences, lounge memberships,
+  access requests, posts, comments, saves, reactions, search, reports, or
+  moderation.
+
 Rationale:
 
 - no current board/community schema exists

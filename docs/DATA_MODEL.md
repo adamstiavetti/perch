@@ -143,27 +143,101 @@ Examples:
 
 ## Base
 
+Current T05 implementation note:
+
+- `bases` is implemented as the First-Base MVP base/airport community anchor
+  table.
+- DFW is seeded as the first launch base, but the table is designed for many
+  bases from the start.
+- Self-declared profile base text remains separate and must not become
+  authorization truth.
+
 Airline base or domicile.
 
 Important fields:
 
 - id
-- airline_id
-- airport_id
-- name
 - code
+- name
+- airport_name
 - city
-- state_region
+- state
 - country
+- timezone
+- status
+- launch_priority
+- created_at
+- updated_at
+
+Relationships:
+
+- Can anchor many Boards.
+- Can be referenced later by profile preferences or follow/home-base state.
+- Does not prove a user's role, airline, or restricted-board membership.
+
+## BoardType
+
+Current T05 implementation note:
+
+- `board_types` is implemented as controlled board taxonomy.
+- Seeded types are `base_board`, `layover_board`, and `verified_lounge`.
+- Verified Lounges are modeled as a board type.
+- Board wiki/intel is not a board type; it should be structured content
+  attached to boards in a later ticket.
+
+Important fields:
+
+- id
+- key
+- label
+- description
+- default_visibility
+- default_posting_mode
+- display_order
 - is_active
 - created_at
 - updated_at
 
 Relationships:
 
-- Belongs to Airline and Airport.
-- Has many Profiles.
-- Can have Base Board CrewRooms.
+- Has many Boards.
+
+## Board
+
+Current T05 implementation note:
+
+- `boards` is implemented as the user-facing board-space table.
+- DFW Base Board is seeded as the first available board.
+- The table is designed for many base boards, layover boards, and restricted
+  lounge boards over time.
+- Posting, comments, follows, memberships, access requests, saves, reactions,
+  search, reports, and moderation remain later tickets.
+
+Important fields:
+
+- id
+- board_type_id
+- base_id
+- parent_board_id
+- slug
+- name
+- short_name
+- description
+- visibility
+- posting_mode
+- discoverability
+- status
+- sort_order
+- created_at
+- updated_at
+
+Relationships:
+
+- Belongs to BoardType.
+- May belong to Base.
+- May have a parent Board.
+- Later has follows, memberships, posts, comments, saves, reactions, reports,
+  moderation actions, and search indexing.
 
 ## Airport
 
@@ -189,6 +263,13 @@ Relationships:
 - Has many Bases and LayoverBoards.
 
 ## CrewRoom
+
+Legacy / broader V1 note:
+
+- The current 05B direction models Base Boards, Layover Boards, and Verified
+  Lounges through `boards` plus `board_types`.
+- Generic global Crew Rooms remain broader/later-lane planning, not the T05
+  schema foundation.
 
 Airline/base/role/topic community.
 

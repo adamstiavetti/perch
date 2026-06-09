@@ -136,6 +136,16 @@ Current first code ticket:
 
 - `FBMVP-T05: Base, Board, And Board-Type Data Model Design`
 
+Current T05 implementation status:
+
+- In progress on `feat/fbmvp-t05-base-board-model`.
+- Adds `bases`, `board_types`, and `boards`.
+- Seeds DFW as the first launch base and DFW Base Board as the first available
+  board.
+- Seeds board types `base_board`, `layover_board`, and `verified_lounge`.
+- Does not implement follows, home-base preferences, memberships, access
+  requests, posts, comments, saves, reactions, search, reports, or moderation.
+
 DFW is the first launch base and the DFW Base Board is the first available base
 board. DFW is not the whole product concept. The data model should support many
 bases, base boards, layover boards, Verified Lounges / restricted role-based
