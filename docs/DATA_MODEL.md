@@ -41,6 +41,14 @@ Relationships:
 - Has many Posts, Comments, SavedItems, Reports, ModerationActions, and AIBriefs.
 - Has one current TrustLevel.
 
+Home Dashboard note:
+
+- `strategy/home-dashboard-product-definition.md` defines the first
+  private-app Home Dashboard as a utility dashboard, not a generic social feed.
+- The dashboard should eventually use Home Base, followed boards, Crew Picks,
+  lounges, saved items, and access-aware search without making any
+  personalization signal authorization truth.
+
 ## Profile
 
 Aviation identity and public display settings.
@@ -302,6 +310,8 @@ Relationships:
 - Belongs to Base.
 - The row is set through `set_user_home_base(p_base_code text)`, which requires
   an authenticated user and active base.
+- The Home Dashboard uses this preference to decide whether to show the Home
+  Base card or the skip-for-now exploratory/default state.
 
 Expected behavior:
 
@@ -365,6 +375,12 @@ The T06 Home Base RPC auto-follows the active Base Board for the selected
 active base and preserves older follows. Manual follow/unfollow behavior,
 favorite editing, restricted lounge follows, notification behavior, and
 membership/access approval remain later tickets.
+
+Home Dashboard note:
+
+- `board_follows` initially supports the Following section as followed boards.
+- It does not currently represent followed users.
+- It does not grant restricted-board access.
 
 ## Airport
 

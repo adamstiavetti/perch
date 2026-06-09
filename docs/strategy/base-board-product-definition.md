@@ -39,6 +39,11 @@ It should eventually gather:
 A Base Board should feel like the starting point for "what do airline people
 need to know about this base?" rather than a generic social feed.
 
+The Home Dashboard definition in
+`docs/strategy/home-dashboard-product-definition.md` describes how the selected
+Home Base card should open this Base Board hub from the first private-app
+screen.
+
 ## 3. What A Base Board Is Not
 
 A Base Board is not one thread.
@@ -100,6 +105,11 @@ Search inside a base should eventually search:
 The personalized app experience should eventually use home base, followed
 Base Boards, followed Layover Boards, saved/useful content, followed users, and
 Verified Lounge memberships to shape what a user sees first.
+
+For the first private-app screen, use
+`docs/strategy/home-dashboard-product-definition.md`: persistent search is
+prominent near the top, Home Base is the first actual section, and Crew Picks
+are useful saved/admin-curated content rather than a generic feed.
 
 For the initial DFW-only rollout, the app should use a DFW-start choice after
 work-email verification rather than a fake one-option Home Base picker. Users

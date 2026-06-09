@@ -195,6 +195,15 @@ content the user is not allowed to access. If the user has no Home Base yet,
 the dashboard should use an exploratory/default experience rather than blocking
 app access.
 
+Use `docs/strategy/home-dashboard-product-definition.md` as the canonical Home
+Dashboard product definition. It defines the first private-app screen as a
+utility dashboard, not a generic social feed, with persistent search followed
+by Home Base, Crew Picks, Following, Your Lounges, and Saved.
+
+In that definition, Following initially means followed boards, not followed
+users, unless a later product decision explicitly approves followed users in
+the active implementation lane.
+
 ## 10. Reaction Terminology Boundary
 
 User-facing reaction, upvote, like, and useful-mark language is undecided.

@@ -62,6 +62,10 @@ Use `docs/strategy/home-base-board-follow-decision.md` as the canonical
 decision note for Home Base and Board Follow behavior before implementing
 `FBMVP-T06`.
 
+Use `docs/strategy/home-dashboard-product-definition.md` as the canonical
+product definition for the first private-app Home Dashboard before
+implementing `FBMVP-T07` or `FBMVP-T08`.
+
 ## 3. Personalized App Experience
 
 The MVP user experience is personalized:
@@ -82,6 +86,13 @@ The MVP user experience is personalized:
 - the app home should eventually reflect followed boards, home base,
   saved/useful content, followed users, Verified Lounge memberships, and
   relevant updates
+- the Home Dashboard should be a utility dashboard, not a generic social feed
+- the canonical Home Dashboard hierarchy is search, Home Base, Crew Picks,
+  Following, Your Lounges, and Saved
+- search is a persistent/global affordance near the top, not a normal content
+  section
+- Crew Picks are saved-driven/admin-curated useful posts, guides, answers, or
+  updates rather than generic trending posts
 
 Following a board does not grant restricted access. Self-declared profile
 fields such as `claimed_base`, `claimed_airline`, and `claimed_role` must not
@@ -155,6 +166,9 @@ including posts/comments, boards, base info/wiki, and layover intel. Search
 should support quick information retrieval by base/board and must respect
 access controls and restricted-board visibility.
 
+For dashboard ordering and destinations, use
+`docs/strategy/home-dashboard-product-definition.md`.
+
 ## 7. Current First Slice
 
 The first slice is a launchable path toward the fuller MVP:
@@ -198,6 +212,9 @@ Current implementation note:
 - T06 should support the optional initial DFW-start behavior first and leave
   real multi-base selection/switching support ready for later active-base
   rollout.
+- T07/T08 should use the Home Dashboard product definition so restricted
+  lounges and the read-only DFW Base Board shell fit into the same utility
+  hierarchy.
 
 Current T06 implementation note:
 
