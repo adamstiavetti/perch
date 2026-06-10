@@ -7,6 +7,8 @@ type HomeHubShellProps = {
   homeBaseCode?: string | null;
   homeBaseName?: string | null;
   homeBaseLoadError?: boolean;
+  startWithDfwAction?: (formData: FormData) => Promise<void>;
+  startWithDfwError?: boolean;
 };
 
 type DashboardItem = {
@@ -149,10 +151,10 @@ function AppHeader({
 }
 
 function WelcomeBlock({
-  hasDfwHomeBase,
+  hasHomeBase,
   homeBaseName,
 }: {
-  hasDfwHomeBase: boolean;
+  hasHomeBase: boolean;
   homeBaseName?: string | null;
 }) {
   return (
@@ -163,7 +165,7 @@ function WelcomeBlock({
         <span aria-hidden="true">.</span>
         <span>Aviation worker</span>
         <span aria-hidden="true">.</span>
-        <span>{hasDfwHomeBase ? (homeBaseName ?? "DFW Hub") : "No Home Base set"}</span>
+        <span>{hasHomeBase ? (homeBaseName ?? "Home Base set") : "No Home Base set"}</span>
       </p>
     </section>
   );
@@ -242,7 +244,15 @@ function HubHeroCard({
   );
 }
 
-function NoHomeBaseNotice({ hasLoadError }: { hasLoadError: boolean }) {
+function NoHomeBaseNotice({
+  hasLoadError,
+  startWithDfwAction,
+  startWithDfwError,
+}: {
+  hasLoadError: boolean;
+  startWithDfwAction?: (formData: FormData) => Promise<void>;
+  startWithDfwError: boolean;
+}) {
   return (
     <section className={styles.noticeCard} aria-labelledby="no-home-base-title">
       <div>
@@ -254,9 +264,22 @@ function NoHomeBaseNotice({ hasLoadError }: { hasLoadError: boolean }) {
           app entry.
         </p>
       </div>
-      <button className={styles.disabledButton} type="button" disabled>
-        Start with DFW
-      </button>
+      {startWithDfwAction ? (
+        <form action={startWithDfwAction} className={styles.startDfwForm}>
+          <button className={styles.startDfwButton} type="submit">
+            Start with DFW
+          </button>
+        </form>
+      ) : (
+        <button className={styles.disabledButton} type="button" disabled>
+          Start with DFW
+        </button>
+      )}
+      {startWithDfwError ? (
+        <p className={styles.actionFeedback}>
+          jmpseat could not start DFW right now. Try again in a moment.
+        </p>
+      ) : null}
       {hasLoadError ? (
         <p className={styles.mutedNote}>
           Home Base lookup is unavailable right now, so jmpseat is showing the
@@ -427,25 +450,32 @@ export function HomeHubShell({
   homeBaseCode,
   homeBaseName,
   homeBaseLoadError = false,
+  startWithDfwAction,
+  startWithDfwError = false,
 }: HomeHubShellProps) {
   const normalizedHomeBase = homeBaseCode?.trim().toUpperCase() ?? null;
+  const hasHomeBase = Boolean(normalizedHomeBase);
   const hasDfwHomeBase = normalizedHomeBase === "DFW";
 
   return (
     <main aria-label="Utility dashboard" className={styles.shell}>
       <div className={styles.mobileFrame}>
         <AppHeader />
-        <WelcomeBlock hasDfwHomeBase={hasDfwHomeBase} homeBaseName={homeBaseName} />
+        <WelcomeBlock hasHomeBase={hasHomeBase} homeBaseName={homeBaseName} />
         <SearchAffordance />
         <HubHeroCard hasDfwHomeBase={hasDfwHomeBase} />
 
-        {hasDfwHomeBase && homeBaseName ? (
+        {hasHomeBase ? (
           <p className={styles.stateNote}>
-            Current Home Base preference: {homeBaseName}. This is
+            Current Home Base preference: {homeBaseName ?? normalizedHomeBase}. This is
             personalization only, not authorization truth.
           </p>
         ) : (
-          <NoHomeBaseNotice hasLoadError={homeBaseLoadError} />
+          <NoHomeBaseNotice
+            hasLoadError={homeBaseLoadError}
+            startWithDfwAction={startWithDfwAction}
+            startWithDfwError={startWithDfwError}
+          />
         )}
 
         <QuickActionsSection />

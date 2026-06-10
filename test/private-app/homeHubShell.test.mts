@@ -14,6 +14,10 @@ const shellStyles = readFileSync(
   new URL("../../src/components/privateApp/homeHubShell.module.css", import.meta.url),
   "utf8",
 );
+const homeBaseActionsSource = readFileSync(
+  new URL("../../src/lib/community/homeBaseActions.ts", import.meta.url),
+  "utf8",
+);
 const dfwHubRouteSource = readFileSync(
   new URL("../../app/app/hubs/dfw/page.tsx", import.meta.url),
   "utf8",
@@ -34,6 +38,7 @@ const implementationSource = [
   appRootSource,
   shellSource,
   shellStyles,
+  homeBaseActionsSource,
   dfwHubRouteSource,
 ].join("\n");
 
@@ -63,6 +68,10 @@ test("skip-for-now state does not fake-assign DFW as Home Base", () => {
   assert.match(shellSource, /Start with DFW/);
   assert.match(shellSource, /No Home Base/);
   assert.match(shellSource, /Skip for now keeps Home Base unset/i);
+  assert.match(shellSource, /startWithDfwAction/);
+  assert.match(shellSource, /<form action=\{startWithDfwAction\}/);
+  assert.match(shellSource, /const hasHomeBase = Boolean\(normalizedHomeBase\)/);
+  assert.match(shellSource, /\{hasHomeBase \? \(/);
   assert.doesNotMatch(shellSource, /Your Home Base is DFW/i);
   assert.doesNotMatch(shellSource, /DFW is your Home Base/i);
 });
@@ -70,9 +79,25 @@ test("skip-for-now state does not fake-assign DFW as Home Base", () => {
 test("home shell reads optional Home Base without making it an access gate", () => {
   assert.match(appRootSource, /getCurrentUserHomeBase/);
   assert.match(appRootSource, /homeBaseResult\.homeBase/);
+  assert.match(appRootSource, /startWithDfwHomeBaseAction/);
   assert.doesNotMatch(appRootSource, /redirect\(.*homeBase/i);
   assert.doesNotMatch(appRootSource, /claimed_base|claimed_airline|claimed_role/);
   assert.match(shellSource, /homeBaseCode\?: string/);
+});
+
+test("Start with DFW action uses the private gate and T06 Home Base helper", () => {
+  assert.match(homeBaseActionsSource, /"use server"/);
+  assert.match(homeBaseActionsSource, /getCurrentAppAccessContext/);
+  assert.match(homeBaseActionsSource, /getPrivateAppGateResult/);
+  assert.match(homeBaseActionsSource, /routeKind: "private-root"/);
+  assert.match(homeBaseActionsSource, /recordSecurityEvent/);
+  assert.match(homeBaseActionsSource, /setUserHomeBaseByCode\("DFW"\)/);
+  assert.match(homeBaseActionsSource, /result\.error \|\| !result\.result/);
+  assert.match(homeBaseActionsSource, /revalidatePath\(AUTH_ROUTES\.app\)/);
+  assert.match(homeBaseActionsSource, /redirect\(buildAppRedirect\(START_WITH_DFW_SUCCESS_STATUS\)\)/);
+  assert.match(homeBaseActionsSource, /redirect\(buildAppRedirect\(START_WITH_DFW_FAILED_STATUS\)\)/);
+  assert.doesNotMatch(homeBaseActionsSource, /claimed_base|claimed_airline|claimed_role/i);
+  assert.doesNotMatch(homeBaseActionsSource, /lounge_memberships|lounge_access_requests/i);
 });
 
 test("DFW Hub route remains behind the private app gate and audit path", () => {
@@ -87,7 +112,7 @@ test("DFW Hub route remains behind the private app gate and audit path", () => {
 
 test("T08 does not add backend mutation scope or restricted access semantics", () => {
   assert.doesNotMatch(combinedSource, /create table|alter table|create policy|using\s*\(\s*true\s*\)/i);
-  assert.doesNotMatch(combinedSource, /\.insert\(|\.update\(|\.delete\(|setUserHomeBaseByCode/);
+  assert.doesNotMatch(combinedSource, /\.insert\(|\.update\(|\.delete\(/);
   assert.doesNotMatch(combinedSource, /request_lounge_access|review_lounge_access|lounge_access_requests/);
   assert.doesNotMatch(implementationSource, /proof upload|verification artifact|storage path/i);
   assert.doesNotMatch(implementationSource, /AI-assisted|auto-publish/i);
@@ -100,7 +125,7 @@ test("T08 does not create a migration", () => {
   const migrationFiles = readdirSync(new URL("../../supabase/migrations", import.meta.url));
 
   assert.equal(
-    migrationFiles.some((file) => /t08|home_hub|dashboard|hub_shell/i.test(file)),
+    migrationFiles.some((file) => /t08|t09|home_hub|dashboard|hub_shell|start_with_dfw/i.test(file)),
     false,
   );
 });

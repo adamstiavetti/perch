@@ -52,6 +52,10 @@ Home Dashboard note:
   `/app/hubs/dfw` shell. It reads optional Home Base state but does not add
   schema, mutations, posts/comments, saves, search backend, lounge
   request/review flows, seed content, or proof-upload scope.
+- `ops/fbmvp-t09-start-with-dfw.md` records the first Home Base mutation from
+  the shell. It uses the existing T06 RPC/helper to set DFW and auto-follow the
+  DFW Baseboard for app-eligible users who choose Start with DFW. It does not
+  add schema or make Home Base an authorization signal.
 
 ## Profile
 

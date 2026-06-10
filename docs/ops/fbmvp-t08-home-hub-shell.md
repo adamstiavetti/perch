@@ -87,12 +87,14 @@ For users with no Home Base:
 
 - show "Welcome to jmpseat"
 - show "DFW Hub is live first"
-- show a disabled "Start with DFW" placeholder
+- show a "Start with DFW" action after `FBMVP-T09`
 - show a clear no-Home-Base state
 - do not fake-assign DFW Home Base
 - do not require an automatic board follow
 
-The actual Start with DFW mutation path is not implemented by T08.
+The actual Start with DFW mutation path is implemented separately by
+`FBMVP-T09` and recorded in `docs/ops/fbmvp-t09-start-with-dfw.md`. T08 itself
+remains the read-only shell ticket.
 
 ## Safety Boundaries
 

@@ -399,16 +399,48 @@
   background: rgba(245, 166, 35, 0.1);
 }
 
+.startDfwForm {
+  justify-self: start;
+  margin: 0;
+}
+
+.startDfwButton,
 .disabledButton {
   justify-self: start;
   border: 1px solid rgba(82, 96, 120, 0.25);
   border-radius: 999px;
   padding: 0.65rem 0.88rem;
+  font: inherit;
+  font-weight: 850;
+}
+
+.startDfwButton {
+  color: var(--app-white);
+  background: linear-gradient(135deg, var(--app-navy-850), #0f4c9a);
+  box-shadow: 0 0.7rem 1.5rem rgba(6, 21, 40, 0.16);
+  cursor: pointer;
+}
+
+.startDfwButton:focus-visible {
+  outline: 3px solid var(--app-amber);
+  outline-offset: 3px;
+}
+
+.disabledButton {
   color: var(--app-text-soft);
   background: var(--app-surface-soft);
-  font-weight: 850;
   cursor: not-allowed;
   opacity: 0.76;
+}
+
+.actionFeedback {
+  border: 1px solid rgba(185, 28, 28, 0.18);
+  border-radius: var(--app-radius);
+  padding: 0.65rem 0.75rem;
+  color: #991b1b;
+  background: #fff1f2;
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 .mutedNote {

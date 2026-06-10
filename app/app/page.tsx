@@ -4,6 +4,13 @@ import { redirect } from "next/navigation";
 import { getCurrentAppAccessContext } from "../../src/lib/betaAccess/server";
 import { getCurrentUserHomeBase } from "../../src/lib/community/homeBase";
 import {
+  START_WITH_DFW_FAILED_STATUS,
+  START_WITH_DFW_STATUS_PARAM,
+} from "../../src/lib/community/homeBaseActionState";
+import {
+  startWithDfwHomeBaseAction,
+} from "../../src/lib/community/homeBaseActions";
+import {
   getPrivateAccessSource,
   getPrivateAppGateResult,
   getPrivateRouteAuditResult,
@@ -14,7 +21,12 @@ import { getSupabaseBrowserEnv } from "../../src/lib/supabase/config";
 
 export const dynamic = "force-dynamic";
 
-export default async function AppPlaceholder() {
+type AppPlaceholderProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function AppPlaceholder({ searchParams }: AppPlaceholderProps) {
+  const params = await searchParams;
   const context = await getCurrentAppAccessContext();
   const gate = getPrivateAppGateResult({
     routeKind: "private-root",
@@ -51,6 +63,10 @@ export default async function AppPlaceholder() {
       homeBaseCode={homeBaseResult.homeBase?.baseCode}
       homeBaseName={homeBaseResult.homeBase?.baseName}
       homeBaseLoadError={Boolean(homeBaseResult.error)}
+      startWithDfwAction={startWithDfwHomeBaseAction}
+      startWithDfwError={
+        params[START_WITH_DFW_STATUS_PARAM] === START_WITH_DFW_FAILED_STATUS
+      }
     />
   );
 }
