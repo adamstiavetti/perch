@@ -79,10 +79,13 @@ Home Dashboard note:
   apply for T13, including function grant verification, DB-level contribution
   eligibility, `board_posts` read/write posture, and confirmation that no
   user/community content was created.
-- `ops/fbmvp-t14-board-post-read-foundation.md` adds the first local read-only
-  DFW Baseboard post surface through a narrow read RPC and server helper. It is
-  implemented locally but runtime-pending because the new migration has not
-  been targeted-applied.
+- `ops/fbmvp-t14-board-post-read-foundation.md` adds the first read-only DFW
+  Baseboard post surface through a narrow read RPC and server helper.
+- `ops/fbmvp-t14-board-post-read-runtime-pass.md` records the targeted runtime
+  application of `20260610162000 create_board_post_read_rpc`, including function
+  grant verification, DB-level read eligibility, safe return fields,
+  `board_posts` RLS/policy posture, and confirmation that no user/community
+  content was created.
 
 ## Profile
 
@@ -452,8 +455,10 @@ Current T14 implementation direction:
 
 - `FBMVP-T14` adds `public.list_open_baseboard_posts(...)` as the first narrow
   read RPC for published open Baseboard posts.
-- T14 is implemented locally and runtime-pending. A targeted runtime
-  preflight/apply is required before declaring a runtime pass.
+- T14 is runtime-applied as `20260610162000 create_board_post_read_rpc` in the
+  intended `jmpseat` Supabase project.
+- The runtime pass is recorded in
+  `docs/ops/fbmvp-t14-board-post-read-runtime-pass.md`.
 - The DFW Baseboard route reads posts server-side only after the private app
   route gate succeeds.
 - The RPC accepts a base code and is first called with `DFW`; it resolves the
@@ -473,7 +478,10 @@ Current T14 implementation direction:
   storage paths, or signed URLs.
 - It does not add composer/post creation UI, comments, saves, reactions, search,
   Crew Picks ranking, lounge/restricted content, seeded layover implementation,
-  proof-upload scope, runtime mutation, deploy, or runtime setting changes.
+  proof-upload scope, user/community content creation, deploy, or runtime
+  setting changes.
+- Runtime smoke verification did not create posts; `public.board_posts` remained
+  empty at verification.
 - Known Supabase migration-history drift remains, so broad `supabase db push`
   remains unsafe.
 

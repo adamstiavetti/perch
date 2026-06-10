@@ -16,9 +16,9 @@ This lane renders published DFW Baseboard posts on
 `/app/hubs/dfw/baseboard` when they exist and shows a safe empty state when
 there are no posts.
 
-Runtime status: implemented locally only. The local migration is runtime-pending
-and must not be treated as applied until a separate targeted runtime preflight
-and exact-version apply pass is approved and documented.
+Runtime status: T14 is runtime-applied to the intended `jmpseat` Supabase
+project. The targeted runtime pass is recorded in
+`docs/ops/fbmvp-t14-board-post-read-runtime-pass.md`.
 
 ## What T14 Adds
 
@@ -110,7 +110,14 @@ layover content.
 
 ## Runtime Boundary
 
-This implementation adds a migration file but does not runtime-apply it.
+This implementation adds a migration file and it has been runtime-applied to the
+intended `jmpseat` Supabase project:
+
+- project ref/id: `qcdfjrcnwuioqprmqqzx`
+- ledger version: `20260610162000`
+- ledger name: `create_board_post_read_rpc`
+- runtime pass record:
+  `docs/ops/fbmvp-t14-board-post-read-runtime-pass.md`
 
 Known Supabase migration-history drift remains, so broad `supabase db push`
 remains unsafe.
@@ -118,16 +125,10 @@ remains unsafe.
 Plain-language guardrail: broad Supabase db push remains unsafe due known
 migration drift.
 
-Before declaring a runtime pass, use a targeted runtime preflight/apply flow
-that:
-
-- confirms the intended `jmpseat` project
-- confirms migration `20260610162000` is absent
-- confirms dependencies from T05, T12, and T13 exist
-- applies only the T14 migration SQL
-- inserts only the matching migration ledger row
-- verifies function grants, return fields, eligibility behavior, and no
-  `board_posts` write-policy changes
+The runtime pass used targeted SQL execution only, applied the migration SQL and
+exact ledger row in one explicit transaction, and verified function grants,
+return fields, eligibility behavior, unchanged `board_posts` write-policy
+posture, and no content creation.
 
 ## What T14 Does Not Add
 
