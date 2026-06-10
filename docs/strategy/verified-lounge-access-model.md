@@ -11,6 +11,11 @@ employer unless explicitly obtained and documented.
 A Verified Lounge is a restricted board associated with a base, role, airline,
 or other approved aviation-worker criteria.
 
+In the Hub / Board taxonomy, a Verified Lounge is a restricted board associated
+with a Hub. Product-facing copy should call these spaces `Lounges`. Lounges are
+siblings of Baseboard and Layovers surfaces, not child boards inside a
+Baseboard. See `hub-board-taxonomy.md` for the controlling taxonomy.
+
 It is similar to a Facebook group structurally, but with stronger privacy,
 moderation, and access boundaries.
 
@@ -209,8 +214,9 @@ overwhelm Home.
 Users who are not lounge members must not see restricted lounge content.
 
 See `docs/strategy/home-dashboard-product-definition.md` for the Home
-Dashboard hierarchy and `docs/strategy/base-board-product-definition.md` for
-how Verified Lounges relate to Base Boards.
+Dashboard hierarchy, `docs/strategy/hub-board-taxonomy.md` for Hub/surface
+language, and `docs/strategy/base-board-product-definition.md` for the existing
+Base Board strategy/database terminology.
 
 ## 10. T07 Foundation
 

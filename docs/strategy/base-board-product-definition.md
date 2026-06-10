@@ -12,6 +12,10 @@ A Base Board is the main verified hub for an aviation base. It combines
 structured base intel, searchable community posts, useful/trending knowledge,
 related Layover Boards, and restricted Verified Lounges.
 
+Product-facing copy should prefer `Baseboard` for this primary based-there
+community surface. This document keeps `Base Board` where it is explaining the
+existing strategy/database language and the `base_board` board type.
+
 Users can follow a Base Board, set it as their home base, post and comment in
 it when allowed, save useful content, and use it as the starting point for
 base-specific aviation knowledge.
@@ -38,6 +42,12 @@ It should eventually gather:
 
 A Base Board should feel like the starting point for "what do airline people
 need to know about this base?" rather than a generic social feed.
+
+Use `docs/strategy/hub-board-taxonomy.md` as the canonical product taxonomy for
+how Base Boards relate to Hubs, Layover Boards, and Verified Lounges. In that
+taxonomy, product-facing Hub contents are `Baseboard`, `Layovers`, `Lounges`,
+and `Crew Picks`; the Hub is the top-level airport/location container and is
+not itself a discussion board.
 
 The Home Dashboard definition in
 `docs/strategy/home-dashboard-product-definition.md` describes how the selected
@@ -92,8 +102,10 @@ Use `docs/strategy/verified-lounge-access-model.md` as the canonical product
 definition for lounge access, request lifecycle, Crew Lead scope, and privacy
 boundaries before implementing restricted lounge membership or request flows.
 
-Layover Boards are separate board-type spaces. They may be related to a base,
-but they are independently discoverable and followable.
+Layovers are separate layover utility/discussion surfaces. In the Hub taxonomy
+they are siblings of Baseboards, not children of Baseboards. They may be
+related to a base/location, but they are independently discoverable and
+followable.
 
 ## 6. Search And Personalization Direction
 
@@ -167,6 +179,10 @@ Board intel/wiki should be modeled later as structured content attached to a
 board, not as a board type.
 
 Verified Lounges should remain modeled as a board type.
+
+Do not use recursive board nesting as the default product model. The
+product-facing Hub can organize Baseboard, Layovers, Lounges, and Crew Picks
+without treating one board as the parent of another board.
 
 T05 creates the metadata foundation only. It does not implement posts,
 comments, follows, home-base preferences, memberships, access requests, saves,

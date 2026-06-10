@@ -39,6 +39,7 @@ Supplemental epoch-specific ticket packs:
 - [Home Base And Board Follow Decision](strategy/home-base-board-follow-decision.md) - canonical T06 product decision that Home Base is optional personalization state in the initial DFW-only rollout, not authorization truth; setting Home Base auto-follows the matching Base Board; users may follow many boards; follows and self-declared profile fields do not grant restricted-board access.
 - [Home Dashboard Product Definition](strategy/home-dashboard-product-definition.md) - canonical definition of the first private-app Home Dashboard as a utility dashboard, not a generic feed, with persistent search followed by Home Base, Crew Picks, Following, Your Lounges, and Saved.
 - [Verified Lounge Access Model](strategy/verified-lounge-access-model.md) - canonical definition for restricted lounge access before `FBMVP-T07`, including request lifecycle, Crew Lead scope, request-thread limits, privacy boundaries, and the rule that Home Base, board follows, and self-declared profile fields do not grant lounge access.
+- [Hub / Board Taxonomy](strategy/hub-board-taxonomy.md) - canonical product taxonomy that defines Hubs as top-level airport/location containers and defines product-facing Baseboard, Layovers, Lounges, and Crew Picks surfaces, including the MVP seeded Layovers strategy for common DFW crew destinations.
 - [Community Admin Responsibilities / Disclaimer Policy](strategy/community-admin-responsibilities-disclaimer-policy.md) - defines board-scoped community-admin responsibilities, limits, privacy boundaries, non-sponsorship disclaimers, abuse controls, and escalation expectations.
 - [Launch-Readiness Gate Transition Plan](strategy/launch-readiness-gate-transition-plan.md) - defines the explicit transition from private-testing beta gates to first-base launch gates without removing beta too early, requiring one-by-one beta grants, or bypassing airline-email verification.
 - [Beta Invite-Code Foundation Decision](strategy/beta-invite-code-foundation-decision.md) - defines batch-generated, single-use beta invite codes as private-testing capacity control that must not bypass airline-email verification or become a first-base launch requirement.
@@ -46,7 +47,8 @@ Supplemental epoch-specific ticket packs:
 - [FBMVP-T05 Base Board Runtime Pass](ops/fbmvp-t05-base-board-runtime-pass.md) - records targeted runtime application of `20260609020355 create_base_board_model` to the intended `jmpseat` Supabase project, confirms only T05 was recorded in migration history, preserves known migration drift handling, and verifies DFW/base-board seed state plus RLS on the new metadata tables.
 - [FBMVP-T06 Home Base And Board Follows](ops/fbmvp-t06-home-base-board-follows.md) - foundation for optional Home Base preference state, board follows as personalization state, and the authenticated `set_user_home_base` RPC that auto-follows the matching active Base Board without granting restricted access; the intended runtime has the base T06 schema/functions recorded as remote migration `20260609194858`, while the local repo file remains `20260609130534`, so follow-up hardening must use targeted migrations rather than re-applying or retro-marking local T06.
 - [FBMVP-T06 Home Base And Board Follows Runtime Pass](ops/fbmvp-t06-home-base-board-follows-runtime-pass.md) - records the targeted runtime pass for T06, confirms the base T06 schema/functions already existed remotely as `20260609194858`, documents the local-vs-remote migration-ledger mismatch, and verifies targeted application of `20260609200310 harden_home_base_rpc_execute_grants` without unrelated migration changes.
-- [FBMVP-T07 Verified Lounge Access Foundation](ops/fbmvp-t07-lounge-access-foundation.md) - local schema/RLS foundation for restricted Verified Lounge memberships, access requests, request-scoped comments, and board-scoped Crew Lead grants; no UI, direct mutation policies, posts/comments, moderation, AI, proof uploads, or runtime migration apply are included before review.
+- [FBMVP-T07 Verified Lounge Access Foundation](ops/fbmvp-t07-lounge-access-foundation.md) - schema/RLS foundation for restricted Verified Lounge memberships, access requests, request-scoped comments, and board-scoped Crew Lead grants; no UI, direct mutation policies, posts/comments, moderation, AI, or proof uploads are included.
+- [FBMVP-T07 Verified Lounge Access Runtime Pass](ops/fbmvp-t07-lounge-access-runtime-pass.md) - records targeted runtime application of `20260609220055 create_lounge_access_foundation` to the intended `jmpseat` Supabase project, confirms only T07 was recorded in migration history, preserves known migration drift handling, and verifies RLS/policy posture on the new lounge access tables.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
@@ -203,7 +205,9 @@ Current T06 implementation status:
 
 Current T07 implementation status:
 
-- Local branch adds `20260609220055_create_lounge_access_foundation.sql`.
+- T07 is merged and runtime-applied.
+- Runtime migration history includes
+  `20260609220055 create_lounge_access_foundation`.
 - Adds `lounge_memberships`, `lounge_access_requests`,
   `lounge_request_comments`, and `lounge_admin_grants`.
 - Keeps active lounge membership as the future restricted content access truth.
@@ -214,8 +218,8 @@ Current T07 implementation status:
 - Does not add direct write policies or mutation RPCs.
 - Does not implement UI, posts/comments, saves/reactions, search, moderation,
   AI, marketplace/deals, or proof-upload scope.
-- Runtime migration apply remains pending after review/merge and must be
-  targeted only.
+- The runtime pass used targeted apply only. Known Supabase migration-history
+  drift remains and still blocks broad `supabase db push`.
 
 DFW is the first launch base and the DFW Base Board is the first available base
 board. DFW is not the whole product concept. The data model should support many
@@ -231,13 +235,16 @@ Current sequence:
 3. Home Dashboard product definition, governing the first private-app screen
    hierarchy before `FBMVP-T07`/`FBMVP-T08`
 4. `FBMVP-T07` restricted lounge membership/access request/Crew Lead foundation
-5. `FBMVP-T08` DFW Base Board read-only dashboard shell
-6. `FBMVP-T09` board/layover discovery and follow UI shell
-7. `FBMVP-T10` text posts/comments foundation
-8. `FBMVP-T11` saves/reactions/useful/trending foundation
-9. `FBMVP-T12` search foundation with access-aware boundaries
-10. `FBMVP-T13` reporting/moderation/admin controls
-11. `FBMVP-T14` seeded DFW content, safety copy, and launch validation
+5. Hub / Board taxonomy, governing Hubs, Baseboard, Layovers, Lounges, Crew
+   Picks, and MVP seeded Layovers before further dashboard/discovery/posting
+   implementation
+6. `FBMVP-T08` DFW Base Board read-only dashboard shell
+7. `FBMVP-T09` board/layover discovery and follow UI shell
+8. `FBMVP-T10` text posts/comments foundation
+9. `FBMVP-T11` saves/reactions/useful/trending foundation
+10. `FBMVP-T12` search foundation with access-aware boundaries
+11. `FBMVP-T13` reporting/moderation/admin controls
+12. `FBMVP-T14` seeded DFW content, safety copy, and launch validation
 
 Do not let older broad V1/backlog sections below turn this into an unsequenced
 social feed or marketplace build. For the current lane, keep proof uploads,

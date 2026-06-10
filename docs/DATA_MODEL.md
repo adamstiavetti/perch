@@ -282,6 +282,56 @@ Relationships:
 - Later has board intel/wiki structured content attached to the board. Board
   intel/wiki is not a board type.
 
+## HubBoardTaxonomy
+
+Product definition:
+
+- `strategy/hub-board-taxonomy.md` is the canonical taxonomy for Hubs,
+  Baseboard, Layovers, Lounges, and Crew Picks.
+- A Hub is the product-facing top-level airport/location container.
+- A Hub is not itself a discussion board.
+- Baseboard, Layovers, Lounges, and Crew Picks are product-facing surfaces
+  under a Hub.
+- Boards should not recursively contain other boards by default.
+
+Current data model implication:
+
+- `bases` are the closest current data-model anchor for Hub-like airport/base
+  containers.
+- `boards` remain user-facing spaces.
+- `board_types` classify `base_board`, `layover_board`, and
+  `verified_lounge`.
+- Product-facing Hub navigation can be introduced before a dedicated `hubs`
+  table exists.
+- A future migration may add explicit Hub records if jmpseat needs location
+  containers broader than aviation bases.
+
+DFW launch model:
+
+- DFW Hub
+- Baseboard
+- Layovers
+- Lounges
+- Crew Picks
+
+MVP seeded Layovers strategy:
+
+- DFW Hub is the full MVP Hub.
+- selected common DFW crew layover destinations may have admin-seeded Layovers
+  content before those destinations become full Hubs
+- seeded Layovers are bridge content, not throwaway content
+- seeded Layovers can later graduate into full Hubs when demand justifies it
+
+Layovers safety boundaries:
+
+- no exact crew hotel locations
+- no live crew location tracking
+- no passenger/private information
+- no private company information
+- no airport security procedures
+- no operationally sensitive information
+- no exact current meetup/location tied to crew identity
+
 ## VerifiedLoungeAccess
 
 Product definition:
@@ -289,8 +339,11 @@ Product definition:
 - `strategy/verified-lounge-access-model.md` is the canonical product decision
   for Verified Lounge access before implementing the next restricted-access
   ticket.
-- `FBMVP-T07` implements the local schema foundation in
+- `FBMVP-T07` implements the schema foundation in
   `20260609220055_create_lounge_access_foundation.sql`.
+- The intended Supabase runtime has applied and verified
+  `20260609220055 create_lounge_access_foundation`; see
+  `ops/fbmvp-t07-lounge-access-runtime-pass.md`.
 - A Verified Lounge is modeled as a restricted board associated with a base,
   role, airline, or other approved aviation-worker criteria.
 - It is not a public feed, not a direct-message system, and not proof that the
@@ -339,8 +392,12 @@ Privacy boundaries:
 
 Current scope:
 
-- T07 is a local migration and source-test foundation.
-- Runtime migration apply is pending after review/merge.
+- T07 is a merged, runtime-applied migration and source-test foundation.
+- The T07 runtime pass verified the four lounge access tables, RLS on all four,
+  no anon policies, no permissive `using (true)` / `with check (true)`
+  policies, own-row membership/request reads, board-scoped Crew Lead reads
+  through `lounge_admin_grants`, and no participant/Crew Lead exposure for
+  `operator_review` comments.
 - No request UI or Crew Lead panel exists yet.
 - No full direct-message system exists or is implied.
 - No direct client write policies are added; request/review/comment mutations

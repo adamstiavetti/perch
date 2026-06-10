@@ -70,6 +70,10 @@ Use `docs/strategy/verified-lounge-access-model.md` as the canonical product
 definition for Verified Lounge access, request lifecycle, and Crew Lead scope
 before implementing `FBMVP-T07`.
 
+Use `docs/strategy/hub-board-taxonomy.md` as the canonical product taxonomy for
+Hubs, Baseboard, Layovers, Lounges, and Crew Picks before implementing board
+discovery, dashboard destinations, or posting surfaces.
+
 ## 3. Personalized App Experience
 
 The MVP user experience is personalized:
@@ -91,8 +95,8 @@ The MVP user experience is personalized:
   saved/useful content, followed users, Verified Lounge memberships, and
   relevant updates
 - the Home Dashboard should be a utility dashboard, not a generic social feed
-- the canonical Home Dashboard hierarchy is search, Home Base, Crew Picks,
-  Following, Your Lounges, and Saved
+- the canonical Home Dashboard hierarchy is search, Home Base / Hub, Crew
+  Picks, Following, Your Lounges, and Saved
 - search is a persistent/global affordance near the top, not a normal content
   section
 - Crew Picks are saved-driven/admin-curated useful posts, guides, answers, or
@@ -266,8 +270,12 @@ Current T06 implementation note:
 
 Current T07 implementation note:
 
-- T07 is implemented locally as the Verified Lounge membership/access request
-  data foundation.
+- T07 is implemented and runtime-applied as the Verified Lounge
+  membership/access request data foundation.
+- The runtime pass is recorded in
+  `fbmvp-t07-lounge-access-runtime-pass.md`.
+- Runtime migration history includes
+  `20260609220055 create_lounge_access_foundation`.
 - It adds `lounge_memberships`, `lounge_access_requests`,
   `lounge_request_comments`, and `lounge_admin_grants`.
 - `lounge_memberships` is the future restricted lounge access truth.
@@ -285,8 +293,8 @@ Current T07 implementation note:
 - T07 does not implement dashboard UI, request UI, Crew Lead panel UI,
   restricted lounge content gates, posts, comments, saves, reactions, search,
   reports, moderation, AI, marketplace/deals, or proof-upload scope.
-- Runtime migration apply is pending after review/merge and must use targeted
-  apply only because known Supabase migration-history drift remains.
+- The runtime pass used targeted apply only; known Supabase migration-history
+  drift remains and still blocks broad `supabase db push`.
 
 Rationale:
 
@@ -300,20 +308,38 @@ Rationale:
   schema
 - T05 does not implement every MVP feature; it makes the foundation model-aware
 
+Product-facing navigation should treat DFW as the first Hub:
+
+- DFW Hub
+- Baseboard
+- Layovers
+- Lounges
+- Crew Picks
+
+For MVP, DFW Hub is the full launch surface. Selected common DFW crew layover
+destinations may have admin-seeded Layovers content so DFW-based users get
+utility outside DFW. Those seeded destinations are lightweight layover surfaces,
+not full Hubs yet, and can later graduate into full Hubs when demand justifies
+launching them.
+
+Layovers and Lounges are siblings of Baseboard in the Hub taxonomy. Boards
+should not recursively contain other boards by default.
+
 ## 9. Ordered Ticket Sequence
 
 The current implementation sequence is:
 
 1. `FBMVP-T05` base, board, and board-type data model, merged and runtime-applied
 2. `FBMVP-T06` Home Base preference and board-follow foundation, merged and runtime-hardened
-3. `FBMVP-T07` restricted lounge membership/access request/Crew Lead foundation
-4. `FBMVP-T08` DFW Base Board read-only dashboard shell
-5. `FBMVP-T09` board/layover discovery and follow UI shell
-6. `FBMVP-T10` text posts/comments foundation
-7. `FBMVP-T11` saves/reactions/useful/trending foundation
-8. `FBMVP-T12` search foundation with access-aware boundaries
-9. `FBMVP-T13` reporting/moderation/admin controls
-10. `FBMVP-T14` seeded DFW content, safety copy, and launch validation
+3. `FBMVP-T07` restricted lounge membership/access request/Crew Lead foundation, merged and runtime-applied
+4. Hub / Board taxonomy, governing board discovery and dashboard destinations
+5. `FBMVP-T08` DFW Base Board read-only dashboard shell
+6. `FBMVP-T09` board/layover discovery and follow UI shell
+7. `FBMVP-T10` text posts/comments foundation
+8. `FBMVP-T11` saves/reactions/useful/trending foundation
+9. `FBMVP-T12` search foundation with access-aware boundaries
+10. `FBMVP-T13` reporting/moderation/admin controls
+11. `FBMVP-T14` seeded DFW content, safety copy, and launch validation
 
 ## 10. Authorization Rules To Preserve
 

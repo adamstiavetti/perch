@@ -160,5 +160,13 @@ Local validation for this branch should include:
 - `npm run lint`
 - `npm run build`
 
-Runtime migration apply is pending after review/merge and must use targeted
-apply only. Do not run broad `supabase db push`.
+Runtime migration apply is complete and recorded in
+`fbmvp-t07-lounge-access-runtime-pass.md`.
+
+The T07 runtime pass applied only
+`20260609220055 create_lounge_access_foundation` through a targeted SQL
+transaction against the intended `jmpseat` Supabase project. Broad
+`supabase db push` was not used.
+
+Future runtime schema changes must still use targeted apply while the known
+Supabase migration-history drift remains unresolved.

@@ -18,12 +18,16 @@ crew content.
 The dashboard should feel like a practical operating surface for "what do I
 need from jmpseat right now?" rather than a stream of undifferentiated posts.
 
+Use `docs/strategy/hub-board-taxonomy.md` as the canonical taxonomy for Hubs,
+Baseboards, Layovers, Lounges, and Crew Picks when deciding what Home cards or
+Board destinations should open.
+
 ## 2. Dashboard Hierarchy
 
 Canonical dashboard hierarchy:
 
 1. Persistent/global search affordance
-2. Home Base
+2. Home Base / Hub
 3. Crew Picks
 4. Following
 5. Your Lounges
@@ -59,11 +63,11 @@ Search implementation is out of scope for this definition.
 
 The Home Base section is the first actual dashboard section.
 
-For users with Home Base set, the Home Base card should preview the selected
-Base Board and open the Base Board hub.
+For users with Home Base set, the Home Base / Hub card should preview the
+selected Baseboard/Hub and open the Baseboard surface.
 
 For the initial DFW-only rollout, a user who starts with DFW should see a DFW
-Base Board / Home Base card. Tapping it should open the DFW Base Board hub.
+Hub / Baseboard card. Tapping it should open the DFW Baseboard surface.
 
 For users with no Home Base, the dashboard must not pretend the user has a DFW
 Home Base. No Home Base remains a valid personalization state.
@@ -115,7 +119,9 @@ decision explicitly approves user follows in the active implementation lane.
 
 Dashboard preview:
 
-- show followed Base Boards and Layover Boards
+- show followed Baseboard and Layovers surfaces
+- later, show followed Hubs only if a separate Hub-follow product decision is
+  approved
 - later, show restricted lounges only when the user has access
 - if empty, show a useful empty state instead of blocking app access
 
@@ -172,7 +178,7 @@ Saved implementation is out of scope for this definition.
 For users who start with DFW, the Home Dashboard should use this shape:
 
 1. Search jmpseat
-2. DFW Base Board / Home Base card
+2. DFW Hub / Baseboard card
 3. Crew Picks
 4. Following
 5. Your Lounges
