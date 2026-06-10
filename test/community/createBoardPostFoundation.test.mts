@@ -20,9 +20,10 @@ function readCreateBoardPostMigration() {
   return readFileSync(path.join(migrationsDir.pathname, migrationNames[0]), "utf8");
 }
 
-test("T13 migration adds a server-controlled create-board-post RPC only", () => {
+test("T13 migration adds a server-controlled create-board-post RPC and eligibility helper only", () => {
   const sql = readCreateBoardPostMigration();
 
+  assert.match(sql, /create or replace function public\.current_user_can_create_open_board_post\(\)/i);
   assert.match(sql, /create or replace function public\.create_board_post\(/i);
   assert.match(sql, /p_board_id uuid/i);
   assert.match(sql, /p_title text/i);
@@ -37,6 +38,37 @@ test("T13 migration adds a server-controlled create-board-post RPC only", () => 
   assert.doesNotMatch(sql, /alter table public\.board_posts/i);
   assert.doesNotMatch(sql, /create policy/i);
   assert.doesNotMatch(sql, /grant insert on table public\.board_posts/i);
+});
+
+test("T13 create-board-post RPC requires DB-level contribution eligibility", () => {
+  const sql = readCreateBoardPostMigration();
+  const claimBranch = sql.slice(sql.indexOf("from public.verification_claims"));
+
+  assert.match(sql, /public\.current_user_can_create_open_board_post\(\)/i);
+  assert.match(sql, /profile_completed_at is not null/i);
+  assert.match(sql, /from public\.profiles/i);
+  assert.match(sql, /from public\.beta_access/i);
+  assert.match(sql, /status = 'active'/i);
+  assert.match(sql, /public\.is_operator_with_scope\('operator\.internal_private_app_access'\)/i);
+  assert.match(sql, /from public\.verification_requests/i);
+  assert.match(sql, /(from|join) public\.verification_evidence/i);
+  assert.match(sql, /(from|join) public\.approved_email_domains/i);
+  assert.match(sql, /method = 'work_email'/i);
+  assert.match(sql, /evidence_type = 'work_email'/i);
+  assert.match(sql, /support_result/i);
+  assert.match(sql, /verified work-email/i);
+  assert.match(sql, /Contribution eligibility required/i);
+
+  assert.match(claimBranch, /verification_claims\.request_id is not null/i);
+  assert.match(claimBranch, /verification_requests\.id = verification_claims\.request_id/i);
+  assert.match(claimBranch, /verification_requests\.method = 'work_email'/i);
+  assert.match(claimBranch, /verification_evidence\.request_id = verification_claims\.request_id/i);
+  assert.match(claimBranch, /verification_evidence\.evidence_type = 'work_email'/i);
+  assert.match(claimBranch, /verification_evidence\.metadata->>'support_result' = 'supported_domain'/i);
+  assert.match(claimBranch, /verification_evidence\.metadata->>'verification_method' = 'work_email'/i);
+  assert.match(claimBranch, /inner join public\.approved_email_domains/i);
+  assert.match(claimBranch, /approved_email_domains\.status = 'active'/i);
+  assert.doesNotMatch(sql, /claimed_airline|claimed_role|claimed_base/i);
 });
 
 test("T13 create-board-post RPC uses auth.uid and validates active open verified Baseboards", () => {
@@ -141,6 +173,11 @@ test("T13 docs describe the server-controlled create-post foundation without run
 
   assert.match(docs, /FBMVP-T13/i);
   assert.match(docs, /server-controlled create-post foundation/i);
+  assert.match(docs, /DB-level contribution eligibility|contribution eligibility/i);
+  assert.match(docs, /auth alone is not enough/i);
+  assert.match(docs, /completed profile/i);
+  assert.match(docs, /active beta access|operator internal private-app access/i);
+  assert.match(docs, /verified work-email|verified approved work email/i);
   assert.match(docs, /active open verified/i);
   assert.match(docs, /DFW Baseboard/i);
   assert.match(docs, /No lounge\/restricted posting|no lounge\/restricted posting|restricted lounge posting/i);

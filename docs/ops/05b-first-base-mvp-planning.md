@@ -391,6 +391,11 @@ Recommended direction:
   active open verified Baseboards, with DFW Baseboard as the first intended
   consumer.
 - T13 runtime apply is pending until separately approved.
+- T13 now requires DB-level contribution eligibility before insert; auth alone
+  is not enough. The current eligibility rule requires completed profile plus
+  operator internal private-app access or active beta access with verified
+  work-email / aviation-worker status.
+- Self-declared profile fields do not grant posting rights.
 - T13 does not enable lounge/restricted posting, comments, edits/deletes,
   saves/reactions, search backend, AI moderation, seed content, Crew Picks
   ranking, or full posting UI.

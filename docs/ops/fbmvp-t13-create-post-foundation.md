@@ -31,6 +31,8 @@ The RPC:
 
 - uses `auth.uid()` as the only author source
 - validates that the caller is authenticated
+- requires DB-level contribution eligibility before insert
+- rejects auth-only callers who have not passed the contribution gate
 - validates that the target board is active
 - validates that the target board has `visibility = 'open_verified'`
 - limits this lane to active Baseboards by requiring board type `base_board`
@@ -54,6 +56,22 @@ path when product and moderation readiness allow.
 
 T13 does not add direct insert policies on `public.board_posts`.
 
+Auth alone is not enough to create an open Baseboard post. The RPC calls a
+boolean DB-side eligibility helper before inserting.
+
+For the current private-beta posture, open Baseboard contribution eligibility
+requires:
+
+- authenticated caller
+- completed profile via `public.profiles.profile_completed_at`
+- either operator internal private-app access or both:
+  - active beta access in `public.beta_access`
+  - verified work-email / aviation-worker status from existing verification
+    request/evidence/domain or approved work-email claim state
+
+The helper returns only a boolean and does not expose verification evidence
+details.
+
 Function execution is limited to:
 
 - `authenticated`
@@ -74,6 +92,10 @@ T13 does not grant access from:
 
 Home Base, follows, and self-declared profile fields remain personalization or
 profile state only. They do not grant restricted posting access.
+
+Self-declared profile fields also do not grant open Baseboard posting rights.
+The RPC does not authorize from self-declared `claimed_airline`, `claimed_role`,
+or `claimed_base`.
 
 ## Restricted Posting
 
@@ -136,8 +158,13 @@ Static/source validation for T13 should confirm:
 
 - the create-post RPC exists
 - the RPC uses `auth.uid()`
+- the RPC requires DB-level contribution eligibility
+- auth alone is not enough
+- the eligibility check requires completed profile plus operator internal
+  private-app access or active beta access with verified work-email status
 - the RPC validates active open verified Baseboards
 - the RPC rejects restricted/lounge boards
+- the RPC does not authorize from self-declared profile fields
 - user-controlled author/status/visibility/admin/pinned fields are not exposed
 - direct insert policies are not added
 - execute is revoked from `anon` and `public`

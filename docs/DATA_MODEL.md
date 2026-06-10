@@ -423,8 +423,15 @@ Current T13 implementation direction:
 - The RPC is intended first for DFW Baseboard and active open verified
   Baseboards.
 - It uses `auth.uid()` for `author_user_id`.
+- Auth alone is not enough: the RPC now requires DB-level contribution
+  eligibility before insert.
+- Current contribution eligibility requires completed profile plus either
+  operator internal private-app access or active beta access with verified
+  work-email / aviation-worker status.
 - It forces `status = 'published'`, `visibility = 'board'`,
   `is_admin_seeded = false`, and `is_pinned = false`.
+- It does not authorize from self-declared `claimed_airline`, `claimed_role`,
+  or `claimed_base`.
 - It does not add direct insert policies, lounge/restricted posting, comments,
   edits/deletes, saves, reactions, search backend, AI moderation, seed content,
   or full posting UI.

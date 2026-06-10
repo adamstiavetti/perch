@@ -270,6 +270,11 @@ Recommended direction:
   migration-history drift remains and still blocks broad `supabase db push`.
 - T13 adds a local `create_board_post` RPC foundation for active open verified
   Baseboards only. Runtime apply remains pending until separately approved.
+- T13 now requires DB-level contribution eligibility before insert; auth alone
+  is not enough. The current eligibility rule requires completed profile plus
+  operator internal private-app access or active beta access with verified
+  work-email / aviation-worker status.
+- Self-declared profile fields do not grant posting rights.
 - T13 does not add comments, saves/reactions, search backend, AI moderation,
   seeded layover content, lounge/restricted posting, or full posting UI.
 
