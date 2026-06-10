@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import styles from "./homeHubShell.module.css";
@@ -12,6 +13,12 @@ type DashboardItem = {
   title: string;
   detail: string;
   meta: string;
+};
+
+type QuickAction = {
+  title: string;
+  detail: string;
+  tone: "ask" | "layover" | "lounge" | "saved";
 };
 
 const crewPicks: readonly DashboardItem[] = [
@@ -29,6 +36,65 @@ const crewPicks: readonly DashboardItem[] = [
     title: "Crew Q&A",
     detail: "High-signal answers belong here after posting and moderation land.",
     meta: "Read-only shell",
+  },
+];
+
+const quickActions: readonly QuickAction[] = [
+  {
+    title: "Ask Baseboard",
+    detail: "Posting later",
+    tone: "ask",
+  },
+  {
+    title: "Find Layovers",
+    detail: "Discovery later",
+    tone: "layover",
+  },
+  {
+    title: "Browse Lounges",
+    detail: "Membership gated",
+    tone: "lounge",
+  },
+  {
+    title: "Saved",
+    detail: "Library later",
+    tone: "saved",
+  },
+];
+
+const layoverPreviews: readonly DashboardItem[] = [
+  {
+    title: "MIA",
+    detail: "Passing-through tips without hotel or live-location details.",
+    meta: "Coming soon",
+  },
+  {
+    title: "LAX",
+    detail: "Food, transit, coffee, and safe area utility later.",
+    meta: "Placeholder",
+  },
+  {
+    title: "ORD",
+    detail: "Airport and city intel after posting and moderation exist.",
+    meta: "Placeholder",
+  },
+  {
+    title: "DEN",
+    detail: "Followable Layovers are planned after discovery work.",
+    meta: "Placeholder",
+  },
+];
+
+const loungePreviews: readonly DashboardItem[] = [
+  {
+    title: "Flight Attendants",
+    detail: "Restricted content stays hidden until membership exists.",
+    meta: "Locked",
+  },
+  {
+    title: "New Hires",
+    detail: "Request and Crew Lead review flows arrive later.",
+    meta: "Coming soon",
   },
 ];
 
@@ -55,98 +121,174 @@ const dfwHubSections: readonly DashboardItem[] = [
   },
 ];
 
-function SectionHeader({
-  eyebrow,
-  title,
-  detail,
+function AppHeader({
+  subtitle,
+  showBackLink = false,
 }: {
-  eyebrow: string;
-  title: string;
-  detail: string;
+  subtitle?: string;
+  showBackLink?: boolean;
 }) {
   return (
-    <div className={styles.sectionHeader}>
-      <p className={styles.eyebrow}>{eyebrow}</p>
-      <h2>{title}</h2>
-      <p>{detail}</p>
-    </div>
-  );
-}
-
-function DashboardCard({ item }: { item: DashboardItem }) {
-  return (
-    <article className={styles.card}>
-      <span className={styles.cardMeta}>{item.meta}</span>
-      <h3>{item.title}</h3>
-      <p>{item.detail}</p>
-    </article>
-  );
-}
-
-function SearchAffordance() {
-  return (
-    <section className={styles.searchBand} aria-label="Search jmpseat">
+    <header className={styles.appHeader}>
       <div>
-        <p className={styles.eyebrow}>Search jmpseat</p>
-        <h1>Find useful crew intel fast.</h1>
+        <p className={styles.brand}>jmpseat</p>
+        {subtitle ? <span>{subtitle}</span> : null}
       </div>
-      <div className={styles.searchMock} aria-hidden="true">
-        Search boards, guides, lounges, and saved intel
+      {showBackLink ? (
+        <Link className={styles.backLink} href="/app">
+          Back Home
+        </Link>
+      ) : (
+        <div className={styles.headerTools} aria-hidden="true">
+          <span className={styles.headerIcon}>!</span>
+          <span className={styles.profileChip}>JS</span>
+        </div>
+      )}
+    </header>
+  );
+}
+
+function WelcomeBlock({
+  hasDfwHomeBase,
+  homeBaseName,
+}: {
+  hasDfwHomeBase: boolean;
+  homeBaseName?: string | null;
+}) {
+  return (
+    <section className={styles.welcomeBlock} aria-label="Private app status">
+      <p className={styles.welcomeTitle}>Welcome back</p>
+      <p className={styles.statusLine}>
+        <strong>Verified</strong>
+        <span aria-hidden="true">.</span>
+        <span>Aviation worker</span>
+        <span aria-hidden="true">.</span>
+        <span>{hasDfwHomeBase ? (homeBaseName ?? "DFW Hub") : "No Home Base set"}</span>
+      </p>
+    </section>
+  );
+}
+
+function SearchAffordance({ label = "Search jmpseat" }: { label?: string }) {
+  return (
+    <section className={styles.searchBand} aria-label={label}>
+      <span>{label}...</span>
+      <span aria-hidden="true" className={styles.searchIcon}>
+        <span aria-hidden="true" className={styles.searchGlyph}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            x="0px"
+            y="0px"
+            viewBox="0 0 40 40"
+            aria-hidden="true"
+            focusable="false"
+            className={styles.searchIconSvg}
+          >
+            <linearGradient
+              id="search-ico-gradient"
+              x1="31.916"
+              x2="25.088"
+              y1="31.849"
+              y2="26.05"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop offset="0" stopColor="#7a7a7a" />
+              <stop offset=".999" />
+            </linearGradient>
+            <polygon
+              fill="url(#search-ico-gradient)"
+              points="29.976,27 24.451,27.176 33.95,36.778 36.778,33.95"
+            />
+            <path
+              fill="#7a7a7a"
+              d="M24.313,27c-1.788,1.256-3.962,2-6.313,2c-6.075,0-11-4.925-11-11S11.925,7,18,7s11,4.925,11,11	c0,2.659-0.944,5.098-2.515,7h4.776C32.368,22.909,33,20.53,33,18c0-8.284-6.716-15-15-15S3,9.716,3,18c0,8.284,6.716,15,15,15	c4.903,0,9.243-2.363,11.98-6H24.313z"
+            />
+          </svg>
+        </span>
+      </span>
+    </section>
+  );
+}
+
+function HubHeroCard({
+  hasDfwHomeBase,
+}: {
+  hasDfwHomeBase: boolean;
+}) {
+  return (
+    <section className={styles.hubCard} aria-labelledby="home-hub-title">
+      <div className={styles.hubCardCopy}>
+        <span className={styles.cardLabel}>
+          {hasDfwHomeBase ? "Your Hub" : "DFW launch"}
+        </span>
+        <h1 id="home-hub-title">DFW Hub</h1>
+        <p>Baseboard, Layovers, Lounges, and Crew Picks.</p>
+        <Link className={styles.primaryButton} href="/app/hubs/dfw">
+          Open DFW Hub
+        </Link>
+      </div>
+      <div className={styles.hubCardArt} aria-hidden="true">
+        <Image
+          alt=""
+          className={styles.hubCardImage}
+          fill
+          priority
+          sizes="140px"
+          src="/images/dallas4.jpg"
+        />
+        <span>DFW</span>
       </div>
     </section>
   );
 }
 
-function DfwStartedHomeBaseCard() {
+function NoHomeBaseNotice({ hasLoadError }: { hasLoadError: boolean }) {
   return (
-    <section className={styles.section} aria-labelledby="home-base-title">
-      <SectionHeader
-        eyebrow="Home Base"
-        title="DFW Hub"
-        detail="Your Home Base preference points to the DFW Hub for personalization. It does not verify employment, airline, role, or lounge eligibility."
-      />
-      <Link className={styles.primaryCardLink} href="/app/hubs/dfw">
-        <span>Open DFW Hub</span>
-        <strong>Baseboard, Layovers, Lounges, and Crew Picks</strong>
-      </Link>
+    <section className={styles.noticeCard} aria-labelledby="no-home-base-title">
+      <div>
+        <span className={styles.cardMeta}>Skip-for-now state</span>
+        <h2 id="no-home-base-title">DFW Hub is live first</h2>
+        <p>
+          Skip for now keeps Home Base unset. No Home Base is a valid initial
+          state, and skipping does not fake-assign DFW to your profile or block
+          app entry.
+        </p>
+      </div>
+      <button className={styles.disabledButton} type="button" disabled>
+        Start with DFW
+      </button>
+      {hasLoadError ? (
+        <p className={styles.mutedNote}>
+          Home Base lookup is unavailable right now, so jmpseat is showing the
+          safe no-Home-Base state.
+        </p>
+      ) : null}
     </section>
   );
 }
 
-function NoHomeBaseCard({ hasLoadError }: { hasLoadError: boolean }) {
+function QuickActionsSection() {
   return (
-    <section className={styles.section} aria-labelledby="no-home-base-title">
-      <SectionHeader
-        eyebrow="Home Base"
-        title="Welcome to jmpseat"
-        detail="No Home Base is a valid initial state. DFW Hub is live first, but skipping does not fake-assign DFW to your profile."
-      />
-      <div className={styles.splitCards}>
-        <article className={styles.card}>
-          <span className={styles.cardMeta}>DFW-only launch</span>
-          <h3>DFW Hub is live first</h3>
-          <p>
-            Start with DFW when you want the app to set Home Base to DFW and
-            auto-follow the DFW Baseboard.
-          </p>
-          <button className={styles.disabledButton} type="button" disabled>
-            Start with DFW
+    <section className={styles.panelSection} aria-labelledby="quick-actions-title">
+      <div className={styles.sectionTitleRow}>
+        <h2 id="quick-actions-title">Quick Actions</h2>
+      </div>
+      <div className={styles.quickGrid}>
+        {quickActions.map((action) => (
+          <button
+            className={styles.quickAction}
+            data-tone={action.tone}
+            disabled
+            key={action.title}
+            type="button"
+          >
+            <span aria-hidden="true" className={styles.quickIcon}>
+              {action.title.slice(0, 1)}
+            </span>
+            <strong>{action.title}</strong>
+            <small>{action.detail}</small>
           </button>
-        </article>
-        <article className={styles.card}>
-          <span className={styles.cardMeta}>No Home Base</span>
-          <h3>Skip for now keeps Home Base unset</h3>
-          <p>
-            You can enter the app without a Home Base. The dashboard uses an
-            exploratory state until you choose a base later.
-          </p>
-          {hasLoadError ? (
-            <p className={styles.mutedNote}>
-              Home Base lookup is unavailable right now, so jmpseat is showing
-              the safe no-Home-Base state.
-            </p>
-          ) : null}
-        </article>
+        ))}
       </div>
     </section>
   );
@@ -154,15 +296,70 @@ function NoHomeBaseCard({ hasLoadError }: { hasLoadError: boolean }) {
 
 function CrewPicksSection() {
   return (
-    <section className={styles.section} aria-labelledby="crew-picks-title">
-      <SectionHeader
-        eyebrow="Crew Picks"
-        title="Useful, not generic trending."
-        detail="Crew Picks will be saved-driven and admin-curated until ranking, saves, posts, and moderation exist."
-      />
-      <div className={styles.cardGrid}>
+    <section className={styles.panelSection} aria-labelledby="crew-picks-title">
+      <div className={styles.sectionTitleRow}>
+        <div>
+          <h2 id="crew-picks-title">Crew Picks</h2>
+          <p>Useful, not generic trending. Admin-curated until saves and ranking exist.</p>
+        </div>
+      </div>
+      <div className={styles.crewPickList}>
         {crewPicks.map((item) => (
-          <DashboardCard key={item.title} item={item} />
+          <article className={styles.compactCard} key={item.title}>
+            <span className={styles.cardMeta}>{item.meta}</span>
+            <h3>{item.title}</h3>
+            <p>{item.detail}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LayoversSection() {
+  return (
+    <section className={styles.railSection} aria-labelledby="layovers-title">
+      <div className={styles.sectionTitleRow}>
+        <div>
+          <h2 id="layovers-title">Layovers</h2>
+          <p>Placeholder destination previews. No exact hotel or live-location intel.</p>
+        </div>
+        <span className={styles.viewAll}>Coming soon</span>
+      </div>
+      <div className={styles.layoverRail}>
+        {layoverPreviews.map((item) => (
+          <article className={styles.layoverCard} key={item.title}>
+            <span>{item.title}</span>
+            <small>{item.meta}</small>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LoungesSection() {
+  return (
+    <section className={styles.panelSection} aria-labelledby="lounges-title">
+      <div className={styles.sectionTitleRow}>
+        <div>
+          <h2 id="lounges-title">Your Lounges</h2>
+          <p>Restricted spaces stay membership gated.</p>
+        </div>
+        <span className={styles.viewAll}>Locked</span>
+      </div>
+      <div className={styles.loungeList}>
+        {loungePreviews.map((item) => (
+          <article className={styles.loungeRow} key={item.title}>
+            <span aria-hidden="true" className={styles.loungeIcon}>
+              {item.title.slice(0, 1)}
+            </span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+            </div>
+            <span className={styles.rowState}>{item.meta}</span>
+          </article>
         ))}
       </div>
     </section>
@@ -171,70 +368,58 @@ function CrewPicksSection() {
 
 function FollowingSection({ hasDfwHomeBase }: { hasDfwHomeBase: boolean }) {
   return (
-    <section className={styles.section} aria-labelledby="following-title">
-      <SectionHeader
-        eyebrow="Following"
-        title={hasDfwHomeBase ? "Boards you follow" : "Following starts empty"}
-        detail="Following initially means followed boards. It does not grant lounge access or restricted content access."
-      />
-      <div className={styles.cardGrid}>
-        {hasDfwHomeBase ? (
-          <DashboardCard
-            item={{
-              title: "DFW Baseboard",
-              detail: "Auto-followed when a user explicitly starts with DFW.",
-              meta: "Home Base follow",
-            }}
-          />
-        ) : (
-          <DashboardCard
-            item={{
-              title: "No followed boards yet",
-              detail: "Start with DFW or follow boards later when board discovery exists.",
-              meta: "Empty state",
-            }}
-          />
-        )}
+    <section className={styles.panelSection} aria-labelledby="following-title">
+      <div className={styles.sectionTitleRow}>
+        <div>
+          <h2 id="following-title">Following</h2>
+          <p>
+            Following initially means boards. It does not grant lounge or
+            restricted content access.
+          </p>
+        </div>
       </div>
-    </section>
-  );
-}
-
-function LoungesSection() {
-  return (
-    <section className={styles.section} aria-labelledby="lounges-title">
-      <SectionHeader
-        eyebrow="Your Lounges"
-        title="Restricted spaces stay membership gated."
-        detail="Lounges appear here only when membership and request surfaces are implemented. Home Base and follows do not grant access."
-      />
-      <DashboardCard
-        item={{
-          title: "No joined Lounges yet",
-          detail: "Request and Crew Lead review flows are separate future work.",
-          meta: "Access controlled",
-        }}
-      />
+      <article className={styles.compactCard}>
+        <span className={styles.cardMeta}>
+          {hasDfwHomeBase ? "Home Base follow" : "Empty state"}
+        </span>
+        <h3>{hasDfwHomeBase ? "DFW Baseboard" : "No followed boards yet"}</h3>
+        <p>
+          {hasDfwHomeBase
+            ? "Auto-followed only when a user explicitly starts with DFW."
+            : "Start with DFW or follow boards later when board discovery exists."}
+        </p>
+      </article>
     </section>
   );
 }
 
 function SavedSection() {
   return (
-    <section className={styles.section} aria-labelledby="saved-title">
-      <SectionHeader
-        eyebrow="Saved"
-        title="Your personal knowledge library."
-        detail="Saved posts, guides, and board intel will appear here after saves exist."
-      />
-      <DashboardCard
-        item={{
-          title: "No saved items yet",
-          detail: "Saved content is future utility state, not an onboarding requirement.",
-          meta: "Empty state",
-        }}
-      />
+    <section className={styles.panelSection} aria-labelledby="saved-title">
+      <div className={styles.sectionTitleRow}>
+        <div>
+          <h2 id="saved-title">Saved</h2>
+          <p>Your personal knowledge library after saves exist.</p>
+        </div>
+      </div>
+      <article className={styles.compactCard}>
+        <span className={styles.cardMeta}>Empty state</span>
+        <h3>No saved items yet</h3>
+        <p>Saved content is future utility state, not an onboarding requirement.</p>
+      </article>
     </section>
+  );
+}
+
+function BottomNavVisual() {
+  return (
+    <nav className={styles.bottomNav} aria-label="Private app visual navigation">
+      <span data-active="true">Home</span>
+      <span>Boards</span>
+      <span>Search</span>
+      <span>Saved</span>
+      <span>Profile</span>
+    </nav>
   );
 }
 
@@ -247,41 +432,29 @@ export function HomeHubShell({
   const hasDfwHomeBase = normalizedHomeBase === "DFW";
 
   return (
-    <main className={styles.shell}>
-      <div className={styles.frame}>
-        <header className={styles.topbar}>
-          <div>
-            <p className={styles.brand}>jmpseat</p>
-            <span>Private app utility dashboard shell</span>
-          </div>
-          <nav className={styles.topnav} aria-label="Private app shell">
-            <span>Home</span>
-            <span>Boards</span>
-            <span>Search</span>
-            <span>Saved</span>
-            <span>Profile</span>
-          </nav>
-        </header>
-
+    <main aria-label="Utility dashboard" className={styles.shell}>
+      <div className={styles.mobileFrame}>
+        <AppHeader />
+        <WelcomeBlock hasDfwHomeBase={hasDfwHomeBase} homeBaseName={homeBaseName} />
         <SearchAffordance />
-
-        {hasDfwHomeBase ? (
-          <DfwStartedHomeBaseCard />
-        ) : (
-          <NoHomeBaseCard hasLoadError={homeBaseLoadError} />
-        )}
+        <HubHeroCard hasDfwHomeBase={hasDfwHomeBase} />
 
         {hasDfwHomeBase && homeBaseName ? (
           <p className={styles.stateNote}>
             Current Home Base preference: {homeBaseName}. This is
             personalization only, not authorization truth.
           </p>
-        ) : null}
+        ) : (
+          <NoHomeBaseNotice hasLoadError={homeBaseLoadError} />
+        )}
 
+        <QuickActionsSection />
         <CrewPicksSection />
-        <FollowingSection hasDfwHomeBase={hasDfwHomeBase} />
+        <LayoversSection />
         <LoungesSection />
+        <FollowingSection hasDfwHomeBase={hasDfwHomeBase} />
         <SavedSection />
+        <BottomNavVisual />
       </div>
     </main>
   );
@@ -290,19 +463,11 @@ export function HomeHubShell({
 export function DfwHubReadOnlyShell() {
   return (
     <main className={styles.shell}>
-      <div className={styles.frame}>
-        <header className={styles.topbar}>
-          <div>
-            <p className={styles.brand}>jmpseat</p>
-            <span>DFW Hub read-only shell</span>
-          </div>
-          <Link className={styles.secondaryLink} href="/app">
-            Back to Home
-          </Link>
-        </header>
+      <div className={styles.mobileFrame}>
+        <AppHeader subtitle="DFW Hub read-only shell" showBackLink />
 
-        <section className={styles.hubHero} aria-labelledby="dfw-hub-title">
-          <p className={styles.eyebrow}>DFW Hub</p>
+        <section className={styles.destinationHero} aria-labelledby="dfw-hub-title">
+          <span className={styles.cardLabel}>Dallas/Fort Worth</span>
           <h1 id="dfw-hub-title">DFW Hub</h1>
           <p>
             A read-only destination shell for the first launch Hub. This page
@@ -311,21 +476,28 @@ export function DfwHubReadOnlyShell() {
           </p>
         </section>
 
-        <section className={styles.section} aria-labelledby="hub-surfaces-title">
-          <SectionHeader
-            eyebrow="Hub surfaces"
-            title="Baseboard, Layovers, Lounges, and Crew Picks"
-            detail="These labels are product-facing. Access and content behavior remain deferred to later tickets."
-          />
-          <div className={styles.cardGrid}>
+        <SearchAffordance label="Search within DFW" />
+
+        <section className={styles.hubSurfaceGrid} aria-labelledby="hub-surfaces-title">
+          <div className={styles.sectionTitleRow}>
+            <div>
+              <h2 id="hub-surfaces-title">Hub surfaces</h2>
+              <p>Baseboard, Layovers, Lounges, and Crew Picks are read-only here.</p>
+            </div>
+          </div>
+          <div className={styles.surfaceGrid}>
             {dfwHubSections.map((item) => (
-              <DashboardCard key={item.title} item={item} />
+              <article className={styles.surfaceCard} key={item.title}>
+                <span className={styles.cardMeta}>{item.meta}</span>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </article>
             ))}
           </div>
         </section>
 
         <section className={styles.safetyBand} aria-labelledby="hub-safety-title">
-          <p className={styles.eyebrow}>Safety boundary</p>
+          <span className={styles.cardLabel}>Safety boundary</span>
           <h2 id="hub-safety-title">Layovers must stay safe and non-sensitive.</h2>
           <p>
             No exact crew hotel exposure, live location tracking, passenger
