@@ -64,6 +64,10 @@ Home Dashboard note:
   editorial definition for Seeded Layovers before schema or content work. It
   keeps Layovers utility-first and documents future content-type/category
   direction without creating schema in the current lane.
+- `ops/fbmvp-t12-shared-post-thread-foundation.md` is the next narrow schema
+  lane for shared board post/thread storage. It should add posts only, with no
+  comments, saves, reactions, search backend, moderation, or seeded layover
+  runtime content in the same migration.
 
 ## Profile
 
@@ -265,6 +269,9 @@ Current T05 implementation note:
   access.
 - Posting, comments, follows, memberships, access requests, saves, reactions,
   search, reports, and moderation remain later tickets.
+- `FBMVP-T12` is the first narrow post/thread foundation lane and should add a
+  shared `board_posts` table without pulling comments, saves, reactions,
+  search, or moderation into the same migration.
 - `strategy/home-base-board-follow-decision.md` defines the T06 product
   boundary: setting Home Base should auto-follow the corresponding main Base
   Board, users may follow many boards, and follows must not grant restricted
@@ -321,6 +328,9 @@ Current data model implication:
   table exists.
 - A future migration may add explicit Hub records if jmpseat needs location
   containers broader than aviation bases.
+- T12 shared posts should attach to `boards`, allowing Baseboard, Layovers, and
+  later access-aware lounge content to reuse one post/thread primitive while
+  keeping product UX utility-first.
 
 DFW launch model:
 
@@ -377,6 +387,53 @@ Implemented T07 model concepts:
 - `lounge_access_requests`
 - `lounge_request_comments`
 - `lounge_admin_grants`
+
+## BoardPost
+
+Current T12 implementation direction:
+
+- `FBMVP-T12` is the first shared post/thread foundation lane.
+- It should add `board_posts` only.
+- The post table should support Baseboard, Layovers, future Crew Picks
+  sourcing, and later restricted lounge content reads without making Home Base,
+  board follows, or self-declared profile fields authorization truth.
+- Open verified board reads may be available to authenticated users for
+  published board-level posts.
+- Restricted lounge post reads must remain membership-based through
+  `lounge_memberships`.
+- `operator_only` visibility should remain withheld from normal authenticated
+  readers.
+- T12 should keep writes closed unless a later narrow server mutation lane
+  proves safe.
+
+Important fields:
+
+- id
+- board_id
+- author_user_id
+- title
+- body
+- content_type
+- category
+- status
+- visibility
+- is_admin_seeded
+- is_pinned
+- edited_at
+- removed_at
+- removed_by
+- removal_reason
+- created_at
+- updated_at
+
+Relationships:
+
+- Belongs to Board.
+- Belongs to author User.
+- Later may have Comments, saves, reactions, reports, moderation actions, and
+  search indexing.
+- Later can supply Crew Picks and Seeded Layovers utility surfaces without
+  requiring a separate layover-only content primitive first.
 
 `lounge_memberships` stores approved/revoked membership for restricted lounge
 boards. Active membership is the T07 access truth for future restricted lounge

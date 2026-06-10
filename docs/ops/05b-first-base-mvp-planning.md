@@ -366,17 +366,19 @@ The current implementation sequence is:
 6. `FBMVP-T09` Start with DFW Home Base action
 7. `FBMVP-T10` DFW Hub section read-only route shells
 8. `FBMVP-T11` Seeded Layovers strategy and editorial model
+9. `FBMVP-T12` shared posts/threads foundation
 
-Post-T11 implementation sequencing remains under review.
+Post-T12 implementation sequencing remains under review.
 
 The next implementation lane should be selected after deciding whether to
-prioritize shared post/thread foundation or seeded Layovers implementation.
+prioritize comment/reply foundation, seeded Layovers implementation, or another
+narrow read-only surface on top of the shared post model.
 
 Recommended direction:
 
-- shared Baseboard post/thread foundation likely comes before seeded
-  Layover-specific implementation, because Layovers can reuse post/thread
-  primitives with content types and categories.
+- T12 should establish the shared Baseboard/Layovers post/thread data
+  foundation first, because Layovers can reuse the same content types and
+  categories instead of introducing a separate layover-specific primitive.
 
 ## 10. Authorization Rules To Preserve
 

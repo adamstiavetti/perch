@@ -188,3 +188,8 @@ Recommended direction:
 - Baseboard posts/thread foundation likely comes before seeded layover
   implementation, because Layovers can reuse the same post/thread foundation
   with content types and categories layered on top.
+
+Current repo note:
+
+- `FBMVP-T12` is the narrow lane that should add the shared `board_posts`
+  foundation before seeded layover-specific runtime content or UI.

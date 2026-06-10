@@ -78,6 +78,10 @@ Placeholder boundaries:
 The product/editorial definition for that future work is now locked in
 `docs/strategy/seeded-layovers-editorial-model.md`.
 
+The shared post/thread data foundation for future Baseboard and Layovers
+content should land in `FBMVP-T12` before this shell grows into real posting or
+seeded destination content.
+
 ### DFW Lounges
 
 Purpose:

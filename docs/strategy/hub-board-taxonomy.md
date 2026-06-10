@@ -206,6 +206,10 @@ request/review flows, or Crew Picks ranking.
 `FBMVP-T11` adds the canonical seeded Layovers editorial model without creating
 schema or content.
 
+`FBMVP-T12` should add the first shared post/thread foundation that Baseboard,
+Layovers, and later Crew Picks sourcing can reuse without introducing a
+separate layover-specific content primitive first.
+
 ## 8. Lounges
 
 Purpose:
