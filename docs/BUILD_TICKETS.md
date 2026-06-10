@@ -56,6 +56,7 @@ Supplemental epoch-specific ticket packs:
 - [FBMVP-T11 Seeded Layovers Strategy And Editorial Model](ops/fbmvp-t11-seeded-layovers-model.md) - docs-only product/editorial lock for Seeded Layovers before schema or content work, defining utility-first structure, safety rules, AI review boundaries, user-provided Tier 1 destinations, and the recommendation to reuse shared post/thread foundations before layover-specific content modeling.
 - [FBMVP-T12 Shared Posts/Threads Foundation](ops/fbmvp-t12-shared-post-thread-foundation.md) - shared `board_posts` schema foundation for Baseboard, Layovers, Crew Picks sourcing, and later access-aware lounge content, with constrained post metadata plus conservative authenticated read-only RLS and no comments, saves, reactions, search backend, moderation, seeded content, AI, or proof-upload scope.
 - [FBMVP-T12 Board Posts Runtime Pass](ops/fbmvp-t12-board-posts-runtime-pass.md) - records targeted runtime application of `20260610010000 create_board_posts_foundation` to the intended `jmpseat` Supabase project, confirms only T12 was recorded in migration history, preserves known migration drift handling, and verifies `board_posts` schema, RLS, and membership-aware read policies.
+- [FBMVP-T13 Server-Controlled Create Post Foundation](ops/fbmvp-t13-create-post-foundation.md) - local RPC foundation for creating `board_posts` through `public.create_board_post` on active open verified Baseboards, with authenticated/service-role execute only, forced safe post fields, no direct insert policies, no lounge/restricted posting, and no comments, saves, reactions, search backend, AI, seed content, proof-upload, or full posting UI scope.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
@@ -250,8 +251,9 @@ Current sequence:
 8. `FBMVP-T10` DFW Hub section read-only route shells
 9. `FBMVP-T11` Seeded Layovers strategy and editorial model
 10. `FBMVP-T12` shared post/thread foundation, merged and runtime-applied
+11. `FBMVP-T13` server-controlled create-post foundation, local migration only
 
-Post-T12 implementation sequencing remains under review.
+Post-T13 implementation sequencing remains under review.
 
 The next implementation lane should be selected after deciding whether to
 prioritize comment/reply foundation, seeded Layovers implementation, or another
@@ -266,6 +268,10 @@ Recommended direction:
 - The T12 runtime pass is recorded in
   `ops/fbmvp-t12-board-posts-runtime-pass.md`. Known Supabase
   migration-history drift remains and still blocks broad `supabase db push`.
+- T13 adds a local `create_board_post` RPC foundation for active open verified
+  Baseboards only. Runtime apply remains pending until separately approved.
+- T13 does not add comments, saves/reactions, search backend, AI moderation,
+  seeded layover content, lounge/restricted posting, or full posting UI.
 
 Do not let older broad V1/backlog sections below turn this into an unsequenced
 social feed or marketplace build. For the current lane, keep proof uploads,

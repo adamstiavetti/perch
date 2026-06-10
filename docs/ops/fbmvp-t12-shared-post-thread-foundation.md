@@ -24,6 +24,10 @@ Supabase project. The targeted runtime pass is recorded in
 `docs/ops/fbmvp-t12-board-posts-runtime-pass.md`. Known migration-history drift
 remains, so broad `supabase db push` remains unsafe.
 
+Follow-up: `FBMVP-T13` adds a server-controlled create-post RPC on top of this
+table for active open verified Baseboards only. Runtime apply for T13 is
+pending until separately approved.
+
 ## What T12 Adds
 
 New schema:

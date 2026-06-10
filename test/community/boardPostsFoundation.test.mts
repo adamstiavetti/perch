@@ -113,6 +113,10 @@ test("T12 docs describe board_posts as the shared primitive without overclaiming
     new URL("../../docs/ops/fbmvp-t12-shared-post-thread-foundation.md", import.meta.url),
     "utf8",
   );
+  const t12RuntimeDoc = readFileSync(
+    new URL("../../docs/ops/fbmvp-t12-board-posts-runtime-pass.md", import.meta.url),
+    "utf8",
+  );
   const docs = [
     "../../docs/BUILD_TICKETS.md",
     "../../docs/DATA_MODEL.md",
@@ -141,7 +145,10 @@ test("T12 docs describe board_posts as the shared primitive without overclaiming
   assert.match(t12OpsDoc, /Home Base does not grant restricted lounge access/i);
   assert.match(t12OpsDoc, /board follows do not grant restricted lounge access/i);
   assert.match(t12OpsDoc, /self-declared `claimed_airline`, `claimed_role`, and `claimed_base`/i);
+  assert.match(t12OpsDoc, /runtime-applied/i);
+  assert.match(t12OpsDoc, /fbmvp-t12-board-posts-runtime-pass\.md/i);
+  assert.match(t12RuntimeDoc, /20260610010000 create_board_posts_foundation/i);
 
-  assert.doesNotMatch(t12OpsDoc, /runtime-applied|runtime proof|runtime-proven|deployed/i);
-  assert.doesNotMatch(t12OpsDoc, /remote migration apply succeeded|applied successfully to/i);
+  assert.doesNotMatch(t12OpsDoc, /deployed/i);
+  assert.doesNotMatch(t12OpsDoc, /remote migration apply succeeded/i);
 });

@@ -210,6 +210,11 @@ schema or content.
 Layovers, and later Crew Picks sourcing can reuse without introducing a
 separate layover-specific content primitive first.
 
+`FBMVP-T13` adds the first server-controlled create-post RPC for active open
+verified Baseboards only. DFW Baseboard is the first intended consumer. It does
+not enable Layovers posting, lounge/restricted posting, comments, saves,
+reactions, search backend, AI moderation, seed content, or full posting UI.
+
 ## 8. Lounges
 
 Purpose:

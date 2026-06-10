@@ -72,6 +72,9 @@ Home Dashboard note:
   application of `20260610010000 create_board_posts_foundation`. Known
   Supabase migration-history drift remains, so broad `supabase db push` remains
   unsafe.
+- `ops/fbmvp-t13-create-post-foundation.md` adds the first local
+  server-controlled create-post RPC for active open verified Baseboards. Runtime
+  apply is pending until separately approved.
 
 ## Profile
 
@@ -412,6 +415,20 @@ Current T12 implementation direction:
   readers.
 - T12 should keep writes closed unless a later narrow server mutation lane
   proves safe.
+
+Current T13 implementation direction:
+
+- `FBMVP-T13` adds `public.create_board_post(...)` as the first narrow
+  server-controlled mutation path for `board_posts`.
+- The RPC is intended first for DFW Baseboard and active open verified
+  Baseboards.
+- It uses `auth.uid()` for `author_user_id`.
+- It forces `status = 'published'`, `visibility = 'board'`,
+  `is_admin_seeded = false`, and `is_pinned = false`.
+- It does not add direct insert policies, lounge/restricted posting, comments,
+  edits/deletes, saves, reactions, search backend, AI moderation, seed content,
+  or full posting UI.
+- Runtime apply is pending until separately approved.
 
 Important fields:
 

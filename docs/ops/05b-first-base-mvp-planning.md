@@ -367,8 +367,9 @@ The current implementation sequence is:
 7. `FBMVP-T10` DFW Hub section read-only route shells
 8. `FBMVP-T11` Seeded Layovers strategy and editorial model
 9. `FBMVP-T12` shared posts/threads foundation, merged and runtime-applied
+10. `FBMVP-T13` server-controlled create-post foundation, local migration only
 
-Post-T12 implementation sequencing remains under review.
+Post-T13 implementation sequencing remains under review.
 
 The next implementation lane should be selected after deciding whether to
 prioritize comment/reply foundation, seeded Layovers implementation, or another
@@ -386,6 +387,14 @@ Recommended direction:
   backend, AI, seeded layover runtime content, or Crew Picks ranking.
 - Known Supabase migration-history drift remains and still blocks broad
   `supabase db push`.
+- T13 adds `public.create_board_post(...)` as a server-controlled foundation for
+  active open verified Baseboards, with DFW Baseboard as the first intended
+  consumer.
+- T13 runtime apply is pending until separately approved.
+- T13 does not enable lounge/restricted posting, comments, edits/deletes,
+  saves/reactions, search backend, AI moderation, seed content, Crew Picks
+  ranking, or full posting UI.
+- Moderation/reporting remains required before broad beta posting expansion.
 
 ## 10. Authorization Rules To Preserve
 
