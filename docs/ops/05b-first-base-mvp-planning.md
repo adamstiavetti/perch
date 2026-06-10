@@ -366,7 +366,7 @@ The current implementation sequence is:
 6. `FBMVP-T09` Start with DFW Home Base action
 7. `FBMVP-T10` DFW Hub section read-only route shells
 8. `FBMVP-T11` Seeded Layovers strategy and editorial model
-9. `FBMVP-T12` shared posts/threads foundation
+9. `FBMVP-T12` shared posts/threads foundation, merged and runtime-applied
 
 Post-T12 implementation sequencing remains under review.
 
@@ -379,6 +379,13 @@ Recommended direction:
 - T12 should establish the shared Baseboard/Layovers post/thread data
   foundation first, because Layovers can reuse the same content types and
   categories instead of introducing a separate layover-specific primitive.
+- T12 is runtime-applied as `20260610010000 create_board_posts_foundation`. The
+  runtime pass is recorded in
+  `docs/ops/fbmvp-t12-board-posts-runtime-pass.md`.
+- T12 still does not implement posting UI, comments, saves, reactions, search
+  backend, AI, seeded layover runtime content, or Crew Picks ranking.
+- Known Supabase migration-history drift remains and still blocks broad
+  `supabase db push`.
 
 ## 10. Authorization Rules To Preserve
 

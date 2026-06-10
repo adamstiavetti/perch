@@ -65,9 +65,13 @@ Home Dashboard note:
   keeps Layovers utility-first and documents future content-type/category
   direction without creating schema in the current lane.
 - `ops/fbmvp-t12-shared-post-thread-foundation.md` is the next narrow schema
-  lane for shared board post/thread storage. It should add posts only, with no
+  lane for shared board post/thread storage. It adds posts only, with no
   comments, saves, reactions, search backend, moderation, or seeded layover
   runtime content in the same migration.
+- `ops/fbmvp-t12-board-posts-runtime-pass.md` records the targeted runtime
+  application of `20260610010000 create_board_posts_foundation`. Known
+  Supabase migration-history drift remains, so broad `supabase db push` remains
+  unsafe.
 
 ## Profile
 
@@ -393,7 +397,10 @@ Implemented T07 model concepts:
 Current T12 implementation direction:
 
 - `FBMVP-T12` is the first shared post/thread foundation lane.
-- It should add `board_posts` only.
+- It adds `board_posts` only and is runtime-applied in the intended Supabase
+  project.
+- The runtime pass is recorded in
+  `docs/ops/fbmvp-t12-board-posts-runtime-pass.md`.
 - The post table should support Baseboard, Layovers, future Crew Picks
   sourcing, and later restricted lounge content reads without making Home Base,
   board follows, or self-declared profile fields authorization truth.

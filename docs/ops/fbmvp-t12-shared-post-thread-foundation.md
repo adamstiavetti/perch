@@ -19,6 +19,11 @@ RLS. It does not implement posting UI, comment threads, saves, reactions,
 search backend, moderation workflows, Crew Picks ranking, seeded layover
 content, or AI behavior.
 
+Runtime status: T12 is merged and runtime-applied to the intended `jmpseat`
+Supabase project. The targeted runtime pass is recorded in
+`docs/ops/fbmvp-t12-board-posts-runtime-pass.md`. Known migration-history drift
+remains, so broad `supabase db push` remains unsafe.
+
 ## What T12 Adds
 
 New schema:
@@ -113,7 +118,6 @@ T12 does not add:
 - lounge request/review flows
 - Crew Lead panel functionality
 - AI-generated publishing
-- migrations applied to remote runtime in this repo task
 
 ## Validation
 
