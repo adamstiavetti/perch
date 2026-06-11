@@ -18,6 +18,7 @@ test("admin routes stay bounded to the admin shell", () => {
     reviewerScopes: "/app/admin/reviewer-scopes",
     auditInspection: "/app/admin/audit",
     proofCleanup: "/app/admin/proof-cleanup",
+    communityModeration: "/app/admin/community-moderation",
   });
   assert.equal(OPERATOR_GRANT_IMPLEMENTATION_STATUS, "implemented");
 });
@@ -73,10 +74,28 @@ test("/app/admin landing uses explicit operator grants for operator nav and avoi
   assert.match(source, /getCurrentVerificationReviewerAuthorizationContext/);
   assert.match(source, /getCurrentOperatorAccess/);
   assert.match(source, /buildAdminNavigation/);
+  assert.match(source, /export const dynamic = "force-dynamic"/);
   assert.match(source, /metadata-free/i);
   assert.doesNotMatch(source, /getCurrentVerificationReviewContext/);
   assert.doesNotMatch(source, /approved_email_domains/);
   assert.doesNotMatch(source, /signed_url|public_url|storage_path/i);
+});
+
+test("/app/admin landing blocks normal beta users without admin authorization", () => {
+  const source = readFileSync(
+    new URL("../../app/app/admin/page.tsx", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(source, /getPrivateAppGateResult/);
+  assert.match(source, /if \(gate\.kind === "redirect"\)\s*{\s*redirect\(gate\.path\);/s);
+  assert.match(
+    source,
+    /if \(!reviewerContext\.reviewerAuthorized && !operatorContext\.operatorGranted\)/,
+  );
+  assert.match(source, /operator_audit\.unauthorized_attempt/);
+  assert.match(source, /missing_admin_authorization/);
+  assert.match(source, /redirect\(AUTH_ROUTES\.accessRestricted\)/);
 });
 
 test("admin landing copy distinguishes operator grants from implemented-tool availability", () => {

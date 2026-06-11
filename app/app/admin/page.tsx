@@ -10,6 +10,7 @@ import {
   getCurrentOperatorAccess,
   OPERATOR_GRANT_IMPLEMENTATION_STATUS,
 } from "../../../src/lib/admin/access";
+import { AUTH_ROUTES } from "../../../src/lib/auth/routes";
 import { getCurrentAppAccessContext } from "../../../src/lib/betaAccess/server";
 import {
   getPrivateAccessSource,
@@ -21,6 +22,8 @@ import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
 import { getCurrentVerificationReviewerAuthorizationContext } from "../../../src/lib/verification/reviewServer";
 import styles from "./admin.module.css";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminHomePage() {
   const env = getSupabaseBrowserEnv();
@@ -75,6 +78,21 @@ export default async function AdminHomePage() {
     reviewerAuthorized: reviewerContext.reviewerAuthorized,
     operatorScopes: operatorContext.scopes,
   });
+
+  if (!reviewerContext.reviewerAuthorized && !operatorContext.operatorGranted) {
+    await recordSecurityEvent({
+      userId: appContext.user?.id,
+      eventType: "operator_audit.unauthorized_attempt",
+      route: ADMIN_ROUTES.home,
+      result: "denied",
+      metadata: {
+        reason_code: "missing_admin_authorization",
+        required_authorization: "reviewer_scope_or_operator_grant",
+      },
+    });
+    redirect(AUTH_ROUTES.accessRestricted);
+  }
+
   const implementedOperatorToolVisible = navigation.some(
     (item) => item.key !== "verification_review" && item.status === "available",
   );
