@@ -40,6 +40,10 @@ Current intent:
 - Public `jmpseat.com` does not expose a Beta Access button.
 - Public `jmpseat.com` does not expose a normal auth entry from the root
   waitlist page unless intentionally reintroduced later.
+- Public `jmpseat.com/app`, `www.jmpseat.com/app`, and public-domain
+  private-beta auth entry routes are blocked by a server-side host gate and
+  redirect to `/`; they must not expose the sign-in page or private-app entry
+  surface.
 - `beta.jmpseat.com` remains the private beta/auth/admin/operator access
   surface.
 - Private beta app gates remain unchanged.
@@ -50,6 +54,12 @@ This split keeps public marketing simple while preserving the stable beta
 runtime for account confirmation, login/signup, airline employee email
 verification, beta access, profile completion, admin/operator tools, and runtime
 validation.
+
+Longer term, the preferred deployment posture remains a clearer split between
+public marketing/waitlist and private beta app deployments, or at least
+separately configured Vercel deployments. The repo-level host gate is the
+emergency guardrail that prevents the public domain from exposing private-beta
+entry paths while that deployment split is planned.
 
 ## Public Waitlist Release Scope
 

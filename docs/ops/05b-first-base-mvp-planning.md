@@ -551,6 +551,17 @@ Recommended direction:
   docs review and commit. The next step after that commit should be an epoch
   closeout/readiness audit, not a new feature by default.
 
+Pre-closeout access-boundary patch: public `jmpseat.com` and `www.jmpseat.com`
+are marketing/waitlist-only. Public-domain `/app` and private-beta auth entry
+paths must redirect server-side to `/` and must not expose sign-in or
+private-app entry surfaces. Private app entry belongs on `beta.jmpseat.com`, and
+protected beta surfaces remain server-gated by auth, beta access, profile
+completion, verification state, and route-specific authorization. Do not resume
+the Baseboards pivot until this host-boundary patch is reviewed, committed,
+pushed, and any deployment/config follow-up is identified. Longer term, prefer
+separate Vercel projects/deployments, or at least separately configured
+deployments, for public marketing and private beta app surfaces.
+
 ## 10. Authorization Rules To Preserve
 
 - Self-declared profile fields must not become authorization truth.

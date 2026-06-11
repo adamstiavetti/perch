@@ -100,6 +100,14 @@ Supplemental epoch-specific ticket packs:
 - [Public Waitlist Root Cutover Runtime Pass](ops/public-waitlist-root-cutover-runtime-pass.md) - records the successful `jmpseat.com` apex cutover, root waitlist capture/survey runtime proof, beta preservation checks, social metadata proof, rollback plan, and the remaining `www` DNS follow-up.
 - [Public Waitlist Www Runtime Pass](ops/public-waitlist-www-runtime-pass.md) - records the successful `www.jmpseat.com` DNS/Vercel alias follow-up, public waitlist smoke test, apex preservation, beta preservation, and local resolver-cache caveat.
 - [Waitlist Duplicate Survey Token Fix](ops/waitlist-duplicate-survey-token-fix.md) - runtime-proven security hardening for preventing anonymous duplicate waitlist submissions from receiving an existing signup's survey token or editing another signup's optional survey answers.
+- Public-domain app access guard - urgent pre-closeout host-boundary patch:
+  `jmpseat.com` and `www.jmpseat.com` remain marketing/waitlist-only, public
+  `/app` and private-beta auth entry paths are redirected server-side to `/`,
+  and private app entry belongs on `beta.jmpseat.com` while protected beta
+  surfaces continue to require auth, beta access, profile completion,
+  verification state, and route-specific authorization. Longer term, prefer
+  separate Vercel projects/deployments, or at least separately configured
+  deployments, for public marketing and private beta app surfaces.
 - [Auth Email Branding / Confirmation Template Ops Plan](ops/auth-email-branding-confirmation-template-plan.md) - deferred TODO package for branded jmpseat auth-email polish, covering ownership split across already-working Supabase and repo-owned email flows, sender/domain requirements, callback/redirect expectations, template copy targets, manual dashboard/provider steps, and later validation if this trust/deliverability work is activated.
 - [Auth Design System Style Guide](ops/auth-design-system-style-guide.md) - defines the canonical auth visual system, current auth/onboarding surfaces, mobile fit rules, and deprecated auth UI patterns after the auth-flow redesign.
 - [Auth Design Overhaul Docs Audit](ops/auth-design-overhaul-docs-audit.md) - records which current docs were updated for the auth design overhaul and which older epoch/strategy docs remain historical.
@@ -149,6 +157,12 @@ Documentation hygiene reminder:
 - Current implementation work is paused for the product pivot. E05-T08 should not proceed until pivot planning is complete, and future tasks should not expand proof-upload verification unless explicitly instructed.
 - E05-T07 runtime proof is committed on `main`; if an older or parallel branch still has uncommitted E05-T07 runtime-proof docs, commit those before starting pivot planning.
 - Next implementation work should follow the post-E05 public waitlist launch lane in `ops/post-e05-public-waitlist-launch-plan.md`: keep first-party public waitlist capture Beta Access-free, keep `beta.jmpseat.com` as the private beta/auth/admin surface, preserve the future Expo/EAS native path, and use `ops/public-waitlist-launch-readiness-check.md`, `ops/public-waitlist-root-cutover-runtime-pass.md`, `ops/public-waitlist-www-runtime-pass.md`, and `ops/waitlist-duplicate-survey-token-fix.md` as the current W05 launch record. W05A addresses the prior metadata/legal/accessibility launch blockers in code, the public homepage and legal-copy polish are merged, root `jmpseat.com` now serves the public waitlist with runtime-proven capture and optional survey persistence, `www.jmpseat.com` now serves the same public waitlist experience, and duplicate survey-token hardening is migration-first deployed and runtime-proven. Tally is backup/research-only unless intentionally reintroduced later. `FBMVP-T01` through `FBMVP-T04`, auth design-system overhaul, founder/admin internal access, post-bootstrap operator grant management, app-generated work-email verification codes, account signup code confirmation, auth detour closeout, public waitlist runtime validation, waitlist dashboard runtime validation, and founder full-contact dashboard visual confirmation are already implemented or documented in their respective epoch/ops notes. `ops/auth-email-branding-confirmation-template-plan.md` remains the deferred Supabase Auth confirmation/reset branding TODO for trust/deliverability/polish; it is not an auth-flow implementation blocker. Content/moderation policy can still be refined before live community launch if needed.
+- Urgent access-boundary caveat before First Base closeout: public
+  `jmpseat.com` / `www.jmpseat.com` must stay marketing/waitlist-only, and
+  public-domain `/app` plus private-beta auth entry paths must be redirected
+  server-side instead of exposing the sign-in/private-app entry surface. Keep
+  `beta.jmpseat.com` as the private beta app/auth/admin host and keep all
+  protected app routes behind the existing server-side private-app gates.
 
 Scalability guardrail:
 
