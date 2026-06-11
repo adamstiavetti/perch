@@ -372,13 +372,17 @@ Current data model implication:
 - `board_posts.category` alone is too weak for real Channels because it does
   not provide channel names, slugs, descriptions, status, ordering, request
   lifecycle, or future channel-level routing/follow/access behavior.
-- `FBMVP-T25B` locally adds a controlled `hub_channel` board type and six DFW
-  child channel board seed rows under the existing DFW parent `base_board`.
+- `FBMVP-T25B` adds a controlled `hub_channel` board type and six DFW child
+  channel board seed rows under the existing DFW parent `base_board`.
   These are private-beta seed defaults, not final public-release taxonomy, and
   may change before release and before meaningful production UGC exists.
+- T25B is runtime-applied as
+  `20260611183000 create_hub_channel_board_type_dfw_seeds`. The runtime apply
+  used targeted SQL execution only and recorded exactly that ledger row. It did
+  not use broad database push, migration repair, deploy, or app code changes.
 - T25B does not add channel-aware RPCs, UI routes, post reads, composer,
-  comments, reports, moderation review changes, runtime apply, broad database
-  push, or deploy. Safe channel-aware RPCs such as
+  comments, reports, or moderation review changes. Safe channel-aware RPCs such
+  as
   `list_open_hub_channels`, `list_open_hub_channel_posts`,
   `create_open_hub_channel_post`, and `get_open_hub_channel_post` remain future
   work.
@@ -411,6 +415,10 @@ Current T25B DFW private-beta channel seed defaults:
 The earlier seven-channel seed list is superseded for T25B. `Base Life`, `Crew
 Tips`, and `App Feedback` are not seeded as DFW child channels in this
 metadata-only ticket.
+
+Runtime note: the six T25B child channel board rows now exist in the intended
+`jmpseat` Supabase runtime, but real Channels routes and channel-aware post
+RPCs are still incomplete.
 
 Layover section strategy:
 

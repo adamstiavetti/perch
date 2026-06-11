@@ -448,9 +448,18 @@ T25B local schema/seed foundation is recorded in
 `docs/ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds.md`. It adds only the
 `hub_channel` board type and six DFW child board seed rows under the existing
 DFW parent `base_board`. It does not add UI routes, post reads, composer
-behavior, comments, reports, moderation review changes, channel RPCs, runtime
-apply, broad database push, or deploy. DB/RPC-backed Channels remain incomplete
-until later channel-aware RPC and UI tickets.
+behavior, comments, reports, moderation review changes, channel RPCs, broad
+database push, or deploy. DB/RPC-backed Channels remain incomplete until later
+channel-aware RPC and UI tickets.
+
+T25B targeted runtime apply is recorded in
+`docs/ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds-runtime-apply.md`.
+The intended `jmpseat` Supabase runtime now has the `hub_channel` board type and
+six DFW child channel boards. The runtime apply used targeted SQL execution
+only, recorded exactly `20260611183000 create_hub_channel_board_type_dfw_seeds`,
+and did not use broad database push, deploy, or app code changes. The child
+channel boards are not yet surfaced by real channel routes or channel-aware post
+RPCs.
 
 Alternative implementation ticket:
 

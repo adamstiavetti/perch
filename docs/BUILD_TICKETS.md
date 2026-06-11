@@ -48,8 +48,13 @@ Current controlling docs for Hub work:
   `hub_channel` plus six DFW child board rows under the existing DFW parent
   `base_board`. These are private-beta seed defaults, not final release
   taxonomy. It adds no UI routes, channel RPCs, post reads, composer, comments,
-  reports, moderation review changes, runtime apply, broad database push, or
-  deploy.
+  reports, moderation review changes, broad database push, or deploy.
+- [FBMVP-T25B Hub Channel Board Type + DFW Seeds Runtime Apply](ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds-runtime-apply.md) - records targeted runtime
+  application of `20260611183000 create_hub_channel_board_type_dfw_seeds` to the
+  intended `jmpseat` Supabase project. The runtime now has the `hub_channel`
+  board type and six DFW child channel boards, with no UI routes, channel
+  post/list/create/detail RPCs, composer changes, comments, reports, moderation
+  review changes, broad database push, deploy, or app code changes.
 
 Wireframe source pack:
 
@@ -150,6 +155,10 @@ Supplemental epoch-specific ticket packs:
   board type and six DFW child board seed rows only. The seed list is a
   private-beta default that may change before public release; DB/RPC-backed
   Channels remain incomplete until later channel-aware RPC and UI tickets.
+- [FBMVP-T25B Hub Channel Board Type + DFW Seeds Runtime Apply](ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds-runtime-apply.md) - records the targeted runtime
+  apply pass for the T25B metadata foundation. Child channel boards now exist in
+  runtime but are not yet surfaced by real channel routes or channel-aware post
+  RPCs.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.

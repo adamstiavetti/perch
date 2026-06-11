@@ -8,8 +8,9 @@ Date: 2026-06-11
 It adds the `hub_channel` board type and seeds six DFW child board rows under
 the existing active DFW parent `base_board`.
 
-This is not a runtime smoke report and does not claim deployment or remote
-runtime apply. There is no runtime apply in T25B unless separately approved.
+This is not a runtime smoke report. The later targeted runtime apply is recorded
+separately in
+`docs/ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds-runtime-apply.md`.
 
 ## Scope
 
@@ -97,7 +98,6 @@ T25B does not add:
 - search, saves, reactions, media, live weather, or live traffic
 - standalone `channels` table
 - existing parent/baseboard post migration
-- runtime apply
 - broad `supabase db push`
 - deploy
 
@@ -124,5 +124,5 @@ npm run lint
 npm run build
 ```
 
-Runtime apply and browser smoke should be recorded separately only after an
-explicit targeted migration apply is approved and completed.
+The targeted runtime apply is recorded separately in
+`docs/ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds-runtime-apply.md`.
