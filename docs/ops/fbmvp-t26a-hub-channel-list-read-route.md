@@ -12,8 +12,8 @@ It adds:
 - a safe server helper for DFW channel metadata reads
 - a protected DFW Channels overview route at `/app/hubs/dfw/channels`
 
-This is not a runtime apply report. Runtime apply must be approved and recorded
-separately.
+Runtime apply is recorded separately in
+`docs/ops/fbmvp-t26a-hub-channel-list-read-route-runtime-apply.md`.
 
 ## RPC Scope
 
@@ -101,7 +101,6 @@ T26A does not add:
 - live weather or traffic
 - standalone `channels` table
 - parent-board post migration
-- runtime apply
 - broad `supabase db push`
 - deploy
 
@@ -121,6 +120,19 @@ evidence, proof-upload data, private storage paths, signed URLs, passenger
 private information, exact crew hotel exposure, security-sensitive procedures,
 company-confidential content, or live crew movement/location.
 
+## Runtime Apply
+
+T26A is runtime-applied as
+`20260611203000 create_hub_channel_list_read_rpc`. The apply used targeted SQL
+execution only, inserted the exact ledger row, and did not use broad
+`supabase db push`, migration repair, `apply_migration`, deploy, app code
+changes, staging, or commit.
+
+The runtime function now exists, but authenticated browser/route smoke is still
+pending unless separately verified. Channel post list/read/create behavior,
+composer behavior, comments, reports, moderation review changes, and
+request/create channel workflow remain future scoped work.
+
 ## Validation
 
 Planned local validation:
@@ -133,4 +145,3 @@ npm run typecheck
 npm run lint
 npm run build
 ```
-

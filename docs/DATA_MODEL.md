@@ -393,7 +393,13 @@ Current data model implication:
   verification fields, storage paths, signed URLs, posts, comments, or reports.
 - T26A does not add channel post list/read/create/detail behavior, composer,
   comments, reports, moderation review changes, request/create channel workflow,
-  runtime apply, broad database push, or deploy.
+  broad database push, or deploy.
+- T26A is runtime-applied as
+  `20260611203000 create_hub_channel_list_read_rpc`. The runtime apply used
+  targeted SQL execution only and recorded exactly that ledger row. It did not
+  use broad database push, migration repair, `apply_migration`, deploy, app code
+  changes, staging, or commit. Authenticated browser/route smoke remains pending
+  unless separately verified.
 - Future multi-airport channel expansion may need airport-prefixed slugs or a
   scoped uniqueness model because `boards.slug` is currently globally unique.
   Once meaningful user content exists in channel boards, slugs should be
@@ -425,12 +431,12 @@ Tips`, and `App Feedback` are not seeded as DFW child channels in this
 metadata-only ticket.
 
 Runtime note: the six T25B child channel board rows now exist in the intended
-`jmpseat` Supabase runtime, but real Channels routes and channel-aware post
-RPCs are still incomplete.
+`jmpseat` Supabase runtime. T26A adds the real Channels overview metadata route,
+but channel-aware post RPCs are still incomplete.
 
-T26A local implementation starts surfacing channel metadata through the real DFW
-Channels overview route, but channel posts and thread detail remain incomplete
-until later scoped tickets.
+T26A local implementation and targeted runtime apply start surfacing channel
+metadata through the real DFW Channels overview route, but channel posts and
+thread detail remain incomplete until later scoped tickets.
 
 Layover section strategy:
 

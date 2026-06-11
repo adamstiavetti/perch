@@ -353,7 +353,6 @@ be treated as stable unless redirects or aliases are explicitly planned.
 Later implementation should:
 
 - Add safe channel-aware RPCs later:
-  - `list_open_hub_channels(p_base_code)`
   - `list_open_hub_channel_posts(p_base_code, p_channel_slug, p_limit)`
   - `create_open_hub_channel_post(p_base_code, p_channel_slug, ...)`
   - `get_open_hub_channel_post(p_base_code, p_channel_slug, p_post_id)`
@@ -458,16 +457,25 @@ The intended `jmpseat` Supabase runtime now has the `hub_channel` board type and
 six DFW child channel boards. The runtime apply used targeted SQL execution
 only, recorded exactly `20260611183000 create_hub_channel_board_type_dfw_seeds`,
 and did not use broad database push, deploy, or app code changes. The child
-channel boards are not yet surfaced by real channel routes or channel-aware post
-RPCs.
+channel boards now have a real Channels overview metadata route from T26A, but
+channel-aware post RPCs remain future work.
 
 T26A local implementation is recorded in
 `docs/ops/fbmvp-t26a-hub-channel-list-read-route.md`. It adds a safe
 `public.list_open_hub_channels(p_base_code text)` metadata RPC, a server helper,
 and the protected `/app/hubs/dfw/channels` overview route. It does not add
 channel post list/read/create/detail behavior, composer behavior, comments,
-reports, moderation review changes, request/create channel workflow, runtime
-apply, broad database push, or deploy.
+reports, moderation review changes, request/create channel workflow, broad
+database push, or deploy.
+
+T26A targeted runtime apply is recorded in
+`docs/ops/fbmvp-t26a-hub-channel-list-read-route-runtime-apply.md`. Runtime now
+has `public.list_open_hub_channels(p_base_code text)`. The apply used targeted
+SQL execution only, inserted the exact ledger row
+`20260611203000 create_hub_channel_list_read_rpc`, and made no app code
+changes, no broad `supabase db push`, no migration repair, no `apply_migration`,
+and no deploy. Authenticated browser/route smoke remains pending unless
+separately verified.
 
 Alternative implementation ticket:
 
