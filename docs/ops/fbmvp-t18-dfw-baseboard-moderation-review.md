@@ -1,6 +1,6 @@
 # FBMVP-T18 DFW Baseboard Moderation Review
 
-Status: implemented locally, runtime-pending.
+Status: implemented, runtime-applied.
 
 `FBMVP-T18` adds the first app-level operator moderation review surface for
 reported DFW Baseboard posts. It uses the existing T16 report and hide/remove
@@ -26,7 +26,7 @@ Local migration:
 
 - `supabase/migrations/20260610235111_create_board_post_report_review_rpc.sql`
 
-Runtime ledger row expected after targeted apply:
+Runtime ledger row:
 
 - version: `20260610235111`
 - name: `create_board_post_report_review_rpc`
@@ -36,7 +36,8 @@ direct `board_posts` write policies, broad report policies, or RLS weakening.
 
 Known Supabase migration-history drift remains preserved.
 Broad Supabase `db push` remains unsafe.
-Use targeted runtime preflight/apply for T18.
+The targeted T18 runtime pass is recorded in
+`docs/ops/fbmvp-t18-dfw-baseboard-moderation-review-runtime-pass.md`.
 
 ## Report Review RPC
 
@@ -125,10 +126,22 @@ T18 preserves zero direct `board_posts` write policies.
 
 ## Runtime Status
 
-T18 is not runtime-applied yet. No T18 migration was applied during local
-implementation. No posts, reports, moderation records, comments, replies, saves,
-reactions, search indexes, or user/community content were created during local
-validation.
+T18 is runtime-applied as
+`20260610235111 create_board_post_report_review_rpc`. The runtime pass is
+recorded in
+`docs/ops/fbmvp-t18-dfw-baseboard-moderation-review-runtime-pass.md`.
 
-Next comments/replies milestone should wait until T18 is runtime-applied and
-documented.
+Runtime verification used only catalog/permission/count checks. The review RPC
+was not called for a content smoke test. No report details, post title, post
+body, author labels, reporter information, or runtime content was read or
+printed during runtime verification.
+
+Runtime count checks found `public.board_posts` count `1` and
+`public.board_post_reports` count `0`.
+
+No posts, reports, moderation records, comments, replies, saves, reactions,
+search indexes, or user/community content were created by the T18
+migration/apply.
+
+Next comments/replies milestone should wait until this T18 runtime-pass
+documentation is reviewed and committed.

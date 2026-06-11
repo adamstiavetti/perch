@@ -372,11 +372,10 @@ The current implementation sequence is:
 12. `FBMVP-T15` minimal DFW Baseboard post composer, merged and runtime-applied
 13. `FBMVP-T16` board post safety foundation, merged and runtime-applied
 14. `FBMVP-T17` DFW Baseboard post detail, merged and runtime-applied
-15. `FBMVP-T18` DFW Baseboard moderation review, implemented locally and runtime-pending
+15. `FBMVP-T18` DFW Baseboard moderation review, merged and runtime-applied
 
 Do not proceed to comments, saves/reactions, search, Crew Picks, or Layovers
-content until T18 is runtime-applied and its runtime-pass documentation is
-reviewed and committed.
+content until T18 runtime-pass documentation is reviewed and committed.
 
 Recommended direction:
 
@@ -463,8 +462,10 @@ Recommended direction:
   `public.board_post_reports` count was `0`. No posts, reports, moderation
   records, comments, replies, saves, reactions, search indexes, or
   user/community content were created by T17 migration/apply.
-- T18 is implemented locally and runtime-pending as
-  `20260610235111 create_board_post_report_review_rpc`. It adds an
+- T18 is runtime-applied as
+  `20260610235111 create_board_post_report_review_rpc`. The runtime pass is
+  recorded in
+  `docs/ops/fbmvp-t18-dfw-baseboard-moderation-review-runtime-pass.md`. It adds an
   operator-scoped DFW Baseboard moderation review route at
   `/app/admin/community-moderation`, app-side `operator.community_moderation`
   support, a safe report review RPC, and a server action that calls existing T16
@@ -475,7 +476,15 @@ Recommended direction:
 - T18 does not add comments/replies, saves/reactions, search backend, Crew
   Picks, Layovers, public sharing, appeal workflow, bans, AI moderation,
   proof-upload scope, comment moderation, deploy, runtime settings changes, or
-  content/report/moderation record creation during local validation.
+  content/report/moderation record creation during local validation or runtime
+  apply.
+- T18 runtime verification used catalog/permission/count checks only. The review
+  RPC was not called for content smoke, and no report details, post title, post
+  body, author labels, reporter information, or runtime content was read or
+  printed. `public.board_posts` count was `1`, and
+  `public.board_post_reports` count was `0`. No posts, reports, moderation
+  records, comments, replies, saves, reactions, search indexes, or
+  user/community content were created by T18 migration/apply.
 - Known Supabase migration-history drift remains and broad `supabase db push`
   remains unsafe.
 - Moderation/reporting remains required before broad beta posting expansion.
