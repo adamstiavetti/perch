@@ -372,10 +372,20 @@ Current data model implication:
 - `board_posts.category` alone is too weak for real Channels because it does
   not provide channel names, slugs, descriptions, status, ordering, request
   lifecycle, or future channel-level routing/follow/access behavior.
-- A future minimal Channels migration should add a controlled `hub_channel`
-  board type, seed DFW child channel boards, and add safe channel-aware RPCs
-  such as `list_open_hub_channels`, `list_open_hub_channel_posts`,
-  `create_open_hub_channel_post`, and `get_open_hub_channel_post`.
+- `FBMVP-T25B` locally adds a controlled `hub_channel` board type and six DFW
+  child channel board seed rows under the existing DFW parent `base_board`.
+  These are private-beta seed defaults, not final public-release taxonomy, and
+  may change before release and before meaningful production UGC exists.
+- T25B does not add channel-aware RPCs, UI routes, post reads, composer,
+  comments, reports, moderation review changes, runtime apply, broad database
+  push, or deploy. Safe channel-aware RPCs such as
+  `list_open_hub_channels`, `list_open_hub_channel_posts`,
+  `create_open_hub_channel_post`, and `get_open_hub_channel_post` remain future
+  work.
+- Future multi-airport channel expansion may need airport-prefixed slugs or a
+  scoped uniqueness model because `boards.slug` is currently globally unique.
+  Once meaningful user content exists in channel boards, slugs should be
+  treated as stable unless redirects or aliases are explicitly planned.
 - No real production UGC exists yet, so UGC data-loss is not a blocker for the
   choice of model. Table/RPC/database renames remain out of scope unless a
   separate refactor plans them.
@@ -389,15 +399,18 @@ DFW launch model:
 - Channels
 - Recent Useful Threads
 
-Default DFW Channels:
+Current T25B DFW private-beta channel seed defaults:
 
-- DFW Questions
+- DFW Q&A
 - Commuting & Parking
-- Food & Coffee
+- Terminal & Ground Logistics
+- Food, Coffee & Breaks
 - New to DFW
-- Base Life
-- Crew Tips
-- App Feedback
+- DFW Layover & Local
+
+The earlier seven-channel seed list is superseded for T25B. `Base Life`, `Crew
+Tips`, and `App Feedback` are not seeded as DFW child channels in this
+metadata-only ticket.
 
 Layover section strategy:
 

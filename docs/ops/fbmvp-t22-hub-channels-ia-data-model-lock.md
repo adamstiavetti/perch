@@ -111,7 +111,7 @@ When the implementation lane starts, prefer a minimal migration that reuses
 - Keep report and moderation storage/RPCs aligned with existing post/comment
   primitives.
 
-Default DFW child channel board slugs:
+Original DFW child channel board slugs considered in T22:
 
 - `dfw-questions`
 - `commuting-parking`
@@ -121,7 +121,7 @@ Default DFW child channel board slugs:
 - `crew-tips`
 - `app-feedback`
 
-Default DFW product-facing channel names:
+Original DFW product-facing channel names considered in T22:
 
 - DFW Questions
 - Commuting & Parking
@@ -130,6 +130,19 @@ Default DFW product-facing channel names:
 - Base Life
 - Crew Tips
 - App Feedback
+
+T25B supersedes that original seed list with six private-beta defaults:
+
+- `dfw-q-and-a` - DFW Q&A
+- `commuting-parking` - Commuting & Parking
+- `terminal-ground-logistics` - Terminal & Ground Logistics
+- `food-coffee-breaks` - Food, Coffee & Breaks
+- `new-to-dfw` - New to DFW
+- `dfw-layover-local` - DFW Layover & Local
+
+These T25B channels are not final public-release taxonomy and may change before
+release and before meaningful production UGC exists. `base-life`, `crew-tips`,
+and `app-feedback` are not seeded as DFW child channels in T25B.
 
 ## Future Channel-Aware RPCs
 
@@ -218,15 +231,14 @@ Product language:
 - Recent Useful Threads
 - Request a Channel inside Channels
 
-DFW default Channels:
+T25B DFW private-beta channel seed defaults:
 
-- DFW Questions
+- DFW Q&A
 - Commuting & Parking
-- Food & Coffee
+- Terminal & Ground Logistics
+- Food, Coffee & Breaks
 - New to DFW
-- Base Life
-- Crew Tips
-- App Feedback
+- DFW Layover & Local
 
 Known UX debt from T21:
 

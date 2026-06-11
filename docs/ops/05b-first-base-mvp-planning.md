@@ -124,10 +124,19 @@ T24A deployed beta/manual browser smoke is recorded in
 passed with non-blocking visual polish. No functionality blocker was observed,
 and no further T24A implementation patch is required before moving forward.
 
+T25B local schema/seed foundation is recorded in
+`docs/ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds.md`. It adds only the
+`hub_channel` board type and six DFW child board seed rows under the existing
+DFW parent `base_board`. These channels are private-beta seed defaults and may
+change before public release or meaningful production UGC. T25B does not add UI
+routes, post reads, composer behavior, comments, reports, moderation review
+changes, channel RPCs, runtime apply, broad database push, or deploy.
+
 Wireframe agents should use the current product language `[AIRPORT] Hub`,
 `[AIRPORT] Today`, Base, Layover, Channels, Recent Useful Threads, and Request
-a Channel inside Channels. DFW default Channels are DFW Questions, Commuting &
-Parking, Food & Coffee, New to DFW, Base Life, Crew Tips, and App Feedback.
+a Channel inside Channels. Current DFW private-beta channel seed defaults are
+DFW Q&A, Commuting & Parking, Terminal & Ground Logistics, Food, Coffee &
+Breaks, New to DFW, and DFW Layover & Local.
 Do not design around real UGC yet; none exists in production.
 
 Use `docs/strategy/hub-board-taxonomy.md` as historical/canonical background for
@@ -448,6 +457,9 @@ The current implementation sequence is:
     no migration, runtime mutation, deploy, or DB/RPC-backed Channels
 23. `FBMVP-T24A` deployed beta/manual browser smoke, passed with non-blocking
     visual polish and no functionality blocker
+24. `FBMVP-T25B` local `hub_channel` board type plus six DFW child board seed
+    rows, with no channel RPCs, UI routes, runtime apply, broad database push,
+    or deploy
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.
@@ -478,8 +490,9 @@ Channel maps to child `public.boards` rows under the DFW base board, Thread
 maps to `public.board_posts`, Comments map to `public.board_post_comments`, and
 reports/moderation continue to use the existing post/comment primitives.
 `board_posts.category` alone is too weak for real Channels. Future DB/RPC work
-should add a `hub_channel` board type, seed DFW child channel boards, and add
-channel-aware safe RPCs rather than creating a standalone `channels` table now.
+T25B locally adds the `hub_channel` board type and six DFW child channel board
+seeds only. Channel-aware safe RPCs should follow in later tickets rather than
+creating a standalone `channels` table now.
 The recommended next ticket is `FBMVP-T23A: DFW Hub Channels UX Wireframe`
 before DB implementation unless there is a strong reason to proceed directly to
 `FBMVP-T23: DFW Hub Channels Foundation`.

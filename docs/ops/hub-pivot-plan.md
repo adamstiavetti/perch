@@ -39,8 +39,9 @@ Wireframe source pack:
 
 - Product language: `[AIRPORT] Hub`, `[AIRPORT] Today`, Base, Layover,
   Channels, Recent Useful Threads, and Request a Channel inside Channels.
-- DFW default Channels: DFW Questions, Commuting & Parking, Food & Coffee, New
-  to DFW, Base Life, Crew Tips, and App Feedback.
+- DFW private-beta channel seed defaults after T25B: DFW Q&A, Commuting &
+  Parking, Terminal & Ground Logistics, Food, Coffee & Breaks, New to DFW, and
+  DFW Layover & Local.
 - Known UX debt: placeholder-heavy shell, card stacking needs polish, Channels
   needs thread creation/reading/reply hierarchy, and Request a Channel should
   become a secondary action.
@@ -156,15 +157,18 @@ The DFW private beta should default to:
     - includes an in-section `Request a Channel` action/button
   - `Recent Useful Threads`
 
-Default DFW Channels:
+Current DFW private-beta channel seed defaults:
 
-- `DFW Questions`
+- `DFW Q&A`
 - `Commuting & Parking`
-- `Food & Coffee`
+- `Terminal & Ground Logistics`
+- `Food, Coffee & Breaks`
 - `New to DFW`
-- `Base Life`
-- `Crew Tips`
-- `App Feedback`
+- `DFW Layover & Local`
+
+The original seven-channel seed list is superseded for T25B. `Base Life`,
+`Crew Tips`, and `App Feedback` are not seeded as DFW child channels in this
+ticket.
 
 ## Section Model
 
@@ -329,17 +333,25 @@ must not be weakened.
   channel routing/posting will need channel-aware wrappers/RPCs later.
 - `board_posts.category` alone is too weak for real Channels.
 
-Recommended future minimal implementation:
+T25B local schema/seed foundation:
 
 - Add a `hub_channel` board type.
-- Seed DFW child channel boards:
-  - `dfw-questions`
+- Seed six DFW private-beta child channel boards:
+  - `dfw-q-and-a`
   - `commuting-parking`
-  - `food-coffee`
+  - `terminal-ground-logistics`
+  - `food-coffee-breaks`
   - `new-to-dfw`
-  - `base-life`
-  - `crew-tips`
-  - `app-feedback`
+  - `dfw-layover-local`
+
+These channels are private-beta seed defaults, not final public-release
+taxonomy. Names, descriptions, slugs, sort order, active/hidden status, and the
+number of channels may change before release and before meaningful production
+UGC exists. Once meaningful user content exists in channel boards, slugs should
+be treated as stable unless redirects or aliases are explicitly planned.
+
+Later implementation should:
+
 - Add safe channel-aware RPCs later:
   - `list_open_hub_channels(p_base_code)`
   - `list_open_hub_channel_posts(p_base_code, p_channel_slug, p_limit)`
@@ -431,6 +443,14 @@ T24A deployed beta/manual browser smoke is recorded in
 `12df45b feat: refresh home and dfw hub surfaces`. Decision: runtime smoke
 passed with non-blocking visual polish. No functionality blocker was observed,
 and no further T24A implementation patch is required before moving forward.
+
+T25B local schema/seed foundation is recorded in
+`docs/ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds.md`. It adds only the
+`hub_channel` board type and six DFW child board seed rows under the existing
+DFW parent `base_board`. It does not add UI routes, post reads, composer
+behavior, comments, reports, moderation review changes, channel RPCs, runtime
+apply, broad database push, or deploy. DB/RPC-backed Channels remain incomplete
+until later channel-aware RPC and UI tickets.
 
 Alternative implementation ticket:
 

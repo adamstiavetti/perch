@@ -44,13 +44,21 @@ Current controlling docs for Hub work:
   Decision: runtime smoke passed with non-blocking visual polish, no
   functionality blocker, and no need for further T24A implementation patches
   before moving forward.
+- [FBMVP-T25B Hub Channel Board Type + DFW Seeds](ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds.md) - local schema/seed foundation for
+  `hub_channel` plus six DFW child board rows under the existing DFW parent
+  `base_board`. These are private-beta seed defaults, not final release
+  taxonomy. It adds no UI routes, channel RPCs, post reads, composer, comments,
+  reports, moderation review changes, runtime apply, broad database push, or
+  deploy.
 
 Wireframe source pack:
 
 - Current product language: `[AIRPORT] Hub`, `[AIRPORT] Today`, Base, Layover,
   Channels, Recent Useful Threads, and Request a Channel inside Channels.
-- DFW default Channels: DFW Questions, Commuting & Parking, Food & Coffee, New
-  to DFW, Base Life, Crew Tips, and App Feedback.
+- DFW private-beta channel seed defaults: DFW Q&A, Commuting & Parking,
+  Terminal & Ground Logistics, Food, Coffee & Breaks, New to DFW, and DFW
+  Layover & Local. This taxonomy may change before release and before
+  meaningful production UGC exists.
 - Current UX debt: placeholder-heavy shell, card stacking needs polish,
   Channels needs thread creation/reading/reply hierarchy, and Request a Channel
   should become a secondary action.
@@ -138,6 +146,10 @@ Supplemental epoch-specific ticket packs:
   It records that the UI still needs visual polish, but no functionality
   blocker was observed and the build path should move forward instead of
   continuing to polish this slice.
+- [FBMVP-T25B Hub Channel Board Type + DFW Seeds](ops/fbmvp-t25b-hub-channel-board-type-dfw-seeds.md) - locally adds the `hub_channel`
+  board type and six DFW child board seed rows only. The seed list is a
+  private-beta default that may change before public release; DB/RPC-backed
+  Channels remain incomplete until later channel-aware RPC and UI tickets.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
