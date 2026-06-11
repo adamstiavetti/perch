@@ -1,6 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  DFW_BASEBOARD_COMMENT_CREATED_STATUS,
+  DFW_BASEBOARD_COMMENT_FAILED_STATUS,
+  DFW_BASEBOARD_COMMENT_INVALID_STATUS,
+  type DfwBaseboardCommentStatus,
+} from "../../lib/community/boardPostCommentActionState";
+import type { BaseboardPostComment } from "../../lib/community/boardPostComments";
+import {
   DFW_BASEBOARD_POST_CREATED_STATUS,
   DFW_BASEBOARD_POST_FAILED_STATUS,
   DFW_BASEBOARD_POST_INVALID_STATUS,
@@ -60,6 +67,10 @@ type DfwBaseboardPostDetailShellProps = {
   postUnavailable?: boolean;
   reportStatus?: DfwBaseboardReportStatus | null;
   reportAction?: (formData: FormData) => Promise<void>;
+  comments?: readonly BaseboardPostComment[];
+  commentsUnavailable?: boolean;
+  commentStatus?: DfwBaseboardCommentStatus | null;
+  createCommentAction?: (formData: FormData) => Promise<void>;
 };
 
 type QuickAction = {
@@ -636,6 +647,18 @@ function getDfwBaseboardReportStatusMessage(
         : null;
 }
 
+function getDfwBaseboardCommentStatusMessage(
+  commentStatus: DfwBaseboardCommentStatus | null,
+) {
+  return commentStatus === DFW_BASEBOARD_COMMENT_CREATED_STATUS
+    ? "Your comment is live."
+    : commentStatus === DFW_BASEBOARD_COMMENT_INVALID_STATUS
+      ? "Add a comment before posting. Comments can be up to 2,000 characters."
+      : commentStatus === DFW_BASEBOARD_COMMENT_FAILED_STATUS
+        ? "jmpseat could not publish that comment right now. Try again in a moment."
+        : null;
+}
+
 function DfwBaseboardReportForm({
   postId,
   reportAction,
@@ -825,9 +848,16 @@ export function DfwBaseboardPostDetailShell({
   postUnavailable = false,
   reportStatus = null,
   reportAction,
+  comments = [],
+  commentsUnavailable = false,
+  commentStatus = null,
+  createCommentAction,
 }: DfwBaseboardPostDetailShellProps) {
   const reportStatusMessage = getDfwBaseboardReportStatusMessage(reportStatus);
   const isReportSuccessStatus = reportStatus === DFW_BASEBOARD_REPORT_REPORTED_STATUS;
+  const commentStatusMessage = getDfwBaseboardCommentStatusMessage(commentStatus);
+  const isCommentSuccessStatus =
+    commentStatus === DFW_BASEBOARD_COMMENT_CREATED_STATUS;
 
   return (
     <main className={styles.shell}>
@@ -880,8 +910,9 @@ export function DfwBaseboardPostDetailShell({
                 <p className={styles.mutedNote}>Updated {formatPostDate(post.updatedAt)}</p>
               ) : null}
               <p className={styles.mutedNote}>
-                This detail view is read-only except reporting. Comments, replies,
-                saves, reactions, search, and public sharing are not live.
+                This detail view supports top-level comments and reporting.
+                Nested replies, saves, reactions, search, and public sharing are
+                not live.
               </p>
               <DfwBaseboardReportForm postId={post.id} reportAction={reportAction} />
             </article>
@@ -896,8 +927,111 @@ export function DfwBaseboardPostDetailShell({
             </article>
           )}
         </section>
+
+        {post && !postUnavailable ? (
+          <DfwBaseboardCommentsSection
+            commentStatusMessage={commentStatusMessage}
+            comments={comments}
+            createCommentAction={createCommentAction}
+            isCommentSuccessStatus={isCommentSuccessStatus}
+            postId={post.id}
+            unavailable={commentsUnavailable}
+          />
+        ) : null}
       </div>
     </main>
+  );
+}
+
+function DfwBaseboardCommentsSection({
+  comments,
+  unavailable,
+  postId,
+  createCommentAction,
+  commentStatusMessage,
+  isCommentSuccessStatus,
+}: {
+  comments: readonly BaseboardPostComment[];
+  unavailable: boolean;
+  postId: string;
+  createCommentAction?: (formData: FormData) => Promise<void>;
+  commentStatusMessage: string | null;
+  isCommentSuccessStatus: boolean;
+}) {
+  return (
+    <section className={styles.commentsSection} aria-labelledby="baseboard-comments-title">
+      <div className={styles.sectionTitleRow}>
+        <div>
+          <h2 id="baseboard-comments-title">Comments</h2>
+          <p>Top-level comments only. Reporting for comments is not live.</p>
+        </div>
+      </div>
+
+      {commentStatusMessage ? (
+        <p
+          className={isCommentSuccessStatus ? styles.actionSuccess : styles.actionFeedback}
+          role="status"
+        >
+          {commentStatusMessage}
+        </p>
+      ) : null}
+
+      {createCommentAction ? (
+        <form
+          action={createCommentAction}
+          aria-labelledby="baseboard-comment-composer-title"
+          className={styles.commentComposer}
+        >
+          <input name="postId" type="hidden" value={postId} />
+          <label className={styles.composerField}>
+            <span id="baseboard-comment-composer-title">Post a comment</span>
+            <textarea
+              maxLength={2000}
+              name="commentBody"
+              placeholder="Add a useful top-level comment."
+              required
+              rows={4}
+            />
+          </label>
+          <button className={styles.composerSubmit} type="submit">
+            Publish comment
+          </button>
+        </form>
+      ) : null}
+
+      {unavailable ? (
+        <p className={styles.actionFeedback}>
+          DFW Baseboard comments are unavailable right now.
+        </p>
+      ) : null}
+
+      {comments.length > 0 ? (
+        <div className={styles.commentList}>
+          {comments.map((comment) => (
+            <article className={styles.commentCard} key={comment.id}>
+              <div className={styles.postHeader}>
+                <span className={styles.cardMeta}>{comment.authorLabel}</span>
+                <span className={styles.postDate}>
+                  {formatPostDate(comment.createdAt)}
+                </span>
+              </div>
+              <p>{comment.body}</p>
+              {comment.updatedAt !== comment.createdAt ? (
+                <p className={styles.mutedNote}>
+                  Updated {formatPostDate(comment.updatedAt)}
+                </p>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <article className={styles.postEmptyState}>
+          <span className={styles.cardMeta}>No comments yet</span>
+          <h3>No comments yet.</h3>
+          <p>Top-level comments on this DFW Baseboard post will appear here.</p>
+        </article>
+      )}
+    </section>
   );
 }
 

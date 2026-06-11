@@ -625,6 +625,41 @@ Current T18 runtime state:
 - The next comments/replies milestone should wait until T18 runtime-pass
   documentation is reviewed and committed.
 
+Current T19 local state:
+
+- `FBMVP-T19` is implemented locally and runtime-pending as
+  `20260611001000 create_board_post_comments_foundation`.
+- It adds `public.board_post_comments` for top-level DFW Baseboard post detail
+  comments.
+- It adds safe read/create RPCs:
+  `public.list_open_baseboard_post_comments(...)` and
+  `public.create_open_baseboard_post_comment(...)`.
+- It adds `public.moderate_open_baseboard_post_comment(...)` for
+  operator-scoped hide/remove comment safety through
+  `operator.community_moderation`.
+- It adds a server-side operator-scoped comment moderation action that wraps
+  `public.moderate_open_baseboard_post_comment(...)`, uses `p_base_code = "DFW"`,
+  validates comment UUID plus `hide`/`remove` and bounded reason, records a
+  security event without exposing post/comment content, and revalidates only safe
+  relevant routes.
+- T19 comment creation uses T13-equivalent contribution eligibility, not auth
+  alone and not read access alone.
+- T19 preserves zero direct `board_posts` write policies and avoids direct
+  anon/authenticated comment table writes.
+- T19 comment reads expose only safe comment fields and safe author labels. They
+  do not expose author IDs, emails, claimed fields, verification/proof data,
+  reporter identity, signed URLs, private paths, removal fields, or moderation
+  metadata.
+- T19 does not add nested replies, comment reporting, comment moderation review
+  UI, a comment moderation queue, saves, reactions, search backend, Crew Picks,
+  Layovers, public sharing, lounge/restricted posting, media, AI moderation,
+  bans, appeals, or proof-upload scope.
+- Known Supabase migration-history drift remains, so broad `supabase db push`
+  remains unsafe. Targeted runtime preflight/apply is required before T19 can be
+  marked runtime-applied.
+- T20 should likely be comment reporting/moderation review integration after T19
+  is runtime-applied and documented.
+
 Important fields:
 
 - id

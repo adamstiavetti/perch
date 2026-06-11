@@ -1,6 +1,12 @@
 import {
   DfwBaseboardPostDetailShell,
 } from "../../../../../../src/components/privateApp/HomeHubShell";
+import {
+  DFW_BASEBOARD_COMMENT_STATUS_PARAM,
+  isDfwBaseboardCommentStatus,
+} from "../../../../../../src/lib/community/boardPostCommentActionState";
+import { createDfwBaseboardPostCommentAction } from "../../../../../../src/lib/community/boardPostCommentActions";
+import { listDfwBaseboardPostComments } from "../../../../../../src/lib/community/boardPostComments";
 import { getDfwBaseboardPost } from "../../../../../../src/lib/community/boardPostReads";
 import {
   DFW_BASEBOARD_REPORT_STATUS_PARAM,
@@ -34,10 +40,19 @@ export default async function DfwBaseboardPostDetailPage({
   const reportStatus = isDfwBaseboardReportStatus(reportStatusValue)
     ? reportStatusValue
     : null;
+  const commentStatusValue = query[DFW_BASEBOARD_COMMENT_STATUS_PARAM];
+  const commentStatus = isDfwBaseboardCommentStatus(commentStatusValue)
+    ? commentStatusValue
+    : null;
   const postResult = await getDfwBaseboardPost(postId);
+  const commentResult = await listDfwBaseboardPostComments(postId);
 
   return (
     <DfwBaseboardPostDetailShell
+      commentStatus={commentStatus}
+      comments={commentResult.comments}
+      commentsUnavailable={Boolean(commentResult.error)}
+      createCommentAction={createDfwBaseboardPostCommentAction}
       post={postResult.post}
       postUnavailable={Boolean(postResult.error)}
       reportAction={reportDfwBaseboardPostAction}

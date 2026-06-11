@@ -373,6 +373,7 @@ The current implementation sequence is:
 13. `FBMVP-T16` board post safety foundation, merged and runtime-applied
 14. `FBMVP-T17` DFW Baseboard post detail, merged and runtime-applied
 15. `FBMVP-T18` DFW Baseboard moderation review, merged and runtime-applied
+16. `FBMVP-T19` DFW Baseboard comments foundation, implemented locally and runtime-pending
 
 Do not proceed to comments, saves/reactions, search, Crew Picks, or Layovers
 content until T18 runtime-pass documentation is reviewed and committed.
@@ -488,6 +489,31 @@ Recommended direction:
 - Known Supabase migration-history drift remains and broad `supabase db push`
   remains unsafe.
 - Moderation/reporting remains required before broad beta posting expansion.
+- T19 is implemented locally and runtime-pending as
+  `20260611001000 create_board_post_comments_foundation`. It adds top-level DFW
+  Baseboard comments on post detail through safe read/create RPCs and an
+  operator-scoped comment hide/remove RPC for comment safety.
+- T19 includes a server-side operator-scoped comment moderation action that wraps
+  `public.moderate_open_baseboard_post_comment(...)`, uses `p_base_code = "DFW"`,
+  requires `operator.community_moderation`, validates comment UUID plus
+  `hide`/`remove` and bounded reason, records a security event without exposing
+  post/comment content, and revalidates only safe relevant routes.
+- T19 preserves the private DFW route gate, requires T13-equivalent contribution
+  eligibility for comment creation, preserves zero direct `board_posts` write
+  policies, and avoids direct anon/authenticated comment table writes.
+- T19 does not expose author IDs, emails, claimed fields, verification/proof
+  data, reporter identity, signed URLs, private paths, removal fields, or
+  moderation metadata through comment reads.
+- T19 does not add nested replies, comment reporting, comment moderation review
+  UI, a comment moderation queue, saves/reactions, search backend, Crew Picks,
+  Layovers, public sharing, lounge/restricted posting, media, AI moderation,
+  bans, appeals, proof-upload scope, deploy, runtime settings changes, or
+  content/comment/moderation record creation during local validation.
+- Broad Supabase `db push` remains unsafe due known migration drift. Targeted
+  runtime preflight/apply is required before T19 can be marked
+  runtime-applied.
+- T20 should likely be comment reporting/moderation review integration after T19
+  is runtime-applied and documented.
 
 ## 10. Authorization Rules To Preserve
 

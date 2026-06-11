@@ -65,7 +65,7 @@ test("T18 docs preserve moderation scope and out-of-scope boundaries", () => {
     "utf8",
   );
 
-  assert.match(docsSource, /runtime-pending/i);
+  assert.match(docsSource, /runtime-applied/i);
   assert.match(docsSource, /operator\.community_moderation/i);
   assert.match(docsSource, /hide\/remove/i);
   assert.match(docsSource, /zero direct `board_posts` write policies/i);

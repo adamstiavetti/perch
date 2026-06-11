@@ -555,12 +555,14 @@
 
 .crewPickList,
 .surfaceGrid,
-.postList {
+.postList,
+.commentList {
   display: grid;
   gap: 0.72rem;
 }
 
-.baseboardComposer {
+.baseboardComposer,
+.commentComposer {
   display: grid;
   gap: 0.72rem;
   margin-bottom: 0.85rem;
@@ -698,7 +700,8 @@
 .compactCard,
 .surfaceCard,
 .postCard,
-.postEmptyState {
+.postEmptyState,
+.commentCard {
   border: 1px solid rgba(217, 225, 236, 0.95);
   border-radius: var(--app-radius);
   padding: 0.88rem;
@@ -752,7 +755,8 @@ a.surfaceCard:hover {
 }
 
 .postCard p,
-.postEmptyState p {
+.postEmptyState p,
+.commentCard p {
   margin: 0.5rem 0 0;
   color: var(--app-text-muted);
   font-size: 0.84rem;
@@ -785,10 +789,19 @@ a.surfaceCard:hover {
   background: var(--app-white);
 }
 
-.postDetailSurface {
+.postDetailSurface,
+.commentsSection {
   display: grid;
   gap: 0.82rem;
   margin-top: 1rem;
+}
+
+.commentsSection {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  padding: 1rem;
+  background: var(--app-white);
+  box-shadow: 0 0.9rem 2.2rem rgba(15, 23, 42, 0.07);
 }
 
 .inlineBackLink {

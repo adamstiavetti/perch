@@ -255,7 +255,7 @@ test("DFW Baseboard post rendering stays safe and avoids out-of-scope surfaces",
   assert.doesNotMatch(combined, /createBrowserClient|service_role|\.insert\(|\.update\(|\.delete\(/);
 });
 
-test("DFW Baseboard detail route is private gated and read-only", () => {
+test("DFW Baseboard detail route is private gated and server-action scoped", () => {
   assert.match(dfwBaseboardDetailRouteSource, /dynamic = "force-dynamic"/);
   assert.match(dfwBaseboardDetailRouteSource, /requireDfwHubRouteAccess/);
   assert.match(dfwBaseboardDetailRouteSource, /await requireDfwHubRouteAccess[\s\S]*await getDfwBaseboardPost/s);
@@ -271,7 +271,8 @@ test("DFW Baseboard list cards link to private post detail", () => {
   assert.match(shellSource, /href=\{getDfwBaseboardPostHref\(post\.id\)\}/);
   assert.match(shellSource, /DfwBaseboardPostDetailShell/);
   assert.match(shellSource, /Back to DFW Baseboard/);
-  assert.match(shellSource, /This detail view is read-only except reporting/);
+  assert.match(shellSource, /supports top-level comments and reporting/);
+  assert.match(shellSource, /Nested replies, saves, reactions, search, and public sharing/);
   assert.match(shellSource, /Report this post/);
   assert.doesNotMatch(shellSource, /share button|copy link|public URL|external post/i);
 });
