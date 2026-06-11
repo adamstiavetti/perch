@@ -295,6 +295,12 @@ Recommended next ticket:
 Status: implemented locally in the product shell. This ticket is UI/product
 framing only and does not require a runtime migration.
 
+Runtime smoke: manual beta UI smoke passed for commit
+`8abf799 feat: reframe dfw surface as hub`. The smoke confirmed DFW Hub, DFW
+Today, Base, Layover, Channels, Request a Channel inside Channels, and Recent
+Useful Threads render. The surface still has expected UX debt and should not be
+treated as final Hub UX completion.
+
 Scope:
 
 - Convert DFW Baseboard product framing to the DFW Hub shell.
@@ -330,3 +336,15 @@ Implementation note:
   `Recent Useful Threads`.
 - The existing `/app/hubs/dfw/lounges` route remains preserved as a restricted
   membership-gated route, but it is not part of the open Hub section model.
+
+Runtime-smoke follow-up:
+
+- `Request a Channel` is currently too visually prominent and should become a
+  lower-priority secondary action inside Channels.
+- The shell remains placeholder-heavy and card stacking needs polish.
+- Channels should later be restructured around common thread creation, reading,
+  replies, and eventual reaction/signal patterns.
+- Existing test/seed post content is not real production UGC and is not a
+  data-migration blocker.
+- Do not start free channel creation, media/photo uploads, or live
+  weather/traffic integrations without separate scope.

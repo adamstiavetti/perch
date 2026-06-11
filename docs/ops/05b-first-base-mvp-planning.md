@@ -406,6 +406,14 @@ internal Baseboard route, RPC, helper, and table names remain in place while the
 user-facing DFW Hub shell presents DFW Today, Base, Layover, Channels, Request a
 Channel inside Channels, and Recent Useful Threads.
 
+T21 post-deploy manual beta UI smoke passed for commit
+`8abf799 feat: reframe dfw surface as hub`: DFW Hub, DFW Today, Base, Layover,
+Channels, Request a Channel inside Channels, and Recent Useful Threads rendered.
+This is a shell/framing pass with expected UX debt, not final Hub UX completion.
+Request a Channel should become a lower-priority secondary action inside
+Channels. Existing test/seed post content is not production community UGC and is
+not a data-migration blocker.
+
 Recommended direction:
 
 - T12 should establish the shared Baseboard/Layovers post/thread data
@@ -584,6 +592,12 @@ Recommended direction:
   weather/traffic integrations, image uploads, or safety-control weakening.
   Existing posts, comments, reporting, and moderation primitives remain the
   internal foundation for Channels and Recent Useful Threads.
+- T21 runtime smoke is documented in
+  `ops/fbmvp-t21-dfw-hub-product-framing-runtime-smoke.md`. The next narrow
+  implementation lane should be product/UX polish for Channels and thread
+  interaction, or a focused DFW Hub section polish pass. Do not start free
+  channel creation, media/photo uploads, or live weather/traffic integrations
+  without separate scope.
 
 Pre-closeout access baseline: public `jmpseat.com` and `www.jmpseat.com` are
 marketing/waitlist-only through `bad2110 fix: gate private app on public
