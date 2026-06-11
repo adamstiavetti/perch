@@ -1,6 +1,6 @@
 # FBMVP-T19 DFW Baseboard Comments Foundation
 
-Status: implemented locally, runtime-pending.
+Status: runtime-applied.
 
 `FBMVP-T19` adds the first top-level comment foundation for DFW Baseboard post
 detail. Comments are read and created through server-side helpers/actions and
@@ -25,18 +25,22 @@ Comments attach only to published, board-visible posts on the active DFW
 
 ## Migration
 
-Local migration:
+Runtime-applied migration:
 
 - `supabase/migrations/20260611001000_create_board_post_comments_foundation.sql`
 
-Runtime ledger row expected after targeted apply:
+Runtime ledger row:
 
 - version: `20260611001000`
 - name: `create_board_post_comments_foundation`
 
 Known Supabase migration-history drift remains preserved.
 Broad Supabase `db push` remains unsafe. Plain guardrail: broad supabase db push remains unsafe.
-Use targeted runtime preflight/apply for T19.
+T19 used targeted runtime preflight/apply only.
+
+Runtime pass record:
+
+- `docs/ops/fbmvp-t19-dfw-baseboard-comments-foundation-runtime-pass.md`
 
 ## Comments Table
 
@@ -159,9 +163,14 @@ T19 does not add:
 - proof-upload scope
 
 No posts, reports, moderation records, comments, replies, saves, reactions,
-search indexes, or user/community content were created during local validation.
+search indexes, or user/community content were created during local validation or
+T19 runtime apply. Runtime verification used catalog, permission, schema, and
+count checks only. Comment create/read/moderation RPCs were not called for live
+row output, and no comment/post/report content was read or printed. Runtime
+counts were `public.board_posts = 1`, `public.board_post_reports = 0`, and
+`public.board_post_comments = 0`.
 
 ## Next Step
 
 T20 should likely be comment reporting and moderation review integration after
-T19 is runtime-applied and documented.
+T19 runtime-pass docs are reviewed and committed.

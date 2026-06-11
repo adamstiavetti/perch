@@ -373,10 +373,11 @@ The current implementation sequence is:
 13. `FBMVP-T16` board post safety foundation, merged and runtime-applied
 14. `FBMVP-T17` DFW Baseboard post detail, merged and runtime-applied
 15. `FBMVP-T18` DFW Baseboard moderation review, merged and runtime-applied
-16. `FBMVP-T19` DFW Baseboard comments foundation, implemented locally and runtime-pending
+16. `FBMVP-T19` DFW Baseboard comments foundation, merged and runtime-applied
 
-Do not proceed to comments, saves/reactions, search, Crew Picks, or Layovers
-content until T18 runtime-pass documentation is reviewed and committed.
+Do not proceed to comment reporting/moderation review integration, saves/
+reactions, search, Crew Picks, or Layovers content until T19 runtime-pass
+documentation is reviewed and committed.
 
 Recommended direction:
 
@@ -489,7 +490,7 @@ Recommended direction:
 - Known Supabase migration-history drift remains and broad `supabase db push`
   remains unsafe.
 - Moderation/reporting remains required before broad beta posting expansion.
-- T19 is implemented locally and runtime-pending as
+- T19 is runtime-applied as
   `20260611001000 create_board_post_comments_foundation`. It adds top-level DFW
   Baseboard comments on post detail through safe read/create RPCs and an
   operator-scoped comment hide/remove RPC for comment safety.
@@ -508,12 +509,16 @@ Recommended direction:
   UI, a comment moderation queue, saves/reactions, search backend, Crew Picks,
   Layovers, public sharing, lounge/restricted posting, media, AI moderation,
   bans, appeals, proof-upload scope, deploy, runtime settings changes, or
-  content/comment/moderation record creation during local validation.
-- Broad Supabase `db push` remains unsafe due known migration drift. Targeted
-  runtime preflight/apply is required before T19 can be marked
-  runtime-applied.
+  content/comment/moderation record creation during local validation or runtime
+  apply.
+- T19 runtime verification used catalog/permission/schema/count checks only.
+  Comment create/read/moderation RPCs were not called for live row output, and
+  no comment/post/report content was read or printed. `public.board_posts` count
+  was `1`, `public.board_post_reports` count was `0`, and
+  `public.board_post_comments` count was `0`.
+- Broad Supabase `db push` remains unsafe due known migration drift.
 - T20 should likely be comment reporting/moderation review integration after T19
-  is runtime-applied and documented.
+  runtime-pass docs are reviewed and committed.
 
 ## 10. Authorization Rules To Preserve
 

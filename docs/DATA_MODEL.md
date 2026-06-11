@@ -625,9 +625,9 @@ Current T18 runtime state:
 - The next comments/replies milestone should wait until T18 runtime-pass
   documentation is reviewed and committed.
 
-Current T19 local state:
+Current T19 runtime state:
 
-- `FBMVP-T19` is implemented locally and runtime-pending as
+- `FBMVP-T19` is runtime-applied as
   `20260611001000 create_board_post_comments_foundation`.
 - It adds `public.board_post_comments` for top-level DFW Baseboard post detail
   comments.
@@ -654,11 +654,17 @@ Current T19 local state:
   UI, a comment moderation queue, saves, reactions, search backend, Crew Picks,
   Layovers, public sharing, lounge/restricted posting, media, AI moderation,
   bans, appeals, or proof-upload scope.
+- T19 runtime verification used catalog/permission/schema/count checks only.
+  Comment create/read/moderation RPCs were not called for live row output, and
+  no comment/post/report content was read or printed. `public.board_posts` count
+  was `1`, `public.board_post_reports` count was `0`, and
+  `public.board_post_comments` count was `0`.
+- No posts, reports, moderation records, comments, replies, saves, reactions,
+  search indexes, or user/community content were created by T19 migration/apply.
 - Known Supabase migration-history drift remains, so broad `supabase db push`
-  remains unsafe. Targeted runtime preflight/apply is required before T19 can be
-  marked runtime-applied.
+  remains unsafe.
 - T20 should likely be comment reporting/moderation review integration after T19
-  is runtime-applied and documented.
+  runtime-pass docs are reviewed and committed.
 
 Important fields:
 
