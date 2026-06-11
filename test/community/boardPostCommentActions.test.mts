@@ -20,6 +20,15 @@ const actionStateSource = existsSync(
     )
   : "";
 
+const createActionSource = actionSource.slice(
+  actionSource.indexOf("export async function createDfwBaseboardPostCommentAction"),
+  actionSource.indexOf("export async function reportDfwBaseboardPostCommentAction"),
+);
+
+const moderationActionSource = actionSource.slice(
+  actionSource.indexOf("export async function moderateDfwBaseboardPostCommentAction"),
+);
+
 test("T19 comment action is server-only, gate-checked, and calls the comment create RPC", () => {
   assert.match(actionSource, /"use server"/);
   assert.match(actionSource, /createDfwBaseboardPostCommentAction/);
@@ -42,7 +51,7 @@ test("T19 comment action is server-only, gate-checked, and calls the comment cre
     /getPrivateAppGateResult[\s\S]*if \(gate\.kind === "redirect"\)[\s\S]*create_open_baseboard_post_comment/s,
   );
 
-  assert.doesNotMatch(actionSource, /service_role|\.insert\(|\.update\(|\.delete\(|parent_comment|report_open_baseboard_post|"moderate_open_baseboard_post"/i);
+  assert.doesNotMatch(createActionSource, /service_role|\.insert\(|\.update\(|\.delete\(|parent_comment|report_open_baseboard_post|"moderate_open_baseboard_post"/i);
 });
 
 test("T19 comment action validates post UUID and comment body before RPC", () => {
@@ -81,7 +90,7 @@ test("T19 comment moderation action is server-only and calls only the comment mo
   assert.match(actionSource, /revalidatePath\(ADMIN_ROUTES\.communityModeration\)/);
   assert.match(actionSource, /revalidatePath\(getDfwBaseboardPostHref\(postId\)\)/);
 
-  assert.doesNotMatch(actionSource, /"moderate_open_baseboard_post"|comment_report|report_comment|moderation queue|service_role|createBrowserClient|\.insert\(|\.update\(|\.delete\(/i);
+  assert.doesNotMatch(moderationActionSource, /"moderate_open_baseboard_post"|comment_report|report_comment|moderation queue|service_role|createBrowserClient|\.insert\(|\.update\(|\.delete\(/i);
 });
 
 test("T19 comment moderation action validates comment id, action, reason, and safe statuses", () => {

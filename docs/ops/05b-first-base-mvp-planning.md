@@ -517,8 +517,24 @@ Recommended direction:
   was `1`, `public.board_post_reports` count was `0`, and
   `public.board_post_comments` count was `0`.
 - Broad Supabase `db push` remains unsafe due known migration drift.
-- T20 should likely be comment reporting/moderation review integration after T19
-  runtime-pass docs are reviewed and committed.
+- T20 is locally implemented as
+  `20260611014500 create_board_post_comment_reports` and is runtime-pending.
+  It adds private comment report storage, safe comment report/review RPCs,
+  compact comment report UI on top-level comments, and a separate comment
+  reports section in `/app/admin/community-moderation`.
+- T20 uses `operator.community_moderation` and the existing T19 comment
+  hide/remove moderation action/RPC for decisions.
+- T20 hides reporter identity by default, preserves zero direct `board_posts`
+  write policies, and avoids direct anon/authenticated comment report table
+  access.
+- T20 does not add nested replies, saves/reactions, search backend, Crew Picks,
+  Layovers, public sharing, lounge/restricted posting, media, AI moderation,
+  bans, appeals, proof-upload scope, deploy, runtime settings changes, or
+  content/report/comment/moderation record creation during local validation.
+- Broad Supabase `db push` remains unsafe due known migration drift. T20
+  requires targeted runtime preflight/apply.
+- T21 should be planned only after T20 runtime-pass docs are reviewed and
+  committed.
 
 ## 10. Authorization Rules To Preserve
 

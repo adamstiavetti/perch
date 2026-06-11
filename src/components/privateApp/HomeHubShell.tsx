@@ -4,6 +4,10 @@ import {
   DFW_BASEBOARD_COMMENT_CREATED_STATUS,
   DFW_BASEBOARD_COMMENT_FAILED_STATUS,
   DFW_BASEBOARD_COMMENT_INVALID_STATUS,
+  DFW_BASEBOARD_COMMENT_REPORT_FAILED_STATUS,
+  DFW_BASEBOARD_COMMENT_REPORT_INVALID_STATUS,
+  DFW_BASEBOARD_COMMENT_REPORT_REPORTED_STATUS,
+  type DfwBaseboardCommentReportStatus,
   type DfwBaseboardCommentStatus,
 } from "../../lib/community/boardPostCommentActionState";
 import type { BaseboardPostComment } from "../../lib/community/boardPostComments";
@@ -70,7 +74,9 @@ type DfwBaseboardPostDetailShellProps = {
   comments?: readonly BaseboardPostComment[];
   commentsUnavailable?: boolean;
   commentStatus?: DfwBaseboardCommentStatus | null;
+  commentReportStatus?: DfwBaseboardCommentReportStatus | null;
   createCommentAction?: (formData: FormData) => Promise<void>;
+  reportCommentAction?: (formData: FormData) => Promise<void>;
 };
 
 type QuickAction = {
@@ -659,6 +665,18 @@ function getDfwBaseboardCommentStatusMessage(
         : null;
 }
 
+function getDfwBaseboardCommentReportStatusMessage(
+  commentReportStatus: DfwBaseboardCommentReportStatus | null,
+) {
+  return commentReportStatus === DFW_BASEBOARD_COMMENT_REPORT_REPORTED_STATUS
+    ? "Thanks — the comment was reported for review."
+    : commentReportStatus === DFW_BASEBOARD_COMMENT_REPORT_INVALID_STATUS
+      ? "Choose a report reason before submitting."
+      : commentReportStatus === DFW_BASEBOARD_COMMENT_REPORT_FAILED_STATUS
+        ? "jmpseat could not submit that report right now. Try again in a moment."
+        : null;
+}
+
 function DfwBaseboardReportForm({
   postId,
   reportAction,
@@ -675,6 +693,53 @@ function DfwBaseboardReportForm({
       <input name="postId" type="hidden" value={postId} />
       <label className={styles.reportField}>
         <span>Report this post</span>
+        <select name="reason" required defaultValue="">
+          <option disabled value="">
+            Choose a reason
+          </option>
+          <option value="spam">Spam</option>
+          <option value="harassment">Harassment</option>
+          <option value="unsafe_info">Unsafe information</option>
+          <option value="privacy">Privacy</option>
+          <option value="off_topic">Off topic</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+      <label className={styles.reportField}>
+        <span>Details</span>
+        <textarea
+          maxLength={1000}
+          name="details"
+          placeholder="Optional context for review"
+          rows={2}
+        />
+      </label>
+      <button className={styles.reportSubmit} type="submit">
+        Submit report
+      </button>
+    </form>
+  );
+}
+
+function DfwBaseboardCommentReportForm({
+  postId,
+  commentId,
+  reportAction,
+}: {
+  postId: string;
+  commentId: string;
+  reportAction?: (formData: FormData) => Promise<void>;
+}) {
+  if (!reportAction) {
+    return null;
+  }
+
+  return (
+    <form action={reportAction} className={styles.reportForm}>
+      <input name="postId" type="hidden" value={postId} />
+      <input name="commentId" type="hidden" value={commentId} />
+      <label className={styles.reportField}>
+        <span>Report this comment</span>
         <select name="reason" required defaultValue="">
           <option disabled value="">
             Choose a reason
@@ -851,13 +916,19 @@ export function DfwBaseboardPostDetailShell({
   comments = [],
   commentsUnavailable = false,
   commentStatus = null,
+  commentReportStatus = null,
   createCommentAction,
+  reportCommentAction,
 }: DfwBaseboardPostDetailShellProps) {
   const reportStatusMessage = getDfwBaseboardReportStatusMessage(reportStatus);
   const isReportSuccessStatus = reportStatus === DFW_BASEBOARD_REPORT_REPORTED_STATUS;
   const commentStatusMessage = getDfwBaseboardCommentStatusMessage(commentStatus);
   const isCommentSuccessStatus =
     commentStatus === DFW_BASEBOARD_COMMENT_CREATED_STATUS;
+  const commentReportStatusMessage =
+    getDfwBaseboardCommentReportStatusMessage(commentReportStatus);
+  const isCommentReportSuccessStatus =
+    commentReportStatus === DFW_BASEBOARD_COMMENT_REPORT_REPORTED_STATUS;
 
   return (
     <main className={styles.shell}>
@@ -930,11 +1001,14 @@ export function DfwBaseboardPostDetailShell({
 
         {post && !postUnavailable ? (
           <DfwBaseboardCommentsSection
+            commentReportStatusMessage={commentReportStatusMessage}
             commentStatusMessage={commentStatusMessage}
             comments={comments}
             createCommentAction={createCommentAction}
+            isCommentReportSuccessStatus={isCommentReportSuccessStatus}
             isCommentSuccessStatus={isCommentSuccessStatus}
             postId={post.id}
+            reportCommentAction={reportCommentAction}
             unavailable={commentsUnavailable}
           />
         ) : null}
@@ -948,22 +1022,28 @@ function DfwBaseboardCommentsSection({
   unavailable,
   postId,
   createCommentAction,
+  reportCommentAction,
   commentStatusMessage,
+  commentReportStatusMessage,
   isCommentSuccessStatus,
+  isCommentReportSuccessStatus,
 }: {
   comments: readonly BaseboardPostComment[];
   unavailable: boolean;
   postId: string;
   createCommentAction?: (formData: FormData) => Promise<void>;
+  reportCommentAction?: (formData: FormData) => Promise<void>;
   commentStatusMessage: string | null;
+  commentReportStatusMessage: string | null;
   isCommentSuccessStatus: boolean;
+  isCommentReportSuccessStatus: boolean;
 }) {
   return (
     <section className={styles.commentsSection} aria-labelledby="baseboard-comments-title">
       <div className={styles.sectionTitleRow}>
         <div>
           <h2 id="baseboard-comments-title">Comments</h2>
-          <p>Top-level comments only. Reporting for comments is not live.</p>
+          <p>Top-level comments only. Comment reporting is available for review.</p>
         </div>
       </div>
 
@@ -973,6 +1053,19 @@ function DfwBaseboardCommentsSection({
           role="status"
         >
           {commentStatusMessage}
+        </p>
+      ) : null}
+
+      {commentReportStatusMessage ? (
+        <p
+          className={
+            isCommentReportSuccessStatus
+              ? styles.actionSuccess
+              : styles.actionFeedback
+          }
+          role="status"
+        >
+          {commentReportStatusMessage}
         </p>
       ) : null}
 
@@ -1021,6 +1114,11 @@ function DfwBaseboardCommentsSection({
                   Updated {formatPostDate(comment.updatedAt)}
                 </p>
               ) : null}
+              <DfwBaseboardCommentReportForm
+                commentId={comment.id}
+                postId={postId}
+                reportAction={reportCommentAction}
+              />
             </article>
           ))}
         </div>

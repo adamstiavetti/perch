@@ -2,10 +2,15 @@ import {
   DfwBaseboardPostDetailShell,
 } from "../../../../../../src/components/privateApp/HomeHubShell";
 import {
+  DFW_BASEBOARD_COMMENT_REPORT_STATUS_PARAM,
   DFW_BASEBOARD_COMMENT_STATUS_PARAM,
+  isDfwBaseboardCommentReportStatus,
   isDfwBaseboardCommentStatus,
 } from "../../../../../../src/lib/community/boardPostCommentActionState";
-import { createDfwBaseboardPostCommentAction } from "../../../../../../src/lib/community/boardPostCommentActions";
+import {
+  createDfwBaseboardPostCommentAction,
+  reportDfwBaseboardPostCommentAction,
+} from "../../../../../../src/lib/community/boardPostCommentActions";
 import { listDfwBaseboardPostComments } from "../../../../../../src/lib/community/boardPostComments";
 import { getDfwBaseboardPost } from "../../../../../../src/lib/community/boardPostReads";
 import {
@@ -44,18 +49,26 @@ export default async function DfwBaseboardPostDetailPage({
   const commentStatus = isDfwBaseboardCommentStatus(commentStatusValue)
     ? commentStatusValue
     : null;
+  const commentReportStatusValue = query[DFW_BASEBOARD_COMMENT_REPORT_STATUS_PARAM];
+  const commentReportStatus = isDfwBaseboardCommentReportStatus(
+    commentReportStatusValue,
+  )
+    ? commentReportStatusValue
+    : null;
   const postResult = await getDfwBaseboardPost(postId);
   const commentResult = await listDfwBaseboardPostComments(postId);
 
   return (
     <DfwBaseboardPostDetailShell
       commentStatus={commentStatus}
+      commentReportStatus={commentReportStatus}
       comments={commentResult.comments}
       commentsUnavailable={Boolean(commentResult.error)}
       createCommentAction={createDfwBaseboardPostCommentAction}
       post={postResult.post}
       postUnavailable={Boolean(postResult.error)}
       reportAction={reportDfwBaseboardPostAction}
+      reportCommentAction={reportDfwBaseboardPostCommentAction}
       reportStatus={reportStatus}
     />
   );

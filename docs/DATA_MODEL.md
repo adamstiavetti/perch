@@ -663,8 +663,33 @@ Current T19 runtime state:
   search indexes, or user/community content were created by T19 migration/apply.
 - Known Supabase migration-history drift remains, so broad `supabase db push`
   remains unsafe.
-- T20 should likely be comment reporting/moderation review integration after T19
-  runtime-pass docs are reviewed and committed.
+Current T20 local state:
+
+- `FBMVP-T20` is locally implemented and runtime-pending as
+  `20260611014500 create_board_post_comment_reports`.
+- It adds `public.board_post_comment_reports` for private top-level comment
+  report storage.
+- It adds `public.report_open_baseboard_post_comment(...)` for user reporting of
+  published top-level comments on published board-visible DFW Baseboard posts.
+- It adds `public.list_open_baseboard_post_comment_reports(...)` for
+  operator-scoped review through `operator.community_moderation`.
+- It extends `/app/admin/community-moderation` with a separate comment reports
+  section and uses the existing comment hide/remove moderation action/RPC for
+  decisions.
+- T20 hides reporter identity by default, avoids direct anon/authenticated
+  comment report table access, preserves zero direct `board_posts` write
+  policies, and adds no direct anon/authenticated `board_post_comments` write
+  policies.
+- T20 does not add nested replies, saves, reactions, search backend, Crew Picks,
+  Layovers, public sharing, lounge/restricted posting, media, AI moderation,
+  bans, appeals, or proof-upload scope.
+- No posts, reports, moderation records, comments, replies, saves, reactions,
+  search indexes, or user/community content were created during local
+  validation.
+- Broad Supabase `db push` remains unsafe due known migration drift. T20
+  requires targeted runtime preflight/apply.
+- T21 should be planned only after T20 runtime-pass docs are reviewed and
+  committed.
 
 Important fields:
 

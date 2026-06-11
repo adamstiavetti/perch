@@ -12,7 +12,11 @@ import {
   hasOperatorScope,
 } from "../../../../src/lib/admin/access";
 import { moderateDfwBaseboardPostAction } from "../../../../src/lib/admin/communityModerationActions";
-import { getDfwBaseboardModerationReports } from "../../../../src/lib/admin/communityModerationReports";
+import {
+  getDfwBaseboardCommentModerationReports,
+  getDfwBaseboardModerationReports,
+} from "../../../../src/lib/admin/communityModerationReports";
+import { moderateDfwBaseboardPostCommentAction } from "../../../../src/lib/community/boardPostCommentActions";
 import { AUTH_ROUTES } from "../../../../src/lib/auth/routes";
 import { getCurrentAppAccessContext } from "../../../../src/lib/betaAccess/server";
 import {
@@ -73,12 +77,31 @@ function getModerationStatusMessage(status: string | null) {
   }
 }
 
+function getCommentModerationStatusMessage(status: string | null) {
+  switch (status) {
+    case "dfw_baseboard_comment_moderation_applied":
+      return "Comment moderation action completed. Current DFW Baseboard reads will omit hidden or removed comments.";
+    case "dfw_baseboard_comment_moderation_invalid":
+      return "Choose hide or remove and add a moderation reason before submitting.";
+    case "dfw_baseboard_comment_moderation_failed":
+      return "jmpseat could not complete that comment moderation action right now. Try again in a moment.";
+    case "dfw_baseboard_comment_moderation_denied":
+      return "Comment moderation requires the explicit operator scope.";
+    default:
+      return null;
+  }
+}
+
 export default async function CommunityModerationPage({
   searchParams,
 }: CommunityModerationPageProps) {
   const params = await searchParams;
   const moderationStatus = getValue(params.moderation)?.trim() || null;
+  const commentModerationStatus =
+    getValue(params.comment_moderation)?.trim() || null;
   const moderationStatusMessage = getModerationStatusMessage(moderationStatus);
+  const commentModerationStatusMessage =
+    getCommentModerationStatusMessage(commentModerationStatus);
   const appContext = await getCurrentAppAccessContext();
   const gate = getPrivateAppGateResult({
     routeKind: "private-child",
@@ -185,25 +208,33 @@ export default async function CommunityModerationPage({
     redirect(AUTH_ROUTES.accessRestricted);
   }
 
-  const reportResult = await getDfwBaseboardModerationReports();
+  const [reportResult, commentReportResult] = await Promise.all([
+    getDfwBaseboardModerationReports(),
+    getDfwBaseboardCommentModerationReports(),
+  ]);
 
   return (
     <AdminShell
       eyebrow="Community Moderation"
       title="DFW Baseboard moderation"
-      description="Review open DFW Baseboard post reports and use scoped hide/remove actions when needed."
+      description="Review open DFW Baseboard post and comment reports and use scoped hide/remove actions when needed."
       currentPath={ADMIN_ROUTES.communityModeration}
       navigation={navigation}
-      error={reportResult.error ? "DFW Baseboard reports are unavailable right now." : undefined}
+      error={
+        reportResult.error || commentReportResult.error
+          ? "DFW Baseboard reports are unavailable right now."
+          : undefined
+      }
       message={
+        commentModerationStatusMessage ??
         moderationStatusMessage ??
-        "Reporter identity is not shown. Actions use the existing T16 moderation RPC and affect only DFW Baseboard posts."
+        "Reporter identity is not shown. Actions use existing moderation RPCs and affect only DFW Baseboard posts or comments."
       }
       footer={
         <p className={authStyles.hint}>
-          This surface is limited to DFW Baseboard report review. Comments,
-          saves, reactions, search, Crew Picks, Layovers, and proof-upload scope
-          remain outside this tool.
+          This surface is limited to DFW Baseboard post and comment report
+          review. Replies, saves, reactions, search, Crew Picks, Layovers, and
+          proof-upload scope remain outside this tool.
         </p>
       }
     >
@@ -214,8 +245,9 @@ export default async function CommunityModerationPage({
           </h2>
           <p className={styles.sectionText}>
             This page lists open or reviewing reports for published DFW
-            Baseboard posts. Hide and remove use the existing operator-scoped
-            RPC, and current read surfaces omit hidden or removed posts.
+            Baseboard posts and top-level comments. Hide and remove use existing
+            operator-scoped RPCs, and current read surfaces omit hidden or
+            removed content.
           </p>
         </section>
 
@@ -271,6 +303,71 @@ export default async function CommunityModerationPage({
                       </button>
                       <button name="moderationAction" type="submit" value="remove">
                         Remove post
+                      </button>
+                    </div>
+                  </form>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className={styles.section} aria-labelledby="comment-moderation-reports">
+          <h2 id="comment-moderation-reports" className={styles.sectionTitle}>
+            Open DFW Baseboard comment reports
+          </h2>
+
+          {commentReportResult.reports.length === 0 ? (
+            <p className={styles.sectionText}>
+              No open DFW Baseboard comment reports are waiting for review.
+            </p>
+          ) : (
+            <div className={styles.toolGrid}>
+              {commentReportResult.reports.map((report) => (
+                <article className={styles.toolCard} key={report.reportId}>
+                  <div className={styles.toolHeader}>
+                    <h3 className={styles.toolTitle}>
+                      Comment on {report.postTitlePreview}
+                    </h3>
+                    <span className={styles.toolStatus}>
+                      {formatModerationLabel(report.reason)}
+                    </span>
+                  </div>
+                  <p className={styles.toolDescription}>
+                    {report.commentBodyPreview}
+                  </p>
+                  <p className={styles.toolReason}>
+                    {report.commentAuthorLabel} / reported{" "}
+                    {formatDate(report.reportedAt)}
+                  </p>
+                  {report.details ? (
+                    <p className={styles.sectionText}>{report.details}</p>
+                  ) : null}
+                  <p className={styles.toolReason}>
+                    Report status: {formatModerationLabel(report.reportStatus)}
+                  </p>
+                  <form
+                    action={moderateDfwBaseboardPostCommentAction}
+                    className={styles.stack}
+                  >
+                    <input name="commentId" type="hidden" value={report.commentId} />
+                    <input name="postId" type="hidden" value={report.postId} />
+                    <label className={styles.sectionText}>
+                      Moderation reason
+                      <textarea
+                        maxLength={1000}
+                        name="reason"
+                        placeholder="Required internal moderation reason"
+                        required
+                        rows={3}
+                      />
+                    </label>
+                    <div className={styles.toolHeader}>
+                      <button name="moderationAction" type="submit" value="hide">
+                        Hide comment
+                      </button>
+                      <button name="moderationAction" type="submit" value="remove">
+                        Remove comment
                       </button>
                     </div>
                   </form>
