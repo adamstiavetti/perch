@@ -129,6 +129,12 @@ or proof-upload scope.
 
 ## Next Step
 
-This closes the First Base / DFW Baseboard safety loop pending runtime-pass docs
-review and commit. The next step after that commit should be an epoch
-closeout/readiness audit, not a new feature by default.
+The T20 runtime-pass docs are committed. This closes the First Base / DFW
+Baseboard safety loop. The later pre-closeout access-boundary fixes are also
+part of the closeout baseline: `bad2110` gates public-domain private-app/auth
+entry paths, and `5e65f7b` requires reviewer authorization or an active operator
+grant before `/app/admin` renders. A logged-in non-admin admin-shell browser
+check remains a pre-beta-launch verification item once a non-admin beta test
+user exists; it is not a reason to keep this epoch open. The next default step
+is an epoch closeout/readiness record and Baseboards pivot workshop, not another
+feature by default.

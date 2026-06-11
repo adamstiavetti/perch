@@ -707,9 +707,16 @@ Current T20 runtime state:
   was `0`, and `public.board_post_comment_reports` count was `0`.
 - Known migration drift remains preserved and broad Supabase `db push` remains
   unsafe.
-- T20 closes the First Base / DFW Baseboard safety loop pending runtime-pass
-  docs review and commit. The next step after that commit should be an epoch
-  closeout/readiness audit, not a new feature by default.
+- T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety
+  loop is complete. The next default step is an epoch closeout/readiness record
+  and Baseboards pivot workshop, not another feature by default.
+- Pre-closeout app-boundary fixes are now part of the baseline: `bad2110`
+  blocks public `jmpseat.com` / `www.jmpseat.com` private-app/auth entry paths
+  server-side, and `5e65f7b` requires reviewer authorization or an active
+  operator grant before rendering `/app/admin`. A logged-in non-admin
+  admin-shell browser check remains a pre-beta-launch verification item once a
+  non-admin beta test user exists; it is not a data-model blocker for closing
+  the First Base / DFW Baseboard epoch.
 
 Important fields:
 

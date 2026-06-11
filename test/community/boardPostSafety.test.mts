@@ -271,10 +271,10 @@ test("T16 keeps client/UI paths free of out-of-scope writes and surfaces", () =>
   assert.doesNotMatch(combined, /reporter_user_id|author_user_id|email|claimedAirline|claimedRole|claimedBase|verification evidence/i);
 });
 
-test("T16 docs describe local runtime-pending safety scope and exclusions", () => {
+test("T16 docs describe runtime-applied safety scope and exclusions", () => {
   assert.match(docsSource, /FBMVP-T16/i);
   assert.match(docsSource, /Board Post Safety Foundation/i);
-  assert.match(docsSource, /runtime-pending|runtime pending/i);
+  assert.match(docsSource, /runtime-applied/i);
   assert.match(docsSource, /DFW Baseboard reporting/i);
   assert.match(docsSource, /operator-scoped hide\/remove RPC/i);
   assert.match(docsSource, /server actions\/RPCs only|server action/i);
@@ -283,7 +283,7 @@ test("T16 docs describe local runtime-pending safety scope and exclusions", () =
   assert.match(docsSource, /Hidden\/removed posts are excluded|hidden\/removed posts are excluded/i);
   assert.match(docsSource, /T14 reads only published/i);
   assert.match(docsSource, /broad supabase db push remains unsafe/i);
-  assert.match(docsSource, /targeted runtime preflight\/apply|targeted preflight\/apply/i);
+  assert.match(docsSource, /runtime pass|runtime-applied/i);
   assert.match(docsSource, /post detail/i);
   assert.match(docsSource, /comments/i);
   assert.match(docsSource, /saves/i);

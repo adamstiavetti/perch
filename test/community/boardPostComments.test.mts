@@ -230,7 +230,7 @@ test("DFW post detail route gates before reading comments and wires safe comment
   assert.doesNotMatch(detailRouteSource, /\.insert\(|\.update\(|\.delete\(/);
 });
 
-test("DFW post detail UI renders comments and composer without replies or comment reports", () => {
+test("DFW post detail UI renders comments, composer, and the T20 comment report affordance without replies", () => {
   const commentsSectionSource = detailShellSource.slice(
     detailShellSource.indexOf("function DfwBaseboardCommentsSection"),
   );
@@ -244,15 +244,16 @@ test("DFW post detail UI renders comments and composer without replies or commen
   assert.match(commentsSectionSource, /No comments yet\./);
   assert.match(commentsSectionSource, /comments\.map/);
   assert.match(commentsSectionSource, /authorLabel/);
-  assert.doesNotMatch(commentsSectionSource, /parentComment|parent_comment|Reply to comment|comment report|report comment/i);
+  assert.match(commentsSectionSource, /DfwBaseboardCommentReportForm/);
+  assert.match(commentsSectionSource, /reportCommentAction/);
+  assert.doesNotMatch(commentsSectionSource, /parentComment|parent_comment|Reply to comment/i);
   assert.doesNotMatch(commentsSectionSource, /save comment|reaction|public sharing|share this/i);
 });
 
-test("T19 docs describe local runtime-pending comments scope and next safety step", () => {
+test("T19 docs describe runtime-applied comments scope and completed T20 safety step", () => {
   assert.match(docsSource, /FBMVP-T19/i);
   assert.match(docsSource, /DFW Baseboard Comments Foundation/i);
-  assert.match(docsSource, /locally implemented/i);
-  assert.match(docsSource, /runtime-pending|runtime pending/i);
+  assert.match(docsSource, /runtime-applied/i);
   assert.match(docsSource, /top-level DFW Baseboard comments/i);
   assert.match(docsSource, /safe read\/create RPCs|safe read and create RPCs/i);
   assert.match(docsSource, /operator hide\/remove RPC/i);
@@ -269,6 +270,5 @@ test("T19 docs describe local runtime-pending comments scope and next safety ste
   assert.match(docsSource, /public sharing/i);
   assert.match(docsSource, /proof-upload|proof upload/i);
   assert.match(docsSource, /broad supabase db push remains unsafe/i);
-  assert.match(docsSource, /targeted runtime preflight\/apply|targeted runtime/i);
-  assert.match(docsSource, /T20[\s\S]*comment reporting/i);
+  assert.match(docsSource, /T20[\s\S]*comment reporting[\s\S]*(merged and runtime-applied|runtime-applied)/i);
 });

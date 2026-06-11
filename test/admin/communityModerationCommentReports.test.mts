@@ -84,9 +84,9 @@ test("comment UI includes compact report affordance without replies or client wr
   );
 });
 
-test("T20 docs preserve runtime-pending status and scope boundaries", () => {
-  assert.match(docsSource, /T20 is locally implemented/i);
-  assert.match(docsSource, /runtime-pending/i);
+test("T20 docs preserve runtime-applied status and scope boundaries", () => {
+  assert.match(docsSource, /Status: runtime-applied|T20 is runtime-applied/i);
+  assert.match(docsSource, /runtime-applied/i);
   assert.match(docsSource, /comment reporting/i);
   assert.match(docsSource, /moderation review integration/i);
   assert.match(docsSource, /operator\.community_moderation/i);
@@ -94,10 +94,11 @@ test("T20 docs preserve runtime-pending status and scope boundaries", () => {
   assert.match(docsSource, /reporter identity/i);
   assert.match(docsSource, /zero direct `board_posts` write policies/i);
   assert.match(docsSource, /broad Supabase `db push` remains unsafe/i);
-  assert.match(docsSource, /targeted runtime preflight\/apply/i);
-  assert.match(
-    docsSource,
-    /T21 should be planned only after\s+T20 runtime-pass docs are reviewed and\s+committed/i,
-  );
-  assert.doesNotMatch(docsSource, /nested replies are live|comment reporting runtime-applied|bans are live|appeals are live/i);
+  assert.match(docsSource, /T20 runtime-pass docs are committed/i);
+  assert.match(docsSource, /First Base \/ DFW\s+Baseboard safety loop/i);
+  assert.match(docsSource, /bad2110/i);
+  assert.match(docsSource, /5e65f7b/i);
+  assert.match(docsSource, /pre-beta-launch verification item/i);
+  assert.match(docsSource, /Baseboards pivot workshop/i);
+  assert.doesNotMatch(docsSource, /nested replies are live|bans are live|appeals are live/i);
 });
