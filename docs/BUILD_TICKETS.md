@@ -166,6 +166,11 @@ Current controlling docs for Hub work:
   list and T26C detail happy paths passed post-fix. No new post was created;
   T26D full create-browser redirect remains untested unless another safe post
   is explicitly authorized.
+- [FBMVP-T26D Final Create Browser Smoke](ops/fbmvp-t26d-final-create-browser-smoke.md) - records the authorized final T26D create-browser
+  smoke after the UUID validation fix. Exactly one additional safe `dfw-q-and-a`
+  post was created and list/detail reads passed, but the browser stayed on the
+  selected-channel page instead of redirecting to the new detail route. T26D
+  remains partial/fail pending post-submit navigation/redirect investigation.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before
@@ -323,7 +328,8 @@ Supplemental epoch-specific ticket packs:
   [FBMVP-T26D Channel Composer Browser Smoke](ops/fbmvp-t26d-channel-composer-browser-smoke.md), and the local UUID validation fix is recorded in
   [FBMVP-T26D Channel Composer UUID Validation Fix](ops/fbmvp-t26d-channel-composer-uuid-validation-fix.md). Post-fix browser smoke is recorded in
   [FBMVP-T26D/T26C Post-Fix Browser Smoke](ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md); it reuses the existing safe post and does not claim full
-  T26D create-browser redirect coverage.
+  T26D create-browser redirect coverage. Final authorized create-browser smoke is recorded in
+  [FBMVP-T26D Final Create Browser Smoke](ops/fbmvp-t26d-final-create-browser-smoke.md); one additional safe post was created, but redirect still failed.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.

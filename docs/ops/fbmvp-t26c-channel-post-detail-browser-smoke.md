@@ -181,6 +181,11 @@ smoke is recorded in `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`; it
 reused the existing safe post and confirmed T26C happy-path detail rendering now
 passes.
 
+Final T26D create-browser smoke is recorded in
+`docs/ops/fbmvp-t26d-final-create-browser-smoke.md`. It created one additional
+safe post and confirmed T26C detail rendering also passes for that new valid
+UUID post.
+
 UI/UX polish remains deferred.
 
 T26C still does not add:
@@ -207,6 +212,7 @@ Docs updated:
 - `docs/ops/fbmvp-t26c-channel-post-detail-read-foundation.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`
 - `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`
+- `docs/ops/fbmvp-t26d-final-create-browser-smoke.md`
 
 Docs not updated / why:
 

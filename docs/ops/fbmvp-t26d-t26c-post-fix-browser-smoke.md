@@ -184,6 +184,11 @@ smoke intentionally reused the existing safe post and did not submit the
 composer. A future full create redirect smoke requires explicit authorization to
 create another safe post.
 
+That final authorized create-browser smoke is now recorded in
+`docs/ops/fbmvp-t26d-final-create-browser-smoke.md`. Exactly one additional
+safe post was created and list/detail reads passed, but the browser stayed on
+the selected-channel page instead of redirecting to the new post detail route.
+
 UI/UX polish remains deferred.
 
 ## Documentation Governance Status
@@ -199,6 +204,7 @@ Docs updated:
 - `docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-read-foundation.md`
 - `docs/ops/fbmvp-t26b-channel-thread-list-read-foundation.md`
+- `docs/ops/fbmvp-t26d-final-create-browser-smoke.md`
 
 Docs not updated / why:
 
@@ -223,5 +229,5 @@ Browser smoke docs needed?
 
 - Satisfied by this record for the post-fix T26B selected-channel list and T26C
   selected-channel detail read path.
-- T26D full create-browser redirect smoke remains pending unless another safe
-  post is explicitly authorized.
+- Final T26D create-browser redirect smoke is recorded separately and remains
+  partial/fail.

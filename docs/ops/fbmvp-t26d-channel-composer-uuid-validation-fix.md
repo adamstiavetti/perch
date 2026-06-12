@@ -96,6 +96,12 @@ The smoke intentionally did not submit the composer. A future full T26D
 create-browser redirect smoke requires explicit authorization to create another
 safe post.
 
+That final authorized create-browser smoke is now recorded in
+`docs/ops/fbmvp-t26d-final-create-browser-smoke.md`. It created exactly one
+additional safe post and confirmed list/detail reads, but the create redirect
+still failed because the browser stayed on the selected-channel page after
+submit.
+
 ## Documentation Governance Status
 
 Docs updated:
@@ -107,6 +113,7 @@ Docs updated:
 - `docs/ops/fbmvp-t26d-channel-composer-browser-smoke.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`
 - `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`
+- `docs/ops/fbmvp-t26d-final-create-browser-smoke.md`
 
 Docs not updated / why:
 
@@ -128,5 +135,4 @@ Browser smoke docs needed?
 
 - Satisfied for T26B selected-channel list and T26C selected-channel detail
   post-fix happy paths.
-- T26D full create-browser redirect smoke remains pending unless another safe
-  post is explicitly authorized.
+- Final T26D create-browser redirect smoke is recorded and remains partial/fail.

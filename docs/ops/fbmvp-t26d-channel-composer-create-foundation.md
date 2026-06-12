@@ -24,6 +24,14 @@ passed: one safe post was created and listed, but the UI reported failure
 instead of redirecting to detail, and the detail route could not render the
 created post.
 
+Follow-up post-fix smoke is recorded in
+`docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md` and
+`docs/ops/fbmvp-t26d-final-create-browser-smoke.md`. The UUID validation fix
+resolved detail rendering for valid child-channel post UUIDs, but final
+authorized create-browser smoke still failed the redirect expectation: the post
+was created and list/detail reads passed, while the browser stayed on the
+selected-channel page after submit.
+
 ## RPC Scope
 
 The migration adds:
@@ -172,6 +180,19 @@ Smoke result:
 
 Do not create additional smoke posts until the create/action return handling and
 T26C detail-read mismatch are investigated.
+
+Post-fix smoke:
+
+- `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md` confirms T26B list and
+  T26C detail happy paths after the UUID validation fix using the existing safe
+  smoke post.
+- `docs/ops/fbmvp-t26d-final-create-browser-smoke.md` confirms final
+  authorized T26D create-browser smoke remains partial/fail: one additional
+  safe post was created and list/detail reads passed, but create redirect did
+  not happen.
+
+Do not create additional smoke posts until post-submit navigation/redirect
+handling is investigated.
 
 ## Validation
 

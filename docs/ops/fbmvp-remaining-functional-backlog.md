@@ -46,8 +46,10 @@ or commit.
   redirecting to detail, and direct detail navigation rendered the safe
   unavailable state. The local UUID validation fix is implemented and post-fix
   browser smoke confirms T26B list plus T26C detail now pass using the existing
-  safe post. T26D full create-browser redirect remains untested unless another
-  safe post is explicitly authorized.
+  safe post. Final authorized create-browser smoke created one additional safe
+  post and confirmed list/detail reads, but T26D remains partial/fail because
+  the browser stayed on the selected-channel page instead of redirecting to the
+  new detail route.
 
 T25B, T26A, T26B, T26C, and T26D are implemented, committed, runtime-applied, and
 documented through runtime apply. The current gap is not whether Channels
@@ -159,10 +161,10 @@ Out of scope:
 
 Recommended order:
 
-1. Decide whether to authorize a separate T26D full create-browser redirect
-   smoke that creates one additional safe post, or defer that until the next
-   creation-related ticket.
-2. `T26E` channel comments/reporting/moderation integration.
+1. Investigate the T26D post-submit navigation/redirect defect without creating
+   additional smoke posts.
+2. `T26E` channel comments/reporting/moderation integration after the redirect
+   defect is understood or explicitly deferred.
 3. DFW Today MVP baseline.
 4. Base MVP baseline.
 5. Layover MVP baseline.
@@ -180,6 +182,9 @@ Completed prerequisites:
 - T26D local UUID validation fix.
 - Post-fix authenticated browser smoke confirming T26B thread-list and T26C
   detail happy paths using the existing safe child-channel smoke post.
+- Final authorized T26D create-browser smoke with one additional safe post;
+  create inserted the post and list/detail reads passed, but redirect still
+  failed.
 - Stale test cleanup:
   - `test/community/hubChannelSeeds.test.mts`
   - `test/community/boardPostActions.test.mts`

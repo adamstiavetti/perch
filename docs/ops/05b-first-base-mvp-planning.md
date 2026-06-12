@@ -289,6 +289,15 @@ thread-list behavior passed and T26C selected-channel detail rendering passed.
 No new post was created, and T26D full create-browser redirect remains untested
 unless another safe post is explicitly authorized.
 
+Final authorized T26D create-browser smoke is recorded in
+`docs/ops/fbmvp-t26d-final-create-browser-smoke.md`. Exactly one additional
+safe post was created through the authenticated UI:
+`8df32cc8-9254-4b43-8a37-102dc77739bd`. T26B list and T26C detail regressions
+passed for that post, but T26D create redirect still failed: after submit, the
+browser stayed on `/app/hubs/dfw/channels/dfw-q-and-a` instead of redirecting to
+the new post detail route. No more smoke posts should be created until
+post-submit navigation/redirect handling is investigated.
+
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
 `docs/ops/fbmvp-remaining-functional-backlog.md`. It clarifies that Channels
@@ -650,8 +659,9 @@ The current implementation sequence is:
     list, but the create flow reported failure and the detail route did not
     render the created post; the local UUID validation fix is implemented and
     post-fix browser smoke confirms T26B list plus T26C detail now pass using
-    the existing safe post, while full T26D create-browser redirect remains
-    untested without explicit authorization to create another safe post
+    the existing safe post; final authorized create-browser smoke created one
+    more safe post and confirmed list/detail reads, but redirect still failed
+    because the browser stayed on the selected-channel page after submit
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.
@@ -690,8 +700,9 @@ detail reads start in T26C. Channel post creation starts in T26D. T26D browser
 smoke found a create/detail mismatch caused by malformed app-side UUID
 validation. The local fix is implemented, and post-fix browser smoke reused the
 existing safe post to verify T26B list and T26C detail happy paths. T26D full
-create-browser redirect remains untested until another safe post is explicitly
-authorized.
+create-browser redirect was then tested with one additional authorized safe post
+and remains partial/fail because post-submit navigation stayed on the selected
+channel page instead of redirecting to detail.
 The recommended next ticket is `FBMVP-T23A: DFW Hub Channels UX Wireframe`
 before DB implementation unless there is a strong reason to proceed directly to
 `FBMVP-T23: DFW Hub Channels Foundation`.
