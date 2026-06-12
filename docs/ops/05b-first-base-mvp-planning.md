@@ -207,8 +207,20 @@ verified `dfw-q-and-a` and `commuting-parking`, safe empty states where no
 channel posts exist, overview-row navigation into selected-channel pages,
 authenticated beta access, login redirect for anonymous beta access, and public
 apex non-exposure of the private route. The smoke is functional only; UI/UX
-polish remains deferred and T26C channel post detail remains future work unless
-explicitly rescoped.
+polish remains deferred.
+
+T26C local implementation is recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-read-foundation.md`. It adds the
+selected-channel post detail read RPC,
+`public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`,
+a server helper, protected route
+`/app/hubs/dfw/channels/[channelSlug]/[postId]`, and links from selected-channel
+thread-list rows into post detail routes. It reads one published post by
+`board_posts.board_id` on the resolved `hub_channel` board, not by
+`board_posts.category`. It does not add composer, channel post creation,
+comments, reports, moderation review changes, Request a Channel workflow, DFW
+Today/Base/Layover baseline work, runtime apply, browser smoke, broad database
+push, or deploy.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -558,6 +570,10 @@ The current implementation sequence is:
     `/app/hubs/dfw/channels/[channelSlug]` route; authenticated browser smoke
     passed as functional route smoke with safe empty states and UI/UX polish
     deferred
+28. `FBMVP-T26C` selected-channel post detail read foundation, locally
+    implemented with a safe channel post-detail RPC and protected
+    `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; runtime apply and
+    browser smoke are pending
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.
@@ -592,8 +608,8 @@ T25B adds and runtime-applies the `hub_channel` board type and six DFW child
 channel board seeds only. T26A adds and runtime-applies the first safe
 channel-list metadata RPC and adds the DFW Channels overview route. Channel post
 list reads start in T26B with `board_posts.board_id` membership; channel post
-create/detail RPCs should follow in later tickets rather than
-creating a standalone `channels` table now.
+detail reads start locally in T26C. Channel post creation should follow in a
+later ticket rather than creating a standalone `channels` table now.
 The recommended next ticket is `FBMVP-T23A: DFW Hub Channels UX Wireframe`
 before DB implementation unless there is a strong reason to proceed directly to
 `FBMVP-T23: DFW Hub Channels Foundation`.

@@ -499,7 +499,20 @@ Runtime now has
 The apply used targeted SQL execution in one explicit transaction, added only
 ledger row `20260611214500 create_hub_channel_post_list_rpc`, and did not use
 broad database push, migration repair, `apply_migration`, deploy, app code
-changes, staging, or commit. Selected-channel browser smoke remains pending.
+changes, staging, or commit. Selected-channel browser smoke later passed as
+functional route smoke with safe empty states where no channel posts exist.
+
+T26C local implementation is recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-read-foundation.md`. It adds
+`public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`,
+a server helper, a protected selected-channel post detail route at
+`/app/hubs/dfw/channels/[channelSlug]/[postId]`, and links from selected-channel
+thread-list rows into detail routes. It reads one published post by
+`board_posts.board_id` on the resolved `hub_channel` board and does not use
+`board_posts.category` as channel membership. Runtime apply and browser smoke
+remain pending; composer, comments, reports, moderation review changes, Request
+a Channel workflow, DFW Today/Base/Layover baselines, broad database push, and
+deploy remain out of scope.
 
 The current DFW Hub + Channels foundation checkpoint is recorded in
 `docs/ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md` at
@@ -557,6 +570,11 @@ Implementation note:
 - The existing `/app/hubs/dfw/baseboard` route now represents `DFW Channels`
   and `Recent Useful Threads` product framing while continuing to use the
   proven post/comment/report/moderation primitives.
+- The real `/app/hubs/dfw/channels` route now represents DFW Channels metadata;
+  selected-channel thread lists are implemented through
+  `/app/hubs/dfw/channels/[channelSlug]`; selected-channel post detail is
+  locally implemented at `/app/hubs/dfw/channels/[channelSlug]/[postId]` with
+  runtime apply and browser smoke still pending.
 - The existing `/app/hubs/dfw/layovers` route is framed as `DFW Layover`.
 - The existing `/app/hubs/dfw/crew-picks` route is framed as
   `Recent Useful Threads`.

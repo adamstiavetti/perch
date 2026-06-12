@@ -25,6 +25,11 @@ export type HubChannelPostListItem = {
   authorLabel: string;
 };
 
+export type HubChannelPostDetail = HubChannelPostListItem & {
+  channelSlug: string;
+  channelName: string;
+};
+
 type OpenHubChannelRpcRow = {
   slug: string;
   name: string;
@@ -44,6 +49,17 @@ type OpenHubChannelPostRpcRow = {
   updated_at: string;
   author_label: string | null;
 };
+
+type OpenHubChannelPostDetailRpcRow = OpenHubChannelPostRpcRow & {
+  channel_slug: string;
+  channel_name: string;
+};
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(
+    value,
+  );
+}
 
 function mapOpenHubChannelRow(row: OpenHubChannelRpcRow): HubChannelListItem {
   return {
@@ -73,6 +89,16 @@ function mapOpenHubChannelPostRow(
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     authorLabel: getSafeAuthorLabel(row.author_label),
+  };
+}
+
+function mapOpenHubChannelPostDetailRow(
+  row: OpenHubChannelPostDetailRpcRow,
+): HubChannelPostDetail {
+  return {
+    ...mapOpenHubChannelPostRow(row),
+    channelSlug: row.channel_slug,
+    channelName: row.channel_name,
   };
 }
 
@@ -128,6 +154,44 @@ export async function listDfwHubChannelPosts(
 
   return {
     posts: (Array.isArray(data) ? data : []).map(mapOpenHubChannelPostRow),
+    error: null,
+  };
+}
+
+export async function getDfwHubChannelPost(
+  channelSlug: string,
+  postId: string,
+) {
+  const normalizedChannelSlug = channelSlug.trim().toLowerCase();
+  const normalizedPostId = postId.trim();
+
+  if (!normalizedChannelSlug || !isUuid(normalizedPostId)) {
+    return {
+      post: null,
+      error: null,
+    };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .rpc("get_open_hub_channel_post", {
+      p_base_code: "DFW",
+      p_channel_slug: normalizedChannelSlug,
+      p_post_id: normalizedPostId,
+    })
+    .returns<OpenHubChannelPostDetailRpcRow[]>();
+
+  if (error) {
+    return {
+      post: null,
+      error,
+    };
+  }
+
+  const [row] = Array.isArray(data) ? data : [];
+
+  return {
+    post: row ? mapOpenHubChannelPostDetailRow(row) : null,
     error: null,
   };
 }

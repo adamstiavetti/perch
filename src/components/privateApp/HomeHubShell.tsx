@@ -26,6 +26,7 @@ import {
 } from "../../lib/community/boardPostSafetyActionState";
 import type {
   HubChannelListItem,
+  HubChannelPostDetail,
   HubChannelPostListItem,
 } from "../../lib/community/hubChannels";
 
@@ -72,6 +73,13 @@ type DfwChannelThreadListShellProps = {
   posts?: readonly HubChannelPostListItem[];
   channelsUnavailable?: boolean;
   postsUnavailable?: boolean;
+};
+
+type DfwChannelPostDetailShellProps = {
+  channel?: HubChannelListItem | null;
+  post?: HubChannelPostDetail | null;
+  channelsUnavailable?: boolean;
+  postUnavailable?: boolean;
 };
 
 type DfwHubSectionReadOnlyShellProps = {
@@ -694,6 +702,10 @@ function DfwChannelsRequestFooter() {
 
 function getDfwHubChannelHref(channelSlug: string) {
   return `/app/hubs/dfw/channels/${encodeURIComponent(channelSlug)}`;
+}
+
+function getDfwHubChannelPostHref(channelSlug: string, postId: string) {
+  return `${getDfwHubChannelHref(channelSlug)}/${encodeURIComponent(postId)}`;
 }
 
 function formatPostMetaValue(value: string) {
@@ -1545,7 +1557,7 @@ export function DfwChannelThreadListShell({
                 Back to DFW Channels
               </Link>
             </article>
-          ) : posts.length > 0 ? (
+          ) : channel && posts.length > 0 ? (
             <div className={styles.postList}>
               {posts.map((post) => (
                 <article className={styles.postCard} key={post.id}>
@@ -1555,7 +1567,14 @@ export function DfwChannelThreadListShell({
                     </span>
                     <span className={styles.postDate}>{formatPostDate(post.createdAt)}</span>
                   </div>
-                  <h3>{post.title}</h3>
+                  <h3>
+                    <Link
+                      className={styles.postTitleLink}
+                      href={getDfwHubChannelPostHref(channel.slug, post.id)}
+                    >
+                      {post.title}
+                    </Link>
+                  </h3>
                   <p>{post.body}</p>
                   <div className={styles.postMetaRow} aria-label="Thread metadata">
                     <span>{formatPostMetaValue(post.contentType)}</span>
@@ -1576,6 +1595,99 @@ export function DfwChannelThreadListShell({
               <Link className={styles.inlineBackLink} href="/app/hubs/dfw/channels">
                 Back to DFW Channels
               </Link>
+            </article>
+          )}
+        </section>
+
+        <BottomNavVisual active="Hubs" />
+      </div>
+    </main>
+  );
+}
+
+export function DfwChannelPostDetailShell({
+  channel = null,
+  post = null,
+  channelsUnavailable = false,
+  postUnavailable = false,
+}: DfwChannelPostDetailShellProps) {
+  const channelSlug = channel?.slug ?? post?.channelSlug ?? "";
+  const channelName = channel?.name ?? post?.channelName ?? "DFW Channel";
+  const channelHref = channelSlug
+    ? getDfwHubChannelHref(channelSlug)
+    : "/app/hubs/dfw/channels";
+
+  return (
+    <main className={styles.shell}>
+      <div className={styles.mobileFrame}>
+        <AppHeader
+          backHref={channelHref}
+          backLabel="Channel Threads"
+          subtitle="DFW Hub Channel thread"
+          showBackLink
+        />
+
+        <nav className={styles.breadcrumb} aria-label="DFW Channel thread breadcrumb">
+          <Link href="/app/hubs/dfw">DFW Hub</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/app/hubs/dfw/channels">Channels</Link>
+          <span aria-hidden="true">/</span>
+          <Link href={channelHref}>{channel?.shortName ?? channelName}</Link>
+          <span aria-hidden="true">/</span>
+          <span>Thread</span>
+        </nav>
+
+        <section className={styles.postDetailSurface} aria-labelledby="channel-post-detail-title">
+          <Link className={styles.inlineBackLink} href={channelHref}>
+            Back to Channel Threads
+          </Link>
+
+          {channelsUnavailable ? (
+            <p className={styles.actionFeedback}>
+              DFW Channels are unavailable right now.
+            </p>
+          ) : null}
+
+          {postUnavailable ? (
+            <p className={styles.actionFeedback}>
+              This DFW Channel thread is unavailable right now.
+            </p>
+          ) : null}
+
+          {post && !postUnavailable ? (
+            <article className={styles.postDetailCard}>
+              <div className={styles.postHeader}>
+                <span className={styles.cardMeta}>
+                  {post.isPinned ? "Pinned" : "Read-only Channel thread"}
+                </span>
+                <span className={styles.postDate}>{formatPostDate(post.createdAt)}</span>
+              </div>
+              <h1 id="channel-post-detail-title">{post.title}</h1>
+              <div className={styles.postMetaRow} aria-label="Thread metadata">
+                <span>{post.channelName}</span>
+                <span>{formatPostMetaValue(post.contentType)}</span>
+                <span>{formatPostMetaValue(post.category)}</span>
+                <span>{post.authorLabel}</span>
+              </div>
+              <p className={styles.postDetailBody}>{post.body}</p>
+              {post.updatedAt !== post.createdAt ? (
+                <p className={styles.mutedNote}>Updated {formatPostDate(post.updatedAt)}</p>
+              ) : null}
+              <p className={styles.mutedNote}>
+                This Channel thread detail is read-only for the current
+                private-beta foundation.
+              </p>
+            </article>
+          ) : (
+            <article className={styles.postEmptyState}>
+              <span className={styles.cardMeta}>Unavailable</span>
+              <h1 id="channel-post-detail-title">
+                That DFW Channel thread is unavailable.
+              </h1>
+              <p>
+                jmpseat can only show published threads that belong to this
+                active DFW Channel and are available to this private app surface.
+              </p>
             </article>
           )}
         </section>

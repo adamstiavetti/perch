@@ -28,6 +28,10 @@ or commit.
   `/app/hubs/dfw/channels/[channelSlug]`; the T26B RPC is runtime-applied and
   authenticated browser smoke passed as functional route smoke with safe empty
   states where no channel posts exist.
+- T26C adds the selected-channel post detail read foundation locally through
+  `/app/hubs/dfw/channels/[channelSlug]/[postId]` and
+  `public.get_open_hub_channel_post(...)`; runtime apply and browser smoke are
+  pending.
 
 T25B and T26A are implemented, committed, runtime-applied, and documented. The
 current gap is not whether Channels metadata exists; the gap is completing the
@@ -138,14 +142,15 @@ Out of scope:
 
 Recommended order:
 
-1. `T26C` channel post detail.
-2. `T26D` channel composer.
-3. `T26E` channel comments/reporting/moderation integration.
-4. DFW Today MVP baseline.
-5. Base MVP baseline.
-6. Layover MVP baseline.
-9. Private-beta policy/ops readiness.
-10. Route-by-route UI/UX polish.
+1. T26C targeted runtime apply.
+2. T26C browser smoke when a safe channel-post detail can be verified.
+3. `T26D` channel composer.
+4. `T26E` channel comments/reporting/moderation integration.
+5. DFW Today MVP baseline.
+6. Base MVP baseline.
+7. Layover MVP baseline.
+8. Private-beta policy/ops readiness.
+9. Route-by-route UI/UX polish.
 
 Completed prerequisites:
 

@@ -417,7 +417,24 @@ Current data model implication:
   targeted SQL execution in one explicit transaction, added only the matching
   ledger row, and did not use broad database push, migration repair,
   `apply_migration`, deploy, app code changes, staging, or commit. Authenticated
-  browser/route smoke remains pending.
+  browser/route smoke passed later as functional smoke with safe empty states
+  where no channel posts exist.
+- `FBMVP-T26C` locally adds the selected-channel post detail read RPC,
+  `public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`,
+  plus a protected `/app/hubs/dfw/channels/[channelSlug]/[postId]` route.
+- T26C resolves an active `hub_channel` child board under the active DFW parent
+  `base_board` and reads one published `board_posts` row by
+  `board_posts.board_id = resolved channel board id`. It intentionally does not
+  use `board_posts.category` as channel membership.
+- T26C returns safe detail fields only: `id`, `title`, `body`,
+  `content_type`, `category`, `is_pinned`, `created_at`, `updated_at`,
+  `author_label`, `channel_slug`, and `channel_name`. It returns no board IDs,
+  base IDs, parent board IDs, author user IDs, user IDs, emails, reporter
+  identity, moderation internals, verification fields, storage paths, signed
+  URLs, comments, or reports.
+- T26C does not add channel post creation, composer, comments, reports,
+  moderation review changes, Request a Channel workflow, broad database push,
+  runtime apply, browser smoke, or deploy.
 - Future multi-airport channel expansion may need airport-prefixed slugs or a
   scoped uniqueness model because `boards.slug` is currently globally unique.
   Once meaningful user content exists in channel boards, slugs should be
@@ -453,12 +470,16 @@ Runtime note: the six T25B child channel board rows now exist in the intended
 and T26B adds the selected-channel post-list RPC and route. T26B runtime apply
 is recorded in
 `ops/fbmvp-t26b-channel-thread-list-read-foundation-runtime-apply.md`; selected
-channel browser smoke remains pending.
+channel browser smoke passed and is recorded in
+`ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`. T26C local
+implementation adds the selected-channel post detail route/RPC; runtime apply
+and browser smoke are pending.
 
 T26A local implementation and targeted runtime apply start surfacing channel
 metadata through the real DFW Channels overview route. T26B starts the selected
-Channel thread-list route, but channel post detail, composer, comments, reports,
-and moderation integration remain incomplete until later scoped tickets.
+Channel thread-list route, and T26C starts the selected Channel post detail
+route. Composer, comments, reports, and moderation integration remain
+incomplete until later scoped tickets.
 
 Layover section strategy:
 

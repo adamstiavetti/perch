@@ -102,6 +102,15 @@ Current controlling docs for Hub work:
   private route, and no composer, Start a Thread, comments, reports,
   moderation controls, fake counts, IDs, proof/storage fields, or runtime
   comments/reports were exposed. UI/UX polish remains deferred.
+- [FBMVP-T26C Channel Post Detail Read Foundation](ops/fbmvp-t26c-channel-post-detail-read-foundation.md) - local implementation note for
+  the selected-channel post detail read slice: a safe
+  `get_open_hub_channel_post(p_base_code, p_channel_slug, p_post_id)` RPC,
+  server helper, protected `/app/hubs/dfw/channels/[channelSlug]/[postId]`
+  route, and links from selected-channel thread-list rows into detail routes.
+  It reads a published post by `board_posts.board_id` on the resolved
+  `hub_channel` board, not by `board_posts.category`, and adds no composer,
+  post creation, comments, reports, moderation review changes, Request a
+  Channel workflow, runtime apply, broad database push, or deploy.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before
@@ -236,6 +245,11 @@ Supplemental epoch-specific ticket packs:
   authenticated smoke for selected-channel thread-list routes. Composer,
   comments, reports, moderation integration, channel post detail, and
   request/create channel workflow remain later tickets.
+- [FBMVP-T26C Channel Post Detail Read Foundation](ops/fbmvp-t26c-channel-post-detail-read-foundation.md) - locally adds the selected-channel
+  post detail RPC/helper/route and links thread-list rows into
+  `/app/hubs/dfw/channels/[channelSlug]/[postId]`. Runtime apply and browser
+  smoke are pending; composer, comments, reports, moderation integration, and
+  Request a Channel workflow remain separate work.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
