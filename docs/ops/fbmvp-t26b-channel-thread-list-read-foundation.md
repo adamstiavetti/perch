@@ -141,6 +141,12 @@ code changes, staging, or commit.
 Functional browser smoke is recorded in
 `docs/ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`.
 
+Post-fix browser smoke with the existing safe `dfw-q-and-a` post is recorded in
+`docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`. It confirms the T26B
+selected-channel thread list reads and displays that child-channel post, and
+that the row links through to the selected-channel detail route after the UUID
+validation fix.
+
 The smoke verified:
 
 - authenticated eligible beta/private-app access to

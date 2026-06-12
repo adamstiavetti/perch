@@ -82,17 +82,19 @@ existing safe smoke post can be reused for browser re-smoke after deployment.
 
 ## Re-Smoke Needed
 
-After deployment, browser re-smoke should verify:
+Post-fix browser smoke is recorded in
+`docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`.
+
+That smoke verified:
 
 - direct detail route renders the existing safe post
 - selected-channel thread-list row click reaches the detail route
-- a future create flow redirects to detail rather than
-  `?post=dfw_channel_post_failed`
 - no comments, reports, moderation controls, fake counts, IDs, proof/storage
   fields, or sensitive content are exposed
 
-Do not claim T26D or T26C browser smoke is fixed until the deployed app is
-verified.
+The smoke intentionally did not submit the composer. A future full T26D
+create-browser redirect smoke requires explicit authorization to create another
+safe post.
 
 ## Documentation Governance Status
 
@@ -104,6 +106,7 @@ Docs updated:
 - `docs/ops/fbmvp-remaining-functional-backlog.md`
 - `docs/ops/fbmvp-t26d-channel-composer-browser-smoke.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`
+- `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`
 
 Docs not updated / why:
 
@@ -123,4 +126,7 @@ Runtime apply docs needed?
 
 Browser smoke docs needed?
 
-- Yes, after deployment/re-smoke.
+- Satisfied for T26B selected-channel list and T26C selected-channel detail
+  post-fix happy paths.
+- T26D full create-browser redirect smoke remains pending unless another safe
+  post is explicitly authorized.

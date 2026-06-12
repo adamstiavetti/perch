@@ -152,12 +152,12 @@ post UUID under `dfw-q-and-a`.
 A later T26D composer smoke created one safe published child-channel post and
 attempted happy-path detail rendering. That happy path failed because the
 created post detail route rendered a safe unavailable state. Follow-up
-investigation should focus on the T26D create/action return handling and T26C
-detail-read mismatch.
+investigation found malformed app-side UUID validation as the root cause.
 
-Happy-path browser smoke remains pending until the mismatch is fixed and the
-created safe child-channel post, or another explicitly approved safe post, can
-be verified.
+Post-fix browser smoke is recorded in
+`docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`. It reused the existing
+safe post and confirmed the selected-channel detail route now renders that
+valid UUID post.
 
 Future smoke should verify an authenticated eligible beta/private-app user can
 open a selected-channel post detail route when a channel post exists. If no

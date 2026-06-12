@@ -34,9 +34,9 @@ or commit.
 - T26C adds the selected-channel post detail read foundation through
   `/app/hubs/dfw/channels/[channelSlug]/[postId]` and
   `public.get_open_hub_channel_post(...)`; runtime apply is complete and
-  partial unavailable-state/access browser smoke passed. Happy-path post detail
-  smoke remains deferred until a safe published post exists on a child
-  `hub_channel` board.
+  partial unavailable-state/access browser smoke passed. Post-fix browser smoke
+  after `dfbdc79` reused the existing safe `dfw-q-and-a` post and confirmed
+  happy-path detail rendering now passes.
 - T26D adds the selected-channel composer/create-post foundation locally through
   `public.create_open_hub_channel_post(...)`, a server action, and the
   protected title/body composer on `/app/hubs/dfw/channels/[channelSlug]`.
@@ -44,8 +44,10 @@ or commit.
   passed: exactly one safe post was created in `dfw-q-and-a` and appeared in the
   selected-channel thread list, but the create flow reported failure instead of
   redirecting to detail, and direct detail navigation rendered the safe
-  unavailable state. The local UUID validation fix is implemented and needs
-  deployment/browser re-smoke.
+  unavailable state. The local UUID validation fix is implemented and post-fix
+  browser smoke confirms T26B list plus T26C detail now pass using the existing
+  safe post. T26D full create-browser redirect remains untested unless another
+  safe post is explicitly authorized.
 
 T25B, T26A, T26B, T26C, and T26D are implemented, committed, runtime-applied, and
 documented through runtime apply. The current gap is not whether Channels
@@ -157,16 +159,15 @@ Out of scope:
 
 Recommended order:
 
-1. Deploy the local UUID validation fix and re-run T26D authenticated create
-   smoke plus T26C happy-path post detail smoke.
-2. Reuse the existing safe child-channel smoke post for detail re-smoke before
-   creating any additional smoke content.
-3. `T26E` channel comments/reporting/moderation integration.
-4. DFW Today MVP baseline.
-5. Base MVP baseline.
-6. Layover MVP baseline.
-7. Private-beta policy/ops readiness.
-8. Route-by-route UI/UX polish.
+1. Decide whether to authorize a separate T26D full create-browser redirect
+   smoke that creates one additional safe post, or defer that until the next
+   creation-related ticket.
+2. `T26E` channel comments/reporting/moderation integration.
+3. DFW Today MVP baseline.
+4. Base MVP baseline.
+5. Layover MVP baseline.
+6. Private-beta policy/ops readiness.
+7. Route-by-route UI/UX polish.
 
 Completed prerequisites:
 
@@ -177,6 +178,8 @@ Completed prerequisites:
 - T26D failed/partial authenticated browser smoke with one safe child-channel
   smoke post created.
 - T26D local UUID validation fix.
+- Post-fix authenticated browser smoke confirming T26B thread-list and T26C
+  detail happy paths using the existing safe child-channel smoke post.
 - Stale test cleanup:
   - `test/community/hubChannelSeeds.test.mts`
   - `test/community/boardPostActions.test.mts`

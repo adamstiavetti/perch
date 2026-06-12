@@ -201,8 +201,15 @@ is recorded in
 
 ## Remaining Work
 
-The next step is deployment and browser re-smoke. Reuse the existing safe post
-for detail verification before creating any additional smoke content.
+Post-fix browser smoke is recorded in
+`docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`. It reused the existing
+safe post and confirmed the T26B selected-channel thread list and T26C
+selected-channel detail happy paths.
+
+T26D full create-browser redirect remains untested after the fix because the
+post-fix smoke intentionally did not submit the composer or create another post.
+That follow-up requires explicit authorization to create one additional safe
+post.
 
 UI/UX polish remains deferred.
 
@@ -236,6 +243,7 @@ Docs updated:
 - `docs/ops/fbmvp-t26d-channel-composer-create-foundation-runtime-apply.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-read-foundation.md`
+- `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`
 
 Docs not updated / why:
 
@@ -258,5 +266,7 @@ Runtime apply docs needed?
 Browser smoke docs needed?
 
 - Satisfied by this record for the failed/partial T26D browser smoke.
-- Follow-up browser smoke will be needed after the local UUID validation fix is
-  deployed.
+- Post-fix smoke is satisfied for T26B selected-channel list and T26C
+  selected-channel detail happy paths.
+- T26D full create-browser redirect smoke remains pending unless another safe
+  post is explicitly authorized.

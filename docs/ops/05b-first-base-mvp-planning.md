@@ -280,9 +280,14 @@ public-domain, and privacy boundaries held.
 The local UUID validation fix is recorded in
 `docs/ops/fbmvp-t26d-channel-composer-uuid-validation-fix.md`. The root cause was
 malformed app-side selected-channel UUID validation in the create and detail
-helpers. No runtime migration is needed. After deployment, re-smoke should reuse
-the existing safe post `7f93f9a9-3dd1-4718-979a-2acc8194a999` before creating
-any additional smoke content.
+helpers. No runtime migration is needed.
+
+Post-fix authenticated browser smoke is recorded in
+`docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`. It reused the existing
+safe post `7f93f9a9-3dd1-4718-979a-2acc8194a999`; T26B selected-channel
+thread-list behavior passed and T26C selected-channel detail rendering passed.
+No new post was created, and T26D full create-browser redirect remains untested
+unless another safe post is explicitly authorized.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -635,16 +640,18 @@ The current implementation sequence is:
 28. `FBMVP-T26C` selected-channel post detail read foundation, locally
     implemented and runtime-applied with a safe channel post-detail RPC and
     protected `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; partial
-    unavailable-state/access browser smoke passed, while happy-path post
-    rendering failed for the later safe smoke post and remains pending until the
-    create/detail mismatch is fixed
+    unavailable-state/access browser smoke passed, and post-fix happy-path
+    rendering now passes for the existing safe `dfw-q-and-a` smoke post after
+    the UUID validation fix
 29. `FBMVP-T26D` selected-channel composer/create-post foundation, locally
     implemented and runtime-applied with a safe channel post-create RPC, server
     action, and protected selected-channel title/body composer; browser smoke
     failed/partially passed because the post was created and shown in the thread
     list, but the create flow reported failure and the detail route did not
     render the created post; the local UUID validation fix is implemented and
-    deployment/browser re-smoke remains pending
+    post-fix browser smoke confirms T26B list plus T26C detail now pass using
+    the existing safe post, while full T26D create-browser redirect remains
+    untested without explicit authorization to create another safe post
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.
@@ -681,8 +688,10 @@ channel-list metadata RPC and adds the DFW Channels overview route. Channel post
 list reads start in T26B with `board_posts.board_id` membership; channel post
 detail reads start in T26C. Channel post creation starts in T26D. T26D browser
 smoke found a create/detail mismatch caused by malformed app-side UUID
-validation. The local fix is implemented; browser re-smoke should reuse the
-existing safe post after deployment.
+validation. The local fix is implemented, and post-fix browser smoke reused the
+existing safe post to verify T26B list and T26C detail happy paths. T26D full
+create-browser redirect remains untested until another safe post is explicitly
+authorized.
 The recommended next ticket is `FBMVP-T23A: DFW Hub Channels UX Wireframe`
 before DB implementation unless there is a strong reason to proceed directly to
 `FBMVP-T23: DFW Hub Channels Foundation`.

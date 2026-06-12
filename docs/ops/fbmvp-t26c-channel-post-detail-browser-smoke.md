@@ -174,11 +174,12 @@ post created during T26D smoke:
 - channel: `dfw-q-and-a`
 - title: `DFW Q&A smoke test thread`
 
-The next implementation task should investigate the T26D create/action return
-handling and T26C detail-read mismatch before additional smoke posts are
-created. Follow-up diagnosis found malformed app-side UUID validation as the
-local root cause, and the fix is recorded in
-`docs/ops/fbmvp-t26d-channel-composer-uuid-validation-fix.md`.
+Follow-up diagnosis found malformed app-side UUID validation as the local root
+cause, and the fix is recorded in
+`docs/ops/fbmvp-t26d-channel-composer-uuid-validation-fix.md`. Post-fix browser
+smoke is recorded in `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`; it
+reused the existing safe post and confirmed T26C happy-path detail rendering now
+passes.
 
 UI/UX polish remains deferred.
 
@@ -205,6 +206,7 @@ Docs updated:
 - `docs/ops/fbmvp-remaining-functional-backlog.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-read-foundation.md`
 - `docs/ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`
+- `docs/ops/fbmvp-t26d-t26c-post-fix-browser-smoke.md`
 
 Docs not updated / why:
 
@@ -229,5 +231,6 @@ Browser smoke docs needed?
 - Partially satisfied by this record for route/access/unavailable-state
   behavior.
 - Happy-path browser smoke was later attempted during T26D smoke and failed for
-  the created safe child-channel post. Follow-up smoke remains needed after the
-  local UUID validation fix is deployed.
+  the created safe child-channel post.
+- Post-fix browser smoke now satisfies the T26C happy-path detail read using the
+  existing safe post.
