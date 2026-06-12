@@ -434,7 +434,13 @@ Current data model implication:
   URLs, comments, or reports.
 - T26C does not add channel post creation, composer, comments, reports,
   moderation review changes, Request a Channel workflow, broad database push,
-  runtime apply, browser smoke, or deploy.
+  browser smoke, or deploy.
+- T26C is runtime-applied as
+  `20260612024544 create_hub_channel_post_detail_rpc`. The runtime apply used
+  a targeted SQL transaction, added only the matching ledger row, and did not
+  use broad database push, migration repair, `apply_migration`, deploy, app
+  code changes, staging, or commit. Authenticated browser/route smoke remains
+  pending and may require a safe post existing on a child `hub_channel` board.
 - Future multi-airport channel expansion may need airport-prefixed slugs or a
   scoped uniqueness model because `boards.slug` is currently globally unique.
   Once meaningful user content exists in channel boards, slugs should be
@@ -472,8 +478,10 @@ is recorded in
 `ops/fbmvp-t26b-channel-thread-list-read-foundation-runtime-apply.md`; selected
 channel browser smoke passed and is recorded in
 `ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`. T26C local
-implementation adds the selected-channel post detail route/RPC; runtime apply
-and browser smoke are pending.
+implementation adds the selected-channel post detail route/RPC, and T26C
+runtime apply is recorded in
+`ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`; browser
+smoke remains pending.
 
 T26A local implementation and targeted runtime apply start surfacing channel
 metadata through the real DFW Channels overview route. T26B starts the selected

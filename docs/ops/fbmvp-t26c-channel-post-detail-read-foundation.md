@@ -16,9 +16,10 @@ It adds:
   `/app/hubs/dfw/channels/[channelSlug]/[postId]`
 - links from selected-channel thread-list rows into the post detail route
 
-Runtime apply is pending until separately reviewed and applied with the
-established targeted SQL pattern. Browser smoke is pending until runtime apply
-and beta deployment verification.
+Runtime apply is recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`.
+Browser smoke is pending until beta deployment verification and a safe
+child-channel post detail can be verified.
 
 ## RPC Scope
 
@@ -123,21 +124,25 @@ live crew movement/location.
 
 ## Runtime Apply
 
-Runtime apply is pending.
+Runtime apply is complete and recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`.
 
-Future runtime apply should use the established targeted SQL pattern only:
+The apply used the established targeted SQL pattern only:
 
-- apply only
+- applied only
   `supabase/migrations/20260612024544_create_hub_channel_post_detail_rpc.sql`
-- insert one matching migration ledger row after successful apply
-- do not run broad `supabase db push`
-- do not run migration repair unless explicitly instructed
-- do not deploy as part of the database apply
+- inserted one matching migration ledger row:
+  - `20260612024544 create_hub_channel_post_detail_rpc`
+- did not run broad `supabase db push`
+- did not run migration repair
+- did not use `apply_migration`
+- did not deploy
+- did not change app code during runtime apply
 
 ## Browser Smoke
 
-Browser smoke is pending until the migration is runtime-applied and the app code
-is available on the reviewed beta deployment.
+Browser smoke is pending until the app code is available on the reviewed beta
+deployment and a safe child-channel post detail can be verified.
 
 Future smoke should verify an authenticated eligible beta/private-app user can
 open a selected-channel post detail route when a channel post exists. If no

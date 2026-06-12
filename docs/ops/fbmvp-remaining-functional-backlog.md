@@ -18,7 +18,10 @@ or commit.
 - Current surface: `DFW Hub`
 - Current functional foundation: Channels metadata route plus runtime RPC
 - Current route foundation: `/app/hubs/dfw/channels`
-- Current runtime function: `public.list_open_hub_channels(p_base_code text)`
+- Current runtime functions:
+  - `public.list_open_hub_channels(p_base_code text)`
+  - `public.list_open_hub_channel_posts(p_base_code text, p_channel_slug text, p_limit integer)`
+  - `public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`
 - Current channel data model: `hub_channel` child rows in `public.boards`
 - Authenticated browser smoke for `/app/hubs/dfw/channels` passed as functional
   route smoke in
@@ -28,14 +31,15 @@ or commit.
   `/app/hubs/dfw/channels/[channelSlug]`; the T26B RPC is runtime-applied and
   authenticated browser smoke passed as functional route smoke with safe empty
   states where no channel posts exist.
-- T26C adds the selected-channel post detail read foundation locally through
+- T26C adds the selected-channel post detail read foundation through
   `/app/hubs/dfw/channels/[channelSlug]/[postId]` and
-  `public.get_open_hub_channel_post(...)`; runtime apply and browser smoke are
-  pending.
+  `public.get_open_hub_channel_post(...)`; runtime apply is complete and
+  browser smoke is pending.
 
-T25B and T26A are implemented, committed, runtime-applied, and documented. The
-current gap is not whether Channels metadata exists; the gap is completing the
-DFW Hub utility loop across the four MVP pillars below.
+T25B, T26A, T26B, and T26C are implemented, committed, runtime-applied, and
+documented through runtime apply. The current gap is not whether Channels
+metadata/read foundations exist; the gap is completing the DFW Hub utility loop
+across the four MVP pillars below.
 
 ## Narrow DFW MVP Pillars
 
@@ -142,19 +146,19 @@ Out of scope:
 
 Recommended order:
 
-1. T26C targeted runtime apply.
-2. T26C browser smoke when a safe channel-post detail can be verified.
-3. `T26D` channel composer.
-4. `T26E` channel comments/reporting/moderation integration.
-5. DFW Today MVP baseline.
-6. Base MVP baseline.
-7. Layover MVP baseline.
-8. Private-beta policy/ops readiness.
-9. Route-by-route UI/UX polish.
+1. T26C browser smoke when a safe channel-post detail can be verified.
+2. `T26D` channel composer.
+3. `T26E` channel comments/reporting/moderation integration.
+4. DFW Today MVP baseline.
+5. Base MVP baseline.
+6. Layover MVP baseline.
+7. Private-beta policy/ops readiness.
+8. Route-by-route UI/UX polish.
 
 Completed prerequisites:
 
 - Authenticated browser smoke for `/app/hubs/dfw/channels`.
+- T26C targeted runtime apply.
 - Stale test cleanup:
   - `test/community/hubChannelSeeds.test.mts`
   - `test/community/boardPostActions.test.mts`

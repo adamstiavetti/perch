@@ -219,8 +219,18 @@ thread-list rows into post detail routes. It reads one published post by
 `board_posts.board_id` on the resolved `hub_channel` board, not by
 `board_posts.category`. It does not add composer, channel post creation,
 comments, reports, moderation review changes, Request a Channel workflow, DFW
-Today/Base/Layover baseline work, runtime apply, browser smoke, broad database
-push, or deploy.
+Today/Base/Layover baseline work, browser smoke, broad database push, or
+deploy.
+
+T26C targeted runtime apply is recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`.
+Runtime now has
+`public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`.
+The apply used targeted SQL transaction only, added ledger row
+`20260612024544 create_hub_channel_post_detail_rpc`, and did not use broad
+database push, migration repair, `apply_migration`, deploy, app code changes,
+staging, or commit. Authenticated browser/route smoke remains pending and may
+require a safe post on a child `hub_channel` board.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -571,9 +581,9 @@ The current implementation sequence is:
     passed as functional route smoke with safe empty states and UI/UX polish
     deferred
 28. `FBMVP-T26C` selected-channel post detail read foundation, locally
-    implemented with a safe channel post-detail RPC and protected
-    `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; runtime apply and
-    browser smoke are pending
+    implemented and runtime-applied with a safe channel post-detail RPC and
+    protected `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; browser
+    smoke is pending
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.

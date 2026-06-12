@@ -509,10 +509,14 @@ a server helper, a protected selected-channel post detail route at
 `/app/hubs/dfw/channels/[channelSlug]/[postId]`, and links from selected-channel
 thread-list rows into detail routes. It reads one published post by
 `board_posts.board_id` on the resolved `hub_channel` board and does not use
-`board_posts.category` as channel membership. Runtime apply and browser smoke
-remain pending; composer, comments, reports, moderation review changes, Request
-a Channel workflow, DFW Today/Base/Layover baselines, broad database push, and
-deploy remain out of scope.
+`board_posts.category` as channel membership. T26C targeted runtime apply is
+recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`;
+runtime now has
+`public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`.
+Browser smoke remains pending; composer, comments, reports, moderation review
+changes, Request a Channel workflow, DFW Today/Base/Layover baselines, broad
+database push, and deploy remain out of scope.
 
 The current DFW Hub + Channels foundation checkpoint is recorded in
 `docs/ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md` at
@@ -573,8 +577,8 @@ Implementation note:
 - The real `/app/hubs/dfw/channels` route now represents DFW Channels metadata;
   selected-channel thread lists are implemented through
   `/app/hubs/dfw/channels/[channelSlug]`; selected-channel post detail is
-  locally implemented at `/app/hubs/dfw/channels/[channelSlug]/[postId]` with
-  runtime apply and browser smoke still pending.
+  implemented at `/app/hubs/dfw/channels/[channelSlug]/[postId]` with runtime
+  apply complete and browser smoke still pending.
 - The existing `/app/hubs/dfw/layovers` route is framed as `DFW Layover`.
 - The existing `/app/hubs/dfw/crew-picks` route is framed as
   `Recent Useful Threads`.
