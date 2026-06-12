@@ -360,6 +360,8 @@ test("DFW Baseboard route fetches read-only posts only after the private gate", 
 });
 
 test("DFW Baseboard shell supports empty, populated, and minimal composer states", () => {
+  const baseboardPostsSource = sourceForFunction("DfwBaseboardPostsSection");
+
   assert.match(shellSource, /baseboardPosts\?:/);
   assert.match(shellSource, /baseboardPostsUnavailable\?: boolean/);
   assert.match(shellSource, /createBaseboardPostAction\?:/);
@@ -387,8 +389,8 @@ test("DFW Baseboard shell supports empty, populated, and minimal composer states
 
   assert.doesNotMatch(shellSource, /Ask Baseboard coming later/);
   assert.doesNotMatch(shellSource, /Community posting is not live yet/);
-  assert.doesNotMatch(shellSource, /create_board_post/);
-  assert.doesNotMatch(shellSource, /name="category"|name="content_type"/);
+  assert.doesNotMatch(baseboardPostsSource, /create_board_post/);
+  assert.doesNotMatch(baseboardPostsSource, /name="category"|name="content_type"|name="contentType"/);
 });
 
 test("DFW Baseboard post rendering stays safe and avoids out-of-scope surfaces", () => {
@@ -461,17 +463,20 @@ test("DFW Hub cards link to read-only section route shells", () => {
   assert.match(shellSource, /read-only placeholder/);
 });
 
-test("DFW Channels selected-channel shell stays read-only and avoids old labels", () => {
+test("DFW Channels selected-channel shell supports scoped composer and avoids old labels", () => {
   const selectedChannelSource = sourceForFunction("DfwChannelThreadListShell");
 
   assert.match(selectedChannelSource, /DFW Hub Channel/);
   assert.match(selectedChannelSource, /Back to DFW Channels/);
   assert.match(selectedChannelSource, /Channel Threads/);
+  assert.match(selectedChannelSource, /Start a Thread/);
+  assert.match(selectedChannelSource, /Post to this DFW Channel/);
+  assert.match(selectedChannelSource, /Publish thread/);
   assert.match(selectedChannelSource, /No threads in this Channel yet/);
   assert.match(selectedChannelSource, /post\.authorLabel/);
   assert.match(selectedChannelSource, /formatPostMetaValue\(post\.contentType\)/);
   assert.match(selectedChannelSource, /formatPostMetaValue\(post\.category\)/);
-  assert.doesNotMatch(selectedChannelSource, /Start a Thread|Publish post|composer|textarea|comment form|Report this post|moderation controls|fake activity|thread count|activity count/i);
+  assert.doesNotMatch(selectedChannelSource, /comment form|reply form|Report this post|moderation controls|Request a Channel workflow|fake activity|thread count|activity count/i);
 
   for (const retiredLabel of [
     "Baseboard",

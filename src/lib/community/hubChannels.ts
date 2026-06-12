@@ -5,6 +5,14 @@ import { createClient } from "../supabase/server";
 const DEFAULT_CHANNEL_POST_LIMIT = 20;
 const FALLBACK_AUTHOR_LABEL = "jmpseat member";
 
+export const DFW_HUB_CHANNEL_POST_STATUS_PARAM = "post";
+export const DFW_HUB_CHANNEL_POST_INVALID_STATUS = "dfw_channel_post_invalid";
+export const DFW_HUB_CHANNEL_POST_FAILED_STATUS = "dfw_channel_post_failed";
+
+export type DfwHubChannelPostStatus =
+  | typeof DFW_HUB_CHANNEL_POST_INVALID_STATUS
+  | typeof DFW_HUB_CHANNEL_POST_FAILED_STATUS;
+
 export type HubChannelListItem = {
   slug: string;
   name: string;
@@ -54,6 +62,17 @@ type OpenHubChannelPostDetailRpcRow = OpenHubChannelPostRpcRow & {
   channel_slug: string;
   channel_name: string;
 };
+
+const dfwHubChannelPostStatuses = new Set<string>([
+  DFW_HUB_CHANNEL_POST_INVALID_STATUS,
+  DFW_HUB_CHANNEL_POST_FAILED_STATUS,
+]);
+
+export function isDfwHubChannelPostStatus(
+  value: string | string[] | undefined,
+): value is DfwHubChannelPostStatus {
+  return typeof value === "string" && dfwHubChannelPostStatuses.has(value);
+}
 
 function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(

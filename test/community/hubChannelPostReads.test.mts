@@ -157,20 +157,22 @@ test("T26B selected channel route is private gated before channel metadata and p
   assert.doesNotMatch(selectedChannelRouteSource, /\.insert\(|\.update\(|\.delete\(/);
 });
 
-test("T26B selected channel shell renders thread list without composer or moderation controls", () => {
+test("T26B selected channel shell renders thread list without moderation or out-of-scope controls", () => {
   const selectedChannelShellSource = sourceForExportedFunction("DfwChannelThreadListShell");
 
   assert.match(selectedChannelShellSource, /DFW Hub Channel/);
   assert.match(selectedChannelShellSource, /Back to DFW Channels/);
   assert.match(selectedChannelShellSource, /Channel Threads/);
   assert.match(selectedChannelShellSource, /Published threads for this DFW Channel/);
+  assert.match(selectedChannelShellSource, /Start a Thread/);
+  assert.match(selectedChannelShellSource, /Post to this DFW Channel/);
   assert.match(selectedChannelShellSource, /No threads in this Channel yet/);
   assert.match(selectedChannelShellSource, /Threads for this DFW Channel are unavailable right now/);
   assert.match(selectedChannelShellSource, /post\.authorLabel/);
   assert.match(selectedChannelShellSource, /formatPostMetaValue\(post\.contentType\)/);
   assert.match(selectedChannelShellSource, /formatPostMetaValue\(post\.category\)/);
 
-  assert.doesNotMatch(selectedChannelShellSource, /Start a Thread|Post to|Publish post|composer|textarea|comment form|Report this post|moderation controls|fake activity|thread count|activity count/i);
+  assert.doesNotMatch(selectedChannelShellSource, /comment form|reply form|Report this post|moderation controls|Request a Channel workflow|fake activity|thread count|activity count/i);
   for (const retiredLabel of [
     "Baseboard",
     "Base Board",

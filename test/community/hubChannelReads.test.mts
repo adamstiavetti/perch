@@ -148,7 +148,7 @@ test("T26A Channels overview copy avoids posting and retired labels", () => {
   assert.match(shellSource, /channelsUnavailable/);
 
   const channelsStart = shellSource.indexOf("export function DfwChannelsOverviewShell");
-  const channelsEnd = shellSource.indexOf("export function DfwHubSectionReadOnlyShell");
+  const channelsEnd = shellSource.indexOf("export function DfwChannelThreadListShell");
   const channelsSource = shellSource.slice(channelsStart, channelsEnd);
 
   assert.doesNotMatch(channelsSource, /Start a Thread|Post to DFW Channels|Publish post|fake activity|thread count|activity count/i);

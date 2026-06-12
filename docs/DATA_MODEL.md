@@ -441,6 +441,23 @@ Current data model implication:
   use broad database push, migration repair, `apply_migration`, deploy, app
   code changes, staging, or commit. Authenticated browser/route smoke remains
   pending and may require a safe post existing on a child `hub_channel` board.
+- `FBMVP-T26D` locally adds the selected-channel post create RPC,
+  `public.create_open_hub_channel_post(p_base_code text, p_channel_slug text, p_title text, p_body text, p_content_type text default null, p_category text default null)`,
+  plus a server action and selected-channel title/body composer on
+  `/app/hubs/dfw/channels/[channelSlug]`.
+- T26D resolves an active member-postable `hub_channel` child board under the
+  active DFW parent `base_board` and inserts the new post with
+  `board_posts.board_id = resolved channel board id`. It intentionally does not
+  use `board_posts.category` as channel membership.
+- T26D returns safe create-result fields only: `id`, `title`, `body`,
+  `content_type`, `category`, `is_pinned`, `created_at`, `updated_at`,
+  `author_label`, `channel_slug`, and `channel_name`. It returns no board IDs,
+  base IDs, parent board IDs, author user IDs, user IDs, emails, reporter
+  identity, moderation internals, verification fields, storage paths, signed
+  URLs, comments, or reports.
+- T26D does not add comments, reports, moderation review changes, Request a
+  Channel workflow, DFW Today/Base/Layover baseline work, broad database push,
+  browser smoke, or deploy. Runtime apply is pending.
 - Future multi-airport channel expansion may need airport-prefixed slugs or a
   scoped uniqueness model because `boards.slug` is currently globally unique.
   Once meaningful user content exists in channel boards, slugs should be

@@ -240,18 +240,19 @@ test("T26C selected-channel thread-list rows link to post detail routes", () => 
   assert.match(selectedChannelShellSource, /postTitleLink/);
 });
 
-test("T26C docs record local-only detail scope and pending runtime checks", () => {
+test("T26C docs record detail scope, runtime apply, and pending happy-path smoke", () => {
   assert.match(docsSource, /FBMVP-T26C/i);
   assert.match(docsSource, /Channel Post Detail Read Foundation/i);
   assert.match(docsSource, /get_open_hub_channel_post/i);
   assert.match(docsSource, /\/app\/hubs\/dfw\/channels\/\[channelSlug\]\/\[postId\]/);
   assert.match(docsSource, /board_posts\.board_id/);
   assert.match(docsSource, /board_posts\.category/);
-  assert.match(docsSource, /runtime apply (is )?pending/i);
-  assert.match(docsSource, /browser smoke (is )?pending/i);
+  assert.match(docsSource, /runtime apply is recorded|runtime apply is complete|T26C is runtime-applied/i);
+  assert.match(docsSource, /20260612024544 create_hub_channel_post_detail_rpc/i);
+  assert.match(docsSource, /happy-path browser smoke remains pending|happy-path post rendering remains pending/i);
   assert.match(docsSource, /does not add[\s\S]*composer/i);
   assert.match(docsSource, /does not add[\s\S]*comments/i);
   assert.match(docsSource, /does not add[\s\S]*reports/i);
   assert.match(docsSource, /DFW Today\/Base\/Layover|DFW Today, Base, Layover/i);
-  assert.doesNotMatch(docsSource, /T26C is runtime-applied|T26C runtime apply passed|T26C browser smoke passed/i);
+  assert.doesNotMatch(docsSource, /T26C browser smoke passed|happy-path browser smoke passed/i);
 });

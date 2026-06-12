@@ -243,6 +243,17 @@ apex did not expose the private app route; product/security boundaries held.
 Happy-path browser smoke remains deferred until a safe published post exists on
 a child `hub_channel` board.
 
+T26D local implementation is recorded in
+`docs/ops/fbmvp-t26d-channel-composer-create-foundation.md`. It adds
+`public.create_open_hub_channel_post(p_base_code text, p_channel_slug text, p_title text, p_body text, p_content_type text default null, p_category text default null)`,
+a server action, and a title/body composer on
+`/app/hubs/dfw/channels/[channelSlug]`. It resolves the selected active
+member-postable `hub_channel` board server-side and inserts with
+`board_posts.board_id`, not `board_posts.category`. It does not add comments,
+reports, moderation review changes, Request a Channel workflow, DFW
+Today/Base/Layover baseline work, broad database push, runtime apply, browser
+smoke, or deploy.
+
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
 `docs/ops/fbmvp-remaining-functional-backlog.md`. It clarifies that Channels
@@ -596,6 +607,10 @@ The current implementation sequence is:
     protected `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; partial
     unavailable-state/access browser smoke passed, while happy-path post
     rendering remains pending until a safe child-channel post exists
+29. `FBMVP-T26D` selected-channel composer/create-post foundation, locally
+    implemented with a safe channel post-create RPC, server action, and
+    protected selected-channel title/body composer; runtime apply and browser
+    smoke remain pending
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.

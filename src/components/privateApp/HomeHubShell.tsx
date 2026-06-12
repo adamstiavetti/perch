@@ -25,9 +25,14 @@ import {
   type DfwBaseboardReportStatus,
 } from "../../lib/community/boardPostSafetyActionState";
 import type {
+  DfwHubChannelPostStatus,
   HubChannelListItem,
   HubChannelPostDetail,
   HubChannelPostListItem,
+} from "../../lib/community/hubChannels";
+import {
+  DFW_HUB_CHANNEL_POST_FAILED_STATUS,
+  DFW_HUB_CHANNEL_POST_INVALID_STATUS,
 } from "../../lib/community/hubChannels";
 
 import styles from "./homeHubShell.module.css";
@@ -73,6 +78,8 @@ type DfwChannelThreadListShellProps = {
   posts?: readonly HubChannelPostListItem[];
   channelsUnavailable?: boolean;
   postsUnavailable?: boolean;
+  postStatus?: DfwHubChannelPostStatus | null;
+  createPostAction?: (formData: FormData) => Promise<void>;
 };
 
 type DfwChannelPostDetailShellProps = {
@@ -1493,10 +1500,18 @@ export function DfwChannelThreadListShell({
   posts = [],
   channelsUnavailable = false,
   postsUnavailable = false,
+  postStatus = null,
+  createPostAction,
 }: DfwChannelThreadListShellProps) {
   const channelName = channel?.name ?? "DFW Channel";
   const channelDescription =
     channel?.description ?? "This DFW Channel is unavailable right now.";
+  const postStatusMessage =
+    postStatus === DFW_HUB_CHANNEL_POST_INVALID_STATUS
+      ? "Add a title and body before posting. Titles can be up to 120 characters and posts up to 4,000 characters."
+      : postStatus === DFW_HUB_CHANNEL_POST_FAILED_STATUS
+        ? "jmpseat could not publish that Channel thread right now. Try again in a moment."
+        : null;
 
   return (
     <main className={styles.shell}>
@@ -1527,11 +1542,59 @@ export function DfwChannelThreadListShell({
             <div>
               <h2 id="dfw-channel-threads-title">Channel Threads</h2>
               <p>
-                Published threads for this DFW Channel. Contribution and
-                review tools are later scoped tickets.
+                Published threads for this DFW Channel. Start a focused
+                thread here; comments and reports are later scoped tickets.
               </p>
             </div>
           </div>
+
+          {channel && createPostAction ? (
+            <form
+              action={createPostAction}
+              aria-labelledby="channel-composer-title"
+              className={styles.baseboardComposer}
+            >
+              <div>
+                <span className={styles.cardMeta}>Start a Thread</span>
+                <h3 id="channel-composer-title">Post to this DFW Channel</h3>
+                <p>
+                  Keep it useful, non-sensitive, and specific to this selected
+                  Channel. Comments and reports are later scoped tickets.
+                </p>
+              </div>
+              <label className={styles.composerField}>
+                <span>Title</span>
+                <input
+                  maxLength={120}
+                  name="title"
+                  placeholder="Ask a question or share a practical update"
+                  required
+                  type="text"
+                />
+              </label>
+              <label className={styles.composerField}>
+                <span>Body</span>
+                <textarea
+                  maxLength={4000}
+                  name="body"
+                  placeholder="Keep it useful for DFW aviation workers."
+                  required
+                  rows={5}
+                />
+              </label>
+              <input name="contentType" type="hidden" value="note" />
+              <input name="category" type="hidden" value="general" />
+              <button className={styles.composerSubmit} type="submit">
+                Publish thread
+              </button>
+            </form>
+          ) : null}
+
+          {postStatusMessage ? (
+            <p className={styles.actionFeedback} role="status">
+              {postStatusMessage}
+            </p>
+          ) : null}
 
           {channelsUnavailable ? (
             <p className={styles.actionFeedback}>
@@ -1590,7 +1653,7 @@ export function DfwChannelThreadListShell({
               <h3>No threads in this Channel yet.</h3>
               <p>
                 Published threads for this selected DFW Channel will appear
-                here after channel-specific posting is implemented and used.
+                here after eligible private-beta members post to this Channel.
               </p>
               <Link className={styles.inlineBackLink} href="/app/hubs/dfw/channels">
                 Back to DFW Channels
