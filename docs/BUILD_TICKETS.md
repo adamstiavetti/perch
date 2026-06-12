@@ -93,8 +93,15 @@ Current controlling docs for Hub work:
   The apply used targeted SQL execution in one explicit transaction, added only
   ledger row `20260611214500 create_hub_channel_post_list_rpc`, and did not use
   broad database push, migration repair, `apply_migration`, deploy, app code
-  changes, staging, or commit. Authenticated browser smoke for the selected
-  channel route remains pending.
+  changes, staging, or commit.
+- [FBMVP-T26B Selected Channel Authenticated Browser Smoke](ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md) - records functional
+  beta browser smoke for `/app/hubs/dfw/channels/[channelSlug]`. Authenticated
+  eligible access reached `dfw-q-and-a` and `commuting-parking`, safe empty
+  states rendered where no channel posts exist, overview row navigation worked,
+  anonymous beta access redirected to login, public apex did not expose the
+  private route, and no composer, Start a Thread, comments, reports,
+  moderation controls, fake counts, IDs, proof/storage fields, or runtime
+  comments/reports were exposed. UI/UX polish remains deferred.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before
@@ -224,8 +231,10 @@ Supplemental epoch-specific ticket packs:
 - [FBMVP-T26B Channel Thread-List Read Foundation](ops/fbmvp-t26b-channel-thread-list-read-foundation.md) - locally adds the selected
   DFW Channel thread-list read foundation.
 - [FBMVP-T26B Channel Thread-List Read Runtime Apply](ops/fbmvp-t26b-channel-thread-list-read-foundation-runtime-apply.md) - records targeted runtime
-  apply for `public.list_open_hub_channel_posts(...)`. Browser smoke remains
-  pending; composer, comments, reports, moderation integration, and
+  apply for `public.list_open_hub_channel_posts(...)`.
+- [FBMVP-T26B Selected Channel Authenticated Browser Smoke](ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md) - records functional
+  authenticated smoke for selected-channel thread-list routes. Composer,
+  comments, reports, moderation integration, channel post detail, and
   request/create channel workflow remain later tickets.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.

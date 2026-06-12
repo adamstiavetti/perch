@@ -121,9 +121,11 @@ provide a safe real authenticated user context, so no authenticated RPC result i
 claimed here.
 
 Authenticated browser/route smoke for
-`/app/hubs/dfw/channels/[channelSlug]` remains pending until the app deployment
-contains the T26B route/helper code and a real eligible beta/private-app session
-can verify it.
+`/app/hubs/dfw/channels/[channelSlug]` is recorded in
+`docs/ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`.
+
+The smoke passed functionally for `dfw-q-and-a` and `commuting-parking`, with
+safe empty states where no channel posts exist and UI/UX polish deferred.
 
 ## Explicitly Still Not Implemented
 
@@ -147,8 +149,9 @@ T26B still does not add:
 
 ## Next Step
 
-Deploy the committed app code through the normal deployment path, then run
-authenticated browser smoke for `/app/hubs/dfw/channels/[channelSlug]`.
+Move to the next explicitly scoped functional ticket, likely `T26C` channel post
+detail, unless the user chooses a dedicated UI/UX polish pass first.
 
-Runtime apply docs are satisfied by this record. Browser smoke docs are still
-needed after deployment/browser verification.
+Runtime apply docs are satisfied by this record. Browser smoke docs are
+satisfied by
+`docs/ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`.

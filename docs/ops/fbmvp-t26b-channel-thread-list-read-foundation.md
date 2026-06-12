@@ -16,9 +16,10 @@ It adds:
   `/app/hubs/dfw/channels/[channelSlug]`
 - links from DFW Channels overview rows into selected-channel routes
 
-Runtime apply is pending until separately reviewed and applied with the
-targeted migration pattern. Browser smoke is pending until runtime apply,
-deployment, and authenticated route verification.
+Runtime apply is recorded in
+`docs/ops/fbmvp-t26b-channel-thread-list-read-foundation-runtime-apply.md`.
+Functional authenticated browser smoke is recorded in
+`docs/ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`.
 
 ## RPC Scope
 
@@ -137,14 +138,24 @@ code changes, staging, or commit.
 
 ## Browser Smoke
 
-Browser smoke is pending until:
+Functional browser smoke is recorded in
+`docs/ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`.
 
-- the app deployment contains the T26B route/helper code
-- an authenticated eligible beta/private-app session can verify
-  `/app/hubs/dfw/channels/[channelSlug]`
+The smoke verified:
 
-Smoke should verify functional route behavior only unless a separate polish
-ticket explicitly scopes UI/UX review.
+- authenticated eligible beta/private-app access to
+  `/app/hubs/dfw/channels/dfw-q-and-a`
+- authenticated eligible beta/private-app access to
+  `/app/hubs/dfw/channels/commuting-parking`
+- selected channel metadata rendering
+- safe empty state rendering when no channel posts exist
+- overview-row navigation into the selected-channel route
+- no unavailable/error state
+- no composer, comments, reports, moderation controls, Request a Channel
+  workflow, fake counts, or sensitive/private data exposure
+
+The smoke is functional only. It is not visual approval and does not mean the
+route is MVP-polished.
 
 ## Validation
 

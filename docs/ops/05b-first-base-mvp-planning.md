@@ -199,7 +199,16 @@ The apply used targeted SQL execution in one explicit transaction, added only
 ledger row `20260611214500 create_hub_channel_post_list_rpc`, and did not use
 broad database push, migration repair, `apply_migration`, deploy, app code
 changes, staging, or commit. Authenticated browser smoke for
-`/app/hubs/dfw/channels/[channelSlug]` remains pending.
+`/app/hubs/dfw/channels/[channelSlug]` later passed as functional route smoke.
+
+T26B selected-channel authenticated browser smoke is recorded in
+`docs/ops/fbmvp-t26b-selected-channel-authenticated-browser-smoke.md`. It
+verified `dfw-q-and-a` and `commuting-parking`, safe empty states where no
+channel posts exist, overview-row navigation into selected-channel pages,
+authenticated beta access, login redirect for anonymous beta access, and public
+apex non-exposure of the private route. The smoke is functional only; UI/UX
+polish remains deferred and T26C channel post detail remains future work unless
+explicitly rescoped.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -546,7 +555,9 @@ The current implementation sequence is:
     significant UI/UX polish deferred
 27. `FBMVP-T26B` selected-channel thread-list read foundation, implemented and
     runtime-applied with a safe channel post-list RPC and protected
-    `/app/hubs/dfw/channels/[channelSlug]` route; browser smoke remains pending
+    `/app/hubs/dfw/channels/[channelSlug]` route; authenticated browser smoke
+    passed as functional route smoke with safe empty states and UI/UX polish
+    deferred
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.
