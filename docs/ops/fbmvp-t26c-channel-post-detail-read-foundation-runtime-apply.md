@@ -113,8 +113,10 @@ provide a safe real authenticated user context, so no authenticated RPC result i
 claimed here.
 
 Authenticated browser/route smoke for
-`/app/hubs/dfw/channels/[channelSlug]/[postId]` remains pending. Happy-path
-browser smoke may require a safe post existing on a child `hub_channel` board.
+`/app/hubs/dfw/channels/[channelSlug]/[postId]` is partially recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`. That smoke covered
+route/access/unavailable-state behavior only. Happy-path browser smoke still
+requires a safe post existing on a child `hub_channel` board.
 
 ## Explicitly Still Not Implemented
 
@@ -137,12 +139,13 @@ T26C still does not add:
 
 ## Next Step
 
-Record authenticated browser/route smoke for selected-channel post detail after
-the reviewed beta deployment includes T26C app code and a safe child-channel
-post detail can be verified.
+Record happy-path authenticated browser/route smoke for selected-channel post
+detail after a safe child-channel post detail can be verified.
 
-Runtime apply docs are satisfied by this record. Browser smoke docs remain
-needed later.
+Runtime apply docs are satisfied by this record. Browser smoke docs are
+partially satisfied by
+`docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`; happy-path smoke
+docs remain needed later.
 
 ## Documentation Governance Status
 
@@ -160,8 +163,8 @@ Docs not updated / why:
 
 - App, migration, and test files were not updated because this task only records
   the already-completed targeted runtime apply.
-- Browser smoke docs were not created because authenticated browser/route smoke
-  has not been verified yet.
+- Happy-path browser smoke docs were not created because no safe published
+  child-channel post existed during smoke.
 
 Scope impact:
 
@@ -175,5 +178,6 @@ Runtime apply docs needed?
 
 Browser smoke docs needed?
 
-- Still needed after beta deployment/browser verification and a safe
-  child-channel post detail can be verified.
+- Partially satisfied for route/access/unavailable-state behavior.
+- Happy-path smoke docs are still needed after a safe child-channel post detail
+  can be verified.

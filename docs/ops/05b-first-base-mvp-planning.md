@@ -232,6 +232,17 @@ database push, migration repair, `apply_migration`, deploy, app code changes,
 staging, or commit. Authenticated browser/route smoke remains pending and may
 require a safe post on a child `hub_channel` board.
 
+T26C selected-channel post detail browser smoke is recorded in
+`docs/ops/fbmvp-t26c-channel-post-detail-browser-smoke.md`. It was partial
+unavailable-state/access-boundary smoke only. Candidate discovery found no
+published child-channel posts, so happy-path post rendering and row-click
+navigation into a real detail route were not claimed. The synthetic
+`dfw-q-and-a` detail route rendered the T26C unavailable-state shell for an
+authenticated beta session; no-cookie beta access redirected to login; public
+apex did not expose the private app route; product/security boundaries held.
+Happy-path browser smoke remains deferred until a safe published post exists on
+a child `hub_channel` board.
+
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
 `docs/ops/fbmvp-remaining-functional-backlog.md`. It clarifies that Channels
@@ -582,8 +593,9 @@ The current implementation sequence is:
     deferred
 28. `FBMVP-T26C` selected-channel post detail read foundation, locally
     implemented and runtime-applied with a safe channel post-detail RPC and
-    protected `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; browser
-    smoke is pending
+    protected `/app/hubs/dfw/channels/[channelSlug]/[postId]` route; partial
+    unavailable-state/access browser smoke passed, while happy-path post
+    rendering remains pending until a safe child-channel post exists
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.

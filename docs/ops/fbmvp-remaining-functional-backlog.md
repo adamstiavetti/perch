@@ -34,7 +34,9 @@ or commit.
 - T26C adds the selected-channel post detail read foundation through
   `/app/hubs/dfw/channels/[channelSlug]/[postId]` and
   `public.get_open_hub_channel_post(...)`; runtime apply is complete and
-  browser smoke is pending.
+  partial unavailable-state/access browser smoke passed. Happy-path post detail
+  smoke remains deferred until a safe published post exists on a child
+  `hub_channel` board.
 
 T25B, T26A, T26B, and T26C are implemented, committed, runtime-applied, and
 documented through runtime apply. The current gap is not whether Channels
@@ -146,7 +148,8 @@ Out of scope:
 
 Recommended order:
 
-1. T26C browser smoke when a safe channel-post detail can be verified.
+1. T26C happy-path browser smoke when a safe channel-post detail can be
+   verified.
 2. `T26D` channel composer.
 3. `T26E` channel comments/reporting/moderation integration.
 4. DFW Today MVP baseline.
@@ -159,6 +162,7 @@ Completed prerequisites:
 
 - Authenticated browser smoke for `/app/hubs/dfw/channels`.
 - T26C targeted runtime apply.
+- T26C partial unavailable-state/access browser smoke.
 - Stale test cleanup:
   - `test/community/hubChannelSeeds.test.mts`
   - `test/community/boardPostActions.test.mts`

@@ -119,6 +119,13 @@ Current controlling docs for Hub work:
   database push, migration repair, `apply_migration`, deploy, Vercel changes,
   app code changes, staging, or commit. Authenticated browser/route smoke is
   still pending and may require a safe post on a child `hub_channel` board.
+- [FBMVP-T26C Channel Post Detail Browser Smoke](ops/fbmvp-t26c-channel-post-detail-browser-smoke.md) - records partial authenticated
+  beta browser smoke for `/app/hubs/dfw/channels/[channelSlug]/[postId]`.
+  Candidate discovery found no published child-channel posts, so happy-path
+  post rendering and row-click navigation were not claimed. The synthetic
+  `dfw-q-and-a` detail route rendered the T26C unavailable-state shell for an
+  authenticated beta session, no-cookie beta access redirected to login, public
+  apex did not expose the private route, and product/security boundaries held.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before
@@ -260,7 +267,10 @@ Supplemental epoch-specific ticket packs:
 - [FBMVP-T26C Channel Post Detail Read Runtime Apply](ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md) - records targeted runtime
   apply for the selected-channel post-detail RPC. Runtime now has
   `public.get_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid)`;
-  browser smoke remains pending.
+  partial unavailable-state/access browser smoke is recorded separately.
+- [FBMVP-T26C Channel Post Detail Browser Smoke](ops/fbmvp-t26c-channel-post-detail-browser-smoke.md) - records partial selected-channel
+  post-detail browser smoke. No published child-channel posts exist yet, so
+  happy-path post detail and row-click navigation remain deferred.
 - [First-Base MVP Implementation Ticket Pack](epochs/first-base-mvp-implementation-ticket-pack.md) - translates the pivot strategy docs into the ordered `FBMVP` implementation sequence; the immediate post-Epoch-5 narrow lane is first reconciled in `ops/private-beta-readiness-bridge.md`, and auth email branding/custom SMTP is now tracked as a deferred beta-readiness polish TODO rather than the active next auth-flow implementation task.
 - [FBMVP-T01: Freeze User-Facing Proof Verification Surfaces](epochs/fbmvp-t01-freeze-user-facing-proof-verification-surfaces.md) - freezes normal proof-upload UX while preserving historical proof infrastructure, cleanup, audit, and admin/operator safety.
 - [FBMVP-T02: Airline Email Verification Access State Design](epochs/fbmvp-t02-airline-email-verification-access-state-design.md) - defines the forward `airline_email_verified` app-level eligibility state and how it maps from existing work-email verification foundations.
