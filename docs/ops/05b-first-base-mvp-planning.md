@@ -374,8 +374,9 @@ wiring a report affordance on selected-channel post detail, and extending
 `/app/admin/community-moderation` for DFW Channel reports. It does not implement
 comments, AI moderation decisions, account bans, public reporter identity, public
 report counts, Request a Channel, live integrations, payments, marketplace
-behavior, broad database push, or deploy. Runtime apply and browser smoke remain
-pending.
+behavior, broad database push, or deploy. Targeted runtime apply is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`; browser smoke
+remains pending.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -763,8 +764,8 @@ The current implementation sequence is:
 34. `FBMVP-T26E-A` selected-channel post reporting and moderation review
     foundation, locally implemented with channel-scoped report/list/moderate
     RPCs, selected-channel post detail report affordance, and existing admin
-    community moderation extension; targeted runtime apply and browser smoke are
-    pending.
+    community moderation extension; targeted runtime apply is recorded and
+    browser smoke is pending.
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.

@@ -60,7 +60,9 @@ It adds:
 - `public.moderate_open_hub_channel_post(p_base_code text, p_channel_slug text, p_post_id uuid, p_action text, p_reason text)`
 
 The migration does not create a new table, expose direct client table writes, or
-add broad table grants. Runtime apply is required before beta smoke.
+add broad table grants. Targeted runtime apply is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`; beta browser
+smoke remains pending.
 
 ## Reporting Flow
 
@@ -178,8 +180,8 @@ Docs Updated:
 
 Docs Not Updated / Why:
 
-- Runtime-apply docs were not created in this implementation task because the
-  migration was not applied.
+- Runtime-apply docs are recorded separately in
+  `docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`.
 - Browser-smoke docs were not created because deployment/runtime readiness has
   not been verified yet.
 - Broad roadmap docs outside the current 05B / First-Base MVP lane were not
@@ -194,9 +196,8 @@ Scope Impact:
 
 Runtime Apply Docs Needed?
 
-- Yes. A targeted runtime apply is required for
-  `20260613091500_create_hub_channel_post_reporting_rpc.sql`.
-- Runtime apply is pending.
+- Satisfied by
+  `docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`.
 
 Browser Smoke Docs Needed?
 
@@ -207,5 +208,5 @@ Browser Smoke Docs Needed?
 
 ## Status
 
-Local implementation pending review, runtime apply, deployment, and browser
-smoke.
+Local implementation is committed and targeted runtime apply is recorded.
+Deployment verification and browser smoke remain pending.

@@ -631,7 +631,9 @@ wiring a report affordance on selected-channel post detail, and extending
 `/app/admin/community-moderation` for DFW Channel reports. Comments, AI
 moderation decisions, account bans, public reporter identity, public report
 counts, Request a Channel, live integrations, payments, and marketplace behavior
-remain out of scope. Runtime apply and browser smoke are pending.
+remain out of scope. Targeted runtime apply is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`; browser smoke
+remains pending.
 
 The current DFW Hub + Channels foundation checkpoint is recorded in
 `docs/ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md` at

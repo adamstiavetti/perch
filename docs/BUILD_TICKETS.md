@@ -233,8 +233,10 @@ Current controlling docs for Hub work:
   implementation note for the first selected-channel post safety layer. It
   reuses `public.board_post_reports`, adds channel-scoped reporting/list/review
   RPCs, wires a report affordance on selected-channel post detail, and extends
-  `/app/admin/community-moderation` for DFW Channel reports. Runtime apply and
-  browser smoke remain pending. Comments, AI decisions, account bans, public
+  `/app/admin/community-moderation` for DFW Channel reports. Targeted runtime
+  apply is recorded in
+  [FBMVP-T26E-A Channel Post Reporting Runtime Apply](ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md);
+  browser smoke remains pending. Comments, AI decisions, account bans, public
   reporter identity, public report counts, Request a Channel, live integrations,
   payments, and marketplace behavior remain out of scope.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only

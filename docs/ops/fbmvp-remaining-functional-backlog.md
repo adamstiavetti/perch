@@ -105,7 +105,8 @@ RPCs, wires a selected-channel post detail report affordance, and extends
 `/app/admin/community-moderation` for DFW Channel reports. It does not implement
 comments, AI moderation decisions, account bans, public reporter identity,
 public report counts, Request a Channel, live integrations, payments, or
-marketplace behavior. Targeted runtime apply and browser smoke remain pending.
+marketplace behavior. Targeted runtime apply is recorded; browser smoke remains
+pending.
 
 ## Narrow DFW MVP Pillars
 
@@ -270,7 +271,7 @@ Completed prerequisites:
 - T26E-A local selected-channel post reporting/moderation review foundation:
   channel report/list/moderate RPCs, selected-channel post detail report
   affordance, and admin community moderation extension are implemented locally;
-  runtime apply and browser smoke are pending.
+  targeted runtime apply is recorded and browser smoke is pending.
 - Stale test cleanup:
   - `test/community/hubChannelSeeds.test.mts`
   - `test/community/boardPostActions.test.mts`

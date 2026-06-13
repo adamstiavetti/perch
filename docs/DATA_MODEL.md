@@ -482,9 +482,12 @@ Current data model implication:
   author user IDs, emails, verification data, proof-upload data, storage paths,
   signed URLs, public report counts, comments, AI moderation decisions, account
   bans, or public moderation feeds.
-- T26E-A requires targeted runtime apply for
-  `20260613091500 create_hub_channel_post_reporting_rpc`. Browser smoke remains
-  pending after runtime/deployment readiness.
+- T26E-A targeted runtime apply is recorded for
+  `20260613091500 create_hub_channel_post_reporting_rpc`. Runtime now has
+  `public.report_open_hub_channel_post(...)`,
+  `public.list_open_hub_channel_post_reports(...)`, and
+  `public.moderate_open_hub_channel_post(...)`; browser smoke remains pending
+  after deployment readiness.
 - Future multi-airport channel expansion may need airport-prefixed slugs or a
   scoped uniqueness model because `boards.slug` is currently globally unique.
   Once meaningful user content exists in channel boards, slugs should be
