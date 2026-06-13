@@ -172,3 +172,7 @@ Browser Smoke Docs Needed?
 Partial browser smoke recorded. User-side report flow, duplicate-safe behavior,
 no-cookie/public-domain boundaries, and non-operator admin boundary passed.
 Operator-scoped moderation review remains pending.
+
+Follow-up final operator-scoped browser smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-final-browser-smoke.md`. The
+operator moderation-review gap from this partial smoke is now closed.

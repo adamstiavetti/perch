@@ -239,11 +239,14 @@ Current controlling docs for Hub work:
   partial browser smoke is recorded in
   [FBMVP-T26E-A Channel Post Reporting Partial Browser Smoke](ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md).
   User-side report submission, duplicate-safe handling, no-cookie/public-domain
-  boundaries, and non-operator admin denial passed; operator-scoped moderation
-  review remains pending before full T26E-A browser-smoke closure. Comments, AI
-  decisions, account bans, public reporter identity, public report counts,
-  Request a Channel, live integrations, payments, and marketplace behavior
-  remain out of scope.
+  boundaries, and non-operator admin denial passed. Final operator-scoped
+  browser smoke is recorded in
+  [FBMVP-T26E-A Channel Post Reporting Final Browser Smoke](ops/fbmvp-t26e-a-channel-post-reporting-final-browser-smoke.md);
+  the DFW Channel report review surface rendered with safe context and narrow
+  hide/remove actions, neither destructive action was clicked, and the temporary
+  moderation scope was restored. Comments, AI decisions, account bans, public
+  reporter identity, public report counts, Request a Channel, live integrations,
+  payments, and marketplace behavior remain out of scope.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

@@ -109,8 +109,12 @@ marketplace behavior. Targeted runtime apply is recorded. Partial browser smoke
 is recorded in
 `docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`:
 user-side report submission, duplicate-safe behavior, no-cookie/public-domain
-boundaries, and non-operator admin denial passed. Operator-scoped moderation
-review remains pending before full T26E-A browser-smoke closure.
+boundaries, and non-operator admin denial passed. Final operator-scoped browser
+smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-final-browser-smoke.md`; the
+moderation review surface rendered the DFW Channel report with safe context,
+narrow hide/remove actions were visible but not clicked, and the temporary
+moderation scope was restored.
 
 ## Narrow DFW MVP Pillars
 
@@ -277,8 +281,9 @@ Completed prerequisites:
   affordance, and admin community moderation extension are implemented locally;
   targeted runtime apply is recorded. Partial browser smoke passed for
   user-side report submission, duplicate-safe behavior, no-cookie/public-domain
-  boundaries, and non-operator admin denial; operator-scoped moderation review
-  remains pending.
+  boundaries, and non-operator admin denial. Final operator-scoped browser
+  smoke passed for moderation-review visibility, closing the remaining smoke
+  gap.
 - Stale test cleanup:
   - `test/community/hubChannelSeeds.test.mts`
   - `test/community/boardPostActions.test.mts`
@@ -287,8 +292,9 @@ Completed prerequisites:
 DFW Today, DFW Base, and DFW Layover now have local baselines plus
 authenticated beta browser smoke. Channels has create/read baseline coverage
 through overview, selected-channel thread list, post detail, composer/create,
-and redirect to created detail. The next product-safety gap is T26E channel
-comments/reporting/moderation integration.
+redirect to created detail, and T26E-A post reporting/moderation-review
+foundation browser smoke. The next product-safety gap is the remaining T26E
+comments scope, if comments remain in the active lane.
 
 ## UI/UX Rule
 

@@ -636,8 +636,12 @@ remain out of scope. Targeted runtime apply is recorded in
 browser smoke is recorded in
 `docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`:
 user-side report submission, duplicate-safe behavior, no-cookie/public-domain
-boundaries, and non-operator admin denial passed; operator-scoped moderation
-review remains pending before full T26E-A browser-smoke closure.
+boundaries, and non-operator admin denial passed. Final operator-scoped browser
+smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-final-browser-smoke.md`; the
+moderation review surface rendered the DFW Channel report with safe context,
+narrow hide/remove actions were visible but not clicked, and the temporary
+moderation scope was restored.
 
 The current DFW Hub + Channels foundation checkpoint is recorded in
 `docs/ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md` at

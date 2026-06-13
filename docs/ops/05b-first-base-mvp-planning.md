@@ -379,8 +379,12 @@ behavior, broad database push, or deploy. Targeted runtime apply is recorded in
 browser smoke is recorded in
 `docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`:
 user-side report submission, duplicate-safe behavior, no-cookie/public-domain
-boundaries, and non-operator admin denial passed; operator-scoped moderation
-review remains pending before full T26E-A browser-smoke closure.
+boundaries, and non-operator admin denial passed. Final operator-scoped browser
+smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-final-browser-smoke.md`; the
+moderation review surface rendered the DFW Channel report with safe context,
+narrow hide/remove actions were visible but not clicked, and the temporary
+moderation scope was restored.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -771,8 +775,8 @@ The current implementation sequence is:
     community moderation extension; targeted runtime apply is recorded and
     partial browser smoke passed for user-side report submission,
     duplicate-safe behavior, no-cookie/public-domain boundaries, and
-    non-operator admin denial. Operator-scoped moderation review remains
-    pending.
+    non-operator admin denial. Final operator-scoped browser smoke passed for
+    moderation-review visibility, closing the remaining smoke gap.
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.
