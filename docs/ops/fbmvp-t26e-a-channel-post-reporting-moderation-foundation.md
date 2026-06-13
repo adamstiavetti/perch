@@ -61,8 +61,11 @@ It adds:
 
 The migration does not create a new table, expose direct client table writes, or
 add broad table grants. Targeted runtime apply is recorded in
-`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`; beta browser
-smoke remains pending.
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`. Partial beta
+browser smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`;
+operator-scoped moderation review remains pending before full T26E-A
+browser-smoke closure.
 
 ## Reporting Flow
 
@@ -182,8 +185,9 @@ Docs Not Updated / Why:
 
 - Runtime-apply docs are recorded separately in
   `docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`.
-- Browser-smoke docs were not created because deployment/runtime readiness has
-  not been verified yet.
+- Full browser-smoke docs are not created yet because operator-scoped
+  moderation review remains pending. Partial browser-smoke docs are recorded in
+  `docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`.
 - Broad roadmap docs outside the current 05B / First-Base MVP lane were not
   rewritten.
 
@@ -202,11 +206,16 @@ Runtime Apply Docs Needed?
 Browser Smoke Docs Needed?
 
 - Yes. After runtime apply and deployment, authenticated browser smoke should
-  verify report submission, duplicate-safe behavior, operator review visibility,
-  no-cookie/public-domain boundaries, and privacy/safety boundaries.
-- Browser smoke pending.
+  verify report submission, duplicate-safe behavior, operator review
+  visibility, no-cookie/public-domain boundaries, and privacy/safety
+  boundaries.
+- Partially satisfied. User-side report submission, duplicate-safe behavior,
+  no-cookie/public-domain boundaries, privacy/safety boundaries, and
+  non-operator admin denial passed. Operator-scoped moderation review remains
+  pending.
 
 ## Status
 
 Local implementation is committed and targeted runtime apply is recorded.
-Deployment verification and browser smoke remain pending.
+Partial deployment/browser smoke is recorded. Operator-scoped moderation review
+remains pending before full T26E-A browser-smoke closure.

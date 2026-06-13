@@ -375,8 +375,12 @@ wiring a report affordance on selected-channel post detail, and extending
 comments, AI moderation decisions, account bans, public reporter identity, public
 report counts, Request a Channel, live integrations, payments, marketplace
 behavior, broad database push, or deploy. Targeted runtime apply is recorded in
-`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`; browser smoke
-remains pending.
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`. Partial
+browser smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`:
+user-side report submission, duplicate-safe behavior, no-cookie/public-domain
+boundaries, and non-operator admin denial passed; operator-scoped moderation
+review remains pending before full T26E-A browser-smoke closure.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
@@ -765,7 +769,10 @@ The current implementation sequence is:
     foundation, locally implemented with channel-scoped report/list/moderate
     RPCs, selected-channel post detail report affordance, and existing admin
     community moderation extension; targeted runtime apply is recorded and
-    browser smoke is pending.
+    partial browser smoke passed for user-side report submission,
+    duplicate-safe behavior, no-cookie/public-domain boundaries, and
+    non-operator admin denial. Operator-scoped moderation review remains
+    pending.
 
 T20 runtime-pass docs are committed. The First Base / DFW Baseboard safety loop
 is complete. The approved pivot is recorded in `ops/hub-pivot-plan.md`.

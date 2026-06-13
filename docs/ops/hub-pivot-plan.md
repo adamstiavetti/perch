@@ -632,8 +632,12 @@ wiring a report affordance on selected-channel post detail, and extending
 moderation decisions, account bans, public reporter identity, public report
 counts, Request a Channel, live integrations, payments, and marketplace behavior
 remain out of scope. Targeted runtime apply is recorded in
-`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`; browser smoke
-remains pending.
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-runtime-apply.md`. Partial
+browser smoke is recorded in
+`docs/ops/fbmvp-t26e-a-channel-post-reporting-partial-browser-smoke.md`:
+user-side report submission, duplicate-safe behavior, no-cookie/public-domain
+boundaries, and non-operator admin denial passed; operator-scoped moderation
+review remains pending before full T26E-A browser-smoke closure.
 
 The current DFW Hub + Channels foundation checkpoint is recorded in
 `docs/ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md` at
