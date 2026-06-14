@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
@@ -63,7 +64,11 @@ export function DfwChannelPostComposerForm({
           <h3 id="channel-composer-title">Post to this DFW Channel</h3>
           <p>
             Keep it useful, non-sensitive, and specific to this selected
-            Channel. Comments and reports are later scoped tickets.
+            Channel. Review the{" "}
+            <Link className={styles.policyInlineLink} href="/legal/community-rules">
+              Community Rules
+            </Link>{" "}
+            before posting.
           </p>
         </div>
         <label className={styles.composerField}>

@@ -41,6 +41,12 @@ Current scope note:
   the draft-copy and operating-rule gap from the audit, but it is not wired
   into app routes, onboarding, posting, reporting, footer links, or policy
   acceptance, and it still needs founder/legal review before broad launch.
+- Policy/Ops Pack v1 UI wiring:
+  `docs/ops/policy-ops-pack-v1-ui-wiring.md` adds read-only private-beta policy
+  pages and focused links from public/auth/access-hold/Channels/admin surfaces.
+  This does not add legal acceptance tracking, support/deletion/export/appeal
+  intake, final approved contact paths, or final legal approval. Browser smoke
+  is needed after deployment.
 
 ## How to Use This Checklist
 

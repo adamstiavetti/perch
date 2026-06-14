@@ -530,7 +530,16 @@
   margin-top: -0.15rem;
 }
 
-.loginLinks a {
+.loginPolicyLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 0.7rem;
+  margin-top: -0.08rem;
+}
+
+.loginLinks a,
+.loginPolicyLinks a {
   color: #1769bd;
   font-size: 0.82rem;
   font-weight: 600;
@@ -538,6 +547,7 @@
 }
 
 .loginLinks a:hover,
+.loginPolicyLinks a:hover,
 .loginCreateButton:hover {
   text-decoration: underline;
   text-underline-offset: 0.22em;

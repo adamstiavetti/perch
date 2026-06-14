@@ -10,9 +10,17 @@ This docs-only summary records Policy/Ops Pack v1 for jmpseat private beta.
 The pack converts the private-beta policy/ops readiness audit into draft
 product copy and operating runbooks.
 
-This pack does not wire pages, buttons, forms, routes, footer links, onboarding
-links, policy acceptance, database tables, migrations, runtime behavior, or
-deployment changes.
+Initial docs creation did not wire pages, buttons, forms, routes, footer links,
+onboarding links, policy acceptance, database tables, migrations, runtime
+behavior, or deployment changes.
+
+Follow-up UI wiring is recorded in
+`docs/ops/policy-ops-pack-v1-ui-wiring.md`. That follow-up adds public
+read-only policy routes and focused links from public, auth, verification,
+Channel composer/reporting, and admin moderation surfaces. It still does not
+add policy acceptance tracking, support form backend, deletion/export intake,
+appeal intake, database tables, migrations, runtime behavior, or final legal
+approval.
 
 ## Created Drafts
 
@@ -71,18 +79,19 @@ terms without review.
 
 Future implementation tasks may need to:
 
-- add private-beta policy pages or in-app copy surfaces
-- link terms/privacy/community rules from onboarding, posting, reporting, and
-  support flows
+- expand policy links into any remaining onboarding, settings, help, or support
+  surfaces once those surfaces are approved
 - add policy acceptance if required
 - add or update support/contact UI
 - add deletion/export request intake if required
 - add appeal intake if required
-- add verification consent copy to work-email/manual verification flows
+- finalize approved support/contact paths
 - add admin/operator checklist links where appropriate
 - browser-smoke the copy after it is wired
 
-No implementation was done in this docs-only pack.
+The first wiring pass added policy routes and focused links, but it did not add
+runtime acceptance, support intake, deletion/export intake, appeal intake, or
+final legal approval.
 
 ## Deferred Scope
 
@@ -143,6 +152,7 @@ Docs Updated:
 - `docs/PRIVATE_BETA_OPERATING_PLAN.md`
 - `docs/ops/fbmvp-remaining-functional-backlog.md`
 - `docs/ops/05b-first-base-mvp-planning.md`
+- `docs/ops/policy-ops-pack-v1-ui-wiring.md`
 - this summary
 - the seven policy/runbook drafts listed above
 
@@ -152,14 +162,16 @@ Docs Not Updated / Why:
   RPC, migration, runtime data model, or runtime behavior.
 - Broad roadmap docs were not rewritten because this is a focused policy/ops
   pack.
-- App code and tests were not updated because policy wiring is explicitly out
-  of scope.
+- App code and tests were not updated in the original docs-only pack. The
+  focused UI wiring is tracked separately in
+  `docs/ops/policy-ops-pack-v1-ui-wiring.md`.
 
 Scope Impact:
 
-- Docs/copy only.
-- No app code, tests, migrations, runtime data, deployment, policy acceptance,
-  or route wiring changed.
+- Original pack: docs/copy only.
+- UI wiring follow-up: policy page/link/copy wiring only.
+- No migrations, runtime data, deployment, policy acceptance, or support backend
+  changed.
 
 Runtime Apply Docs Needed?
 
@@ -167,10 +179,11 @@ Runtime Apply Docs Needed?
 
 Browser Smoke Docs Needed?
 
-- No for this docs-only pack. Browser smoke is needed only after copy is wired
-  into UI or routes.
+- Yes after the UI wiring follow-up deploys. Smoke should verify public policy
+  routes, linked surfaces, and domain-boundary behavior.
 
 ## Status
 
-Policy/Ops Pack v1 is ready for founder/legal/policy review. It should be
-reviewed before broader private-beta use and before starting comments/replies.
+Policy/Ops Pack v1 has draft copy plus narrow UI wiring. It remains pending
+founder/legal/policy review and post-deployment browser smoke before broader
+private-beta use.

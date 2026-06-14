@@ -405,6 +405,14 @@ This is docs/copy only: no legal-page routing, onboarding/posting/reporting
 links, policy acceptance, runtime behavior, or final legal approval was added.
 Founder/legal review and focused wiring remain separate readiness work.
 
+Policy/Ops Pack v1 UI wiring is recorded in
+`docs/ops/policy-ops-pack-v1-ui-wiring.md`. It adds read-only `/legal/...`
+pages and focused links from public, auth, verification/access-hold, DFW
+Channel composer/reporting, and admin moderation surfaces. It does not add
+policy acceptance tracking, support form backend, deletion/export intake, appeal
+intake, final approved contact paths, migrations, or runtime changes. Browser
+smoke remains required after deployment.
+
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
 `docs/ops/fbmvp-remaining-functional-backlog.md`. It clarifies that Channels

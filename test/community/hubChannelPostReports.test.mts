@@ -184,7 +184,7 @@ test("T26E-A selected-channel detail UI adds report affordance without counts or
   assert.doesNotMatch(detailShellSource, /reportCount|reportsCount|reports\.length|reporter|reporter identity|comment form|reply form|moderation controls UI/i);
 });
 
-test("T26E-A docs record reporting foundation scope and runtime pending state", () => {
+test("T26E-A docs record reporting foundation scope and completed runtime/smoke status", () => {
   assert.match(docsSource, /FBMVP-T26E-A/i);
   assert.match(docsSource, /Channel Post Reporting/i);
   assert.match(docsSource, /board_post_reports/i);
@@ -194,6 +194,6 @@ test("T26E-A docs record reporting foundation scope and runtime pending state", 
   assert.match(docsSource, /comments are not implemented/i);
   assert.match(docsSource, /AI final moderation decisions are not implemented/i);
   assert.match(docsSource, /account bans are not implemented/i);
-  assert.match(docsSource, /runtime apply is pending/i);
-  assert.match(docsSource, /browser smoke pending/i);
+  assert.match(docsSource, /targeted runtime apply is recorded/i);
+  assert.match(docsSource, /browser-smoked/i);
 });

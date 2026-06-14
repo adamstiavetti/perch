@@ -340,7 +340,8 @@ function WaitlistPanel({
         By joining the waitlist, you agree to receive jmpseat updates about
         early access. We&apos;ll use your email only for waitlist and product
         updates. Unsubscribe anytime. See our{" "}
-        <Link href="/privacy">Privacy Policy</Link>.
+        <Link href="/privacy">Privacy Policy</Link> and{" "}
+        <Link href="/legal/beta-terms">Private Beta Terms</Link>.
       </p>
     </div>
   );
@@ -473,6 +474,10 @@ export default async function Home({ searchParams }: HomeProps) {
           <nav className={styles.footerLinks} aria-label="Footer links">
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
+            <Link href="/legal/beta-terms">Beta Terms</Link>
+            <Link href="/legal/privacy">Beta Privacy</Link>
+            <Link href="/legal/community-rules">Community Rules</Link>
+            <Link href="/legal/support-requests">Support</Link>
             <a href="mailto:contact@jmpseat.com">Contact</a>
           </nav>
           <p className={styles.footerDisclaimer}>

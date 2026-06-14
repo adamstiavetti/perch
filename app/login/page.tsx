@@ -174,6 +174,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <Link href={AUTH_ROUTES.resetPassword}>Forgot password?</Link>
           </nav>
 
+          <nav className={styles.loginPolicyLinks} aria-label="Private beta policy links">
+            <Link href="/legal/beta-terms">Private Beta Terms</Link>
+            <Link href="/legal/privacy">Privacy Notice</Link>
+            <Link href="/legal/community-rules">Community Rules</Link>
+          </nav>
+
           <div className={styles.loginOrDivider} aria-hidden="true">
             <span />
             <span>OR</span>

@@ -893,6 +893,11 @@ function DfwBaseboardReportForm({
           rows={2}
         />
       </label>
+      <p className={styles.policyHint}>
+        Reports are reviewed under the{" "}
+        <Link href="/legal/moderation-appeals">Moderation & Appeals</Link>{" "}
+        policy. Reporter identity and public report counts are not shown.
+      </p>
       <button className={styles.reportSubmit} type="submit">
         Submit report
       </button>
@@ -940,6 +945,11 @@ function DfwChannelPostReportForm({
           rows={2}
         />
       </label>
+      <p className={styles.policyHint}>
+        Reports are reviewed under the{" "}
+        <Link href="/legal/moderation-appeals">Moderation & Appeals</Link>{" "}
+        policy. Reporter identity and public report counts are not shown.
+      </p>
       <button className={styles.reportSubmit} type="submit">
         Submit report
       </button>

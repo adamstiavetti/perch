@@ -268,6 +268,12 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             Already have an account? Sign in
           </Link>
 
+          <nav className={styles.loginPolicyLinks} aria-label="Private beta policy links">
+            <Link href="/legal/beta-terms">Private Beta Terms</Link>
+            <Link href="/legal/privacy">Privacy Notice</Link>
+            <Link href="/legal/verification-privacy">Verification & Privacy</Link>
+          </nav>
+
           <p className={styles.loginSecurityNote}>
             <SecurityNoteIcon />
             Private community for verified aviation professionals.

@@ -716,6 +716,19 @@
   line-height: 1.45;
 }
 
+.policyInlineLink,
+.policyHint a {
+  color: var(--app-blue);
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.policyInlineLink:hover,
+.policyHint a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .composerField {
   display: grid;
   gap: 0.35rem;
@@ -807,6 +820,13 @@
 .reportField textarea:focus {
   border-color: rgba(15, 76, 154, 0.5);
   outline: 3px solid rgba(255, 176, 46, 0.32);
+}
+
+.policyHint {
+  margin: -0.08rem 0 0;
+  color: var(--app-text-soft);
+  font-size: 0.74rem;
+  line-height: 1.42;
 }
 
 .reportSubmit {

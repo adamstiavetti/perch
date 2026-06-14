@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { AdminShell } from "../../../../src/components/admin/AdminShell";
@@ -241,7 +242,10 @@ export default async function CommunityModerationPage({
           DFW Channel reports available to authorized operators. Reporter
           identity is not shown. Replies, saves, reactions, search, Crew Picks,
           Layovers, and
-          proof-upload scope remain outside this tool.
+          proof-upload scope remain outside this tool. Review the{" "}
+          <Link href="/legal/moderation-appeals">Moderation & Appeals</Link>{" "}
+          and <Link href="/legal/support-requests">Support & Requests</Link>{" "}
+          drafts before broader private-beta moderation use.
         </p>
       }
     >

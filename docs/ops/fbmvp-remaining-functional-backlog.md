@@ -313,6 +313,14 @@ links, footer links, policy acceptance, or any runtime behavior. Founder/legal
 review and implementation wiring remain required before broader private-beta
 use.
 
+Policy/Ops Pack v1 UI wiring is recorded in
+`docs/ops/policy-ops-pack-v1-ui-wiring.md`. It adds public read-only
+`/legal/...` pages and focused links from public waitlist, auth, access-hold
+verification copy, DFW Channel composer/report UI, and admin moderation. It
+does not add policy acceptance tracking, support form backend, deletion/export
+intake, appeal intake, final approved contact paths, migrations, or runtime
+changes. Browser smoke remains needed after deployment.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

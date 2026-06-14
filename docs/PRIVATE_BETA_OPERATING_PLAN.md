@@ -45,6 +45,13 @@ Current scope note:
   moderation guidance. These are product-ready drafts for founder/legal review;
   app wiring, policy acceptance, footer/onboarding/posting/reporting links, and
   final legal approval remain separate work before broader private-beta use.
+- Policy/Ops Pack v1 UI wiring:
+  `docs/ops/policy-ops-pack-v1-ui-wiring.md` adds read-only `/legal/...`
+  private-beta policy pages plus focused links from the public waitlist, auth
+  entry, access-hold verification copy, DFW Channel composer/reporting, and
+  admin moderation surfaces. Policy acceptance, support form backend,
+  deletion/export intake, appeal intake, final contact paths, and final legal
+  approval remain unwired.
 
 ## 1. Purpose
 

@@ -307,7 +307,14 @@ export default async function AccessHoldPage({
               <ShieldInfoIcon />
               <p>
                 Airline employee email verification is required before app
-                access.
+                access. Public identity remains a safe handle, but verification
+                stays accountable internally. Do not submit passwords, airline
+                portal credentials, employee numbers, schedules, or confidential
+                documents. Read{" "}
+                <Link href="/legal/verification-privacy">
+                  Verification & Privacy
+                </Link>
+                .
               </p>
             </div>
           ) : null}
@@ -400,7 +407,8 @@ export default async function AccessHoldPage({
 
               <p className={styles.signupHint}>
                 Invite codes control private-testing capacity only. Your verified
-                airline employee email remains the eligibility check.
+                airline employee email remains the eligibility check. Do not
+                enter airline portal credentials here.
               </p>
 
               <button className={styles.loginButton} type="submit">

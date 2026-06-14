@@ -263,6 +263,13 @@ Current controlling docs for Hub work:
   and operator moderation runbook. These are founder/legal review drafts only;
   app wiring, policy acceptance, footer/onboarding/posting/reporting links, and
   final legal approval remain separate work.
+- [Policy/Ops Pack v1 UI Wiring](ops/policy-ops-pack-v1-ui-wiring.md) - narrow
+  implementation pass that adds public read-only `/legal/...` private-beta
+  policy pages plus focused links from public waitlist, auth, access-hold
+  verification copy, DFW Channel composer/reporting, and admin moderation
+  surfaces. It adds no policy acceptance tracking, support form backend,
+  deletion/export intake, appeal intake, migrations, runtime apply, or final
+  legal approval; browser smoke remains pending after deployment.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before
