@@ -296,6 +296,14 @@ redirect to created detail, and T26E-A post reporting/moderation-review
 foundation browser smoke. The next product-safety gap is the remaining T26E
 comments scope, if comments remain in the active lane.
 
+Private-beta policy/ops readiness is audited in
+`docs/ops/private-beta-policy-ops-readiness-audit.md` after checkpoint
+`149da73`. The audit recommends fixing policy/ops gaps before starting DFW
+Channel comments/replies: beta terms/privacy/community rules, work-email
+verification consent, support/contact routing, incident/escalation ownership,
+moderation and appeals runbooks, deletion/export request process, and
+token/operator-access hygiene should be closed before inviting more users.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

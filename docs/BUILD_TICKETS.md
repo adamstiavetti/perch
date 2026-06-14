@@ -247,6 +247,15 @@ Current controlling docs for Hub work:
   moderation scope was restored. Comments, AI decisions, account bans, public
   reporter identity, public report counts, Request a Channel, live integrations,
   payments, and marketplace behavior remain out of scope.
+- [Private-Beta Policy / Ops Readiness Audit](ops/private-beta-policy-ops-readiness-audit.md) - docs-only audit after the DFW Hub baseline pillars and
+  T26E-A reporting/moderation foundation were completed and smoked. It records
+  that DFW Today/Base/Layover plus Channels create/read/report/moderation
+  foundation are functionally ready at lightweight MVP level, but broader
+  private-beta use still needs beta terms/privacy/community-rules copy,
+  work-email verification consent copy, support/contact routing,
+  incident/escalation ownership, moderation/appeals runbooks,
+  deletion/export request process, and token/access hygiene review before
+  inviting more users.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

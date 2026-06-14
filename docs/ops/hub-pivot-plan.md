@@ -40,6 +40,11 @@ Use this source pack for Hub implementation, product planning, and wireframes:
 - `docs/ops/fbmvp-remaining-functional-backlog.md` - current docs-only backlog
   from checkpoint `c2bbd73` to narrow private-beta MVP; it keeps DFW Today,
   Base, Layover, and Channels together as the four DFW Hub utility pillars.
+- `docs/ops/private-beta-policy-ops-readiness-audit.md` - current docs-only
+  policy/ops readiness audit after DFW Today/Base/Layover plus Channels
+  create/read/report/moderation foundation were implemented, smoked, and
+  documented; use it before inviting more private-beta users or expanding into
+  comments/replies.
 
 Wireframe source pack:
 

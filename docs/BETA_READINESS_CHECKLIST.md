@@ -30,6 +30,12 @@ Current scope note:
   proof/document uploads, generic social-feed work, generic global Crew Rooms
   expansion, media/upload posting, AI auto-publishing, deals, full mobile scope,
   and anonymous posting unless separately approved out of scope.
+- Post-DFW-Hub-baseline audit: `docs/ops/private-beta-policy-ops-readiness-audit.md`
+  is the current focused readiness audit after DFW Today, DFW Base, DFW
+  Layover, Channels create/read, and T26E-A channel post reporting/moderation
+  foundation were implemented, beta-smoked, and documented. Treat the matrix in
+  that audit as the immediate private-beta policy/ops gap list before inviting
+  more users.
 
 ## How to Use This Checklist
 

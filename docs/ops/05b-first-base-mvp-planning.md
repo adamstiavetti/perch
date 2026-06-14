@@ -386,6 +386,17 @@ moderation review surface rendered the DFW Channel report with safe context,
 narrow hide/remove actions were visible but not clicked, and the temporary
 moderation scope was restored.
 
+The current private-beta policy/ops readiness audit is recorded in
+`docs/ops/private-beta-policy-ops-readiness-audit.md` at checkpoint `149da73`.
+It does not change product behavior. It records that the DFW Hub baseline and
+T26E-A reporting/moderation foundation are functionally smoked, but broader
+private-beta use should wait for a focused policy/ops pass covering beta
+terms/privacy/community rules, work-email verification consent, support/contact
+routing, incident/escalation ownership, moderation and appeals runbooks,
+deletion/export request process, and token/operator-access hygiene. The
+recommended next lane is policy/ops closure before starting DFW Channel
+comments/replies.
+
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
 `docs/ops/fbmvp-remaining-functional-backlog.md`. It clarifies that Channels

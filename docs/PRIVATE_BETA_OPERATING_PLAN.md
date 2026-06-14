@@ -30,6 +30,14 @@ Current scope note:
   proof/document uploads, generic social-feed work, generic global Crew Rooms
   expansion, media/upload posting, AI auto-publishing, deals, full mobile scope,
   and anonymous posting unless separately approved out of scope.
+- Current focused policy/ops audit:
+  `docs/ops/private-beta-policy-ops-readiness-audit.md` records the
+  post-DFW-Hub-baseline readiness state. DFW Today/Base/Layover and Channels
+  create/read/report/moderation foundation are smoked, but broader private-beta
+  use still needs beta terms/privacy/community-rules copy, work-email
+  verification consent copy, support/contact routing, incident/escalation
+  ownership, moderation/appeals runbooks, deletion/export request process, and
+  token/access hygiene review.
 
 ## 1. Purpose
 
