@@ -397,6 +397,14 @@ deletion/export request process, and token/operator-access hygiene. The
 recommended next lane is policy/ops closure before starting DFW Channel
 comments/replies.
 
+Policy/Ops Pack v1 is recorded in
+`docs/ops/policy-ops-pack-v1-summary.md`. It creates draft private-beta terms,
+privacy notice, community rules, verification consent copy, moderation/appeals
+runbook, support/incident/deletion runbook, and operator moderation runbook.
+This is docs/copy only: no legal-page routing, onboarding/posting/reporting
+links, policy acceptance, runtime behavior, or final legal approval was added.
+Founder/legal review and focused wiring remain separate readiness work.
+
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in
 `docs/ops/fbmvp-remaining-functional-backlog.md`. It clarifies that Channels

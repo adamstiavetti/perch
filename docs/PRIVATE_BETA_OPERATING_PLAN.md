@@ -38,6 +38,13 @@ Current scope note:
   verification consent copy, support/contact routing, incident/escalation
   ownership, moderation/appeals runbooks, deletion/export request process, and
   token/access hygiene review.
+- Policy/Ops Pack v1:
+  `docs/ops/policy-ops-pack-v1-summary.md` now collects draft private-beta
+  terms, privacy notice, community rules, verification consent copy, moderation
+  and appeals runbooks, support/incident/deletion operations, and operator
+  moderation guidance. These are product-ready drafts for founder/legal review;
+  app wiring, policy acceptance, footer/onboarding/posting/reporting links, and
+  final legal approval remain separate work before broader private-beta use.
 
 ## 1. Purpose
 

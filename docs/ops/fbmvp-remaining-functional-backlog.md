@@ -304,6 +304,15 @@ verification consent, support/contact routing, incident/escalation ownership,
 moderation and appeals runbooks, deletion/export request process, and
 token/operator-access hygiene should be closed before inviting more users.
 
+Policy/Ops Pack v1 is now drafted in
+`docs/ops/policy-ops-pack-v1-summary.md`. It creates the private-beta terms,
+privacy notice, community rules, verification consent copy, moderation/appeals
+runbook, support/incident/deletion runbook, and operator moderation runbook as
+docs/copy only. It does not wire legal pages, onboarding links, posting/reporting
+links, footer links, policy acceptance, or any runtime behavior. Founder/legal
+review and implementation wiring remain required before broader private-beta
+use.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

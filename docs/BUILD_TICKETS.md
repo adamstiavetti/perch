@@ -256,6 +256,13 @@ Current controlling docs for Hub work:
   incident/escalation ownership, moderation/appeals runbooks,
   deletion/export request process, and token/access hygiene review before
   inviting more users.
+- [Policy/Ops Pack v1 Summary](ops/policy-ops-pack-v1-summary.md) - docs/copy
+  package for private-beta readiness after the policy/ops audit. It creates
+  draft private-beta terms, privacy notice, community rules, verification
+  consent copy, moderation/appeals runbook, support/incident/deletion runbook,
+  and operator moderation runbook. These are founder/legal review drafts only;
+  app wiring, policy acceptance, footer/onboarding/posting/reporting links, and
+  final legal approval remain separate work.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

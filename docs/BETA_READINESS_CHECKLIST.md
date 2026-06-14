@@ -36,6 +36,11 @@ Current scope note:
   foundation were implemented, beta-smoked, and documented. Treat the matrix in
   that audit as the immediate private-beta policy/ops gap list before inviting
   more users.
+- Policy/Ops Pack v1: `docs/ops/policy-ops-pack-v1-summary.md` creates the
+  first complete private-beta policy/copy/runbook draft set. It helps satisfy
+  the draft-copy and operating-rule gap from the audit, but it is not wired
+  into app routes, onboarding, posting, reporting, footer links, or policy
+  acceptance, and it still needs founder/legal review before broad launch.
 
 ## How to Use This Checklist
 
