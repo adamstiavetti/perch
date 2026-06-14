@@ -51,6 +51,14 @@ manual MVP intake paths without adding backend behavior:
 - `[Moderation Appeal]` as the manual moderation appeal subject prefix through
   support
 
+OPS-INTAKE-01 browser smoke is recorded in
+`docs/ops/ops-intake-01-browser-smoke.md`. The beta deployment rendered the
+changed public legal pages, showed the manual intake paths and subject prefixes,
+kept unauthenticated `/app` gated to login, and exposed no support form,
+`/api/...` action/link, automated deletion/export, guaranteed timeline,
+instant/guaranteed appeal, AI final moderation decision, secret, runtime
+mutation, or legal-finality issue.
+
 ## Surfaces Linked
 
 Public waitlist:
@@ -98,6 +106,8 @@ Still not implemented:
 - footer/onboarding links beyond the focused MVP surfaces listed above
 - final legal approval
 - response-time promises
+- access-hold and operator-admin policy-link smoke closure
+- incident/escalation backup owner assignment
 
 ## Scope Boundaries
 

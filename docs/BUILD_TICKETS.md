@@ -299,6 +299,14 @@ Current controlling docs for Hub work:
   It adds no support form, deletion/export backend, appeal backend, policy
   acceptance tracking, database/migration/runtime behavior, legal approval,
   broader-beta approval, or comments/replies.
+- [OPS-INTAKE-01 Browser Smoke](ops/ops-intake-01-browser-smoke.md) - records
+  beta smoke after `03e373c`: `/legal/privacy`,
+  `/legal/moderation-appeals`, `/legal/support-requests`, and optional
+  `/legal/beta-terms` rendered publicly; manual intake copy and subject
+  prefixes appeared; unauthenticated `/app` still redirected to login; no
+  support form, API action, automated deletion/export, guaranteed timeline,
+  instant/guaranteed appeal, AI final decision, secret, runtime mutation, or
+  legal-finality issue was found.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

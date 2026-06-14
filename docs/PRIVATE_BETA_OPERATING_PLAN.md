@@ -76,6 +76,11 @@ Current scope note:
   This does not add an in-app support form, deletion/export backend, appeal
   backend, policy acceptance tracking, legal approval, broader-beta approval, or
   comments/replies.
+- OPS-INTAKE-01 browser smoke:
+  `docs/ops/ops-intake-01-browser-smoke.md` records beta smoke for the changed
+  public legal pages. Manual intake copy rendered, legal pages stayed public,
+  unauthenticated `/app` stayed gated to login, and no unsupported
+  backend/form/automation/legal-finality claim was found.
 
 ## 1. Purpose
 

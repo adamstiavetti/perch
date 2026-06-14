@@ -348,6 +348,15 @@ implementation, deletion/export tooling, appeal workflow implementation, policy
 acceptance tracking, broader-beta approval, and comments/replies remain pending
 or deferred.
 
+OPS-INTAKE-01 browser smoke is recorded in
+`docs/ops/ops-intake-01-browser-smoke.md`. The changed public legal pages
+rendered on beta, manual intake copy and subject prefixes appeared,
+unauthenticated `/app` remained gated to login, and no unsupported backend,
+automation, guaranteed timeline, legal-finality, secret exposure, or runtime
+mutation issue was found. Backend intake, policy acceptance tracking,
+comments/replies, legal review, access-hold/operator-admin re-smoke, and
+incident backup ownership remain open.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

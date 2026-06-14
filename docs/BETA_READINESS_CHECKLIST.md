@@ -70,6 +70,12 @@ Current scope note:
   copy wiring only; support/deletion/export/appeal backend intake, policy
   acceptance tracking, legal approval, broader-beta approval, and
   comments/replies remain unimplemented.
+- OPS-INTAKE-01 browser smoke:
+  `docs/ops/ops-intake-01-browser-smoke.md` records beta smoke for
+  `/legal/privacy`, `/legal/moderation-appeals`, `/legal/support-requests`, and
+  an optional `/legal/beta-terms` spot-check. Manual intake copy rendered,
+  public legal access passed, `/app` still redirected unauthenticated users to
+  login, and no backend/form/automation/legal-finality claims were found.
 
 ## How to Use This Checklist
 
