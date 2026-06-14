@@ -365,6 +365,14 @@ No-cookie auth gates and non-operator denial passed, no runtime mutation or
 sensitive leakage occurred, and both target visibility limitations remain open
 until suitable access-hold and operator-scoped sessions are available.
 
+POL-ACCEPT-01 policy acceptance tracking design is recorded in
+`docs/ops/pol-accept-01-policy-acceptance-tracking-design.md`. It recommends a
+minimal acceptance set for private beta terms, privacy notice, and community
+rules, plus a future RLS-backed `public.user_policy_acceptances` table and
+server-controlled app-entry interstitial. This is design-only; schema,
+migration, route gate, UI, runtime apply, legal approval, and browser smoke
+remain pending before broader beta.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

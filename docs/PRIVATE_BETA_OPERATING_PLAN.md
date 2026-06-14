@@ -86,6 +86,11 @@ Current scope note:
   active session still could not render access-hold or operator-scoped admin
   moderation. No-cookie auth gates and non-operator denial passed; access-hold
   copy visibility and operator policy-link visibility remain open.
+- POL-ACCEPT-01 design:
+  `docs/ops/pol-accept-01-policy-acceptance-tracking-design.md` defines the
+  recommended minimal policy acceptance tracking design for private beta terms,
+  privacy notice, and community rules. It does not implement schema, migrations,
+  UI, route gates, runtime behavior, or legal approval.
 
 ## 1. Purpose
 

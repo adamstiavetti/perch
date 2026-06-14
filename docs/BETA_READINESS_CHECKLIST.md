@@ -83,6 +83,11 @@ Current scope note:
   `/app/admin/community-moderation` to `/app/access-restricted`; no-cookie auth
   gates and non-operator denial passed, but both visibility limitations remain
   open until suitable access-hold and operator-scoped sessions are available.
+- POL-ACCEPT-01 design:
+  `docs/ops/pol-accept-01-policy-acceptance-tracking-design.md` defines the
+  proposed minimal acceptance model for private beta terms, privacy notice, and
+  community rules. It is design/preflight only; no schema, migration, route
+  gate, acceptance UI, runtime apply, or browser smoke has been implemented.
 
 ## How to Use This Checklist
 

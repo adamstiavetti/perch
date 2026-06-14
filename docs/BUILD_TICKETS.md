@@ -315,6 +315,14 @@ Current controlling docs for Hub work:
   denial passed, no runtime mutation occurred, and both target visibility
   limitations remain open until suitable access-hold and operator-scoped
   sessions are available.
+- [POL-ACCEPT-01 Policy Acceptance Tracking Design](ops/pol-accept-01-policy-acceptance-tracking-design.md) -
+  docs-only preflight for minimal acceptance tracking before broader beta. It
+  recommends tracking `private_beta_terms:v1`, `privacy_notice:v1`, and
+  `community_rules:v1`, a minimal `public.user_policy_acceptances` table, RLS,
+  server-controlled idempotent acceptance, and an `/app/policy-acceptance`
+  interstitial for otherwise app-eligible users. It does not add schema,
+  migrations, UI, route gates, runtime apply, policy acceptance behavior, legal
+  approval, or comments/replies.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before
