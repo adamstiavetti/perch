@@ -7,6 +7,7 @@ import {
   getPrivateRouteAuditResult,
 } from "../../../src/lib/privateApp/access";
 import { getPrivateShellChildRoute } from "../../../src/lib/privateApp/privateShellPlaceholder";
+import { requireCurrentPolicyAcceptance } from "../../../src/lib/policyAcceptance/server";
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 
@@ -51,6 +52,12 @@ export default async function PrivateRoutePlaceholderPage({
   if (gate.kind === "redirect") {
     redirect(gate.path);
   }
+
+  requireCurrentPolicyAcceptance({
+    context,
+    gate,
+    nextPath: route.path,
+  });
 
   return (
     <PrivateShellPlaceholder

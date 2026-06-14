@@ -1,4 +1,5 @@
 import type { AirlineEmailAccessState } from "../verification/airlineEmailAccess";
+import type { PolicyAcceptanceRecord } from "../policyAcceptance/policies";
 import type { JmpseatLaunchMode } from "./launchMode";
 
 const PRIVATE_APP_ROUTES = {
@@ -7,14 +8,22 @@ const PRIVATE_APP_ROUTES = {
   profile: "/app/profile",
   verification: "/app/verification",
   accessHold: "/app/access-hold",
+  policyAcceptance: "/app/policy-acceptance",
 } as const;
+
+const REQUIRED_POLICY_ACCEPTANCE_TOKENS = new Set([
+  "private_beta_terms:v1",
+  "privacy_notice:v1",
+  "community_rules:v1",
+]);
 
 type PrivateRouteKind =
   | "private-root"
   | "private-child"
   | "profile"
   | "verification"
-  | "access-hold";
+  | "access-hold"
+  | "policy-acceptance";
 
 type PrivateRouteContext = {
   authConfigured: boolean;
@@ -27,6 +36,8 @@ type PrivateRouteContext = {
   profileLoadError: string | null;
   betaLoadError: string | null;
   airlineEmailLoadError: string | null;
+  policyAcceptanceRecords: PolicyAcceptanceRecord[];
+  policyAcceptanceLoadError: string | null;
 };
 
 type PrivateAppGateResult =
@@ -44,6 +55,24 @@ function buildPath(path: string, params: Record<string, string | null | undefine
 
   const suffix = search.toString();
   return suffix ? `${path}?${suffix}` : path;
+}
+
+function buildPolicyAcceptanceRedirectPath(nextPath: string) {
+  return buildPath(PRIVATE_APP_ROUTES.policyAcceptance, {
+    next: nextPath,
+  });
+}
+
+function hasAcceptedRequiredPolicyAcceptances(
+  records: readonly PolicyAcceptanceRecord[],
+) {
+  const acceptedTokens = new Set(
+    records.map((record) => `${record.policy_key ?? ""}:${record.policy_version ?? ""}`),
+  );
+
+  return [...REQUIRED_POLICY_ACCEPTANCE_TOKENS].every((token) =>
+    acceptedTokens.has(token),
+  );
 }
 
 function doesLaunchModeRequireBeta(mode: JmpseatLaunchMode) {
@@ -179,6 +208,30 @@ export function getPrivateAppGateResult({
     return { kind: "redirect", path: PRIVATE_APP_ROUTES.accessHold, accessSource: "blocked" };
   }
 
+  const hasAcceptedCurrentPolicies = hasAcceptedRequiredPolicyAcceptances(
+    context.policyAcceptanceRecords,
+  );
+
+  if (routeKind === "policy-acceptance") {
+    if (context.policyAcceptanceLoadError || !hasAcceptedCurrentPolicies) {
+      return { kind: "allow", accessSource: "normal_gate" };
+    }
+
+    return {
+      kind: "redirect",
+      path: PRIVATE_APP_ROUTES.app,
+      accessSource: "blocked",
+    };
+  }
+
+  if (context.policyAcceptanceLoadError || !hasAcceptedCurrentPolicies) {
+    return {
+      kind: "redirect",
+      path: buildPolicyAcceptanceRedirectPath(nextPath),
+      accessSource: "blocked",
+    };
+  }
+
   return { kind: "allow", accessSource: "normal_gate" };
 }
 
@@ -210,6 +263,12 @@ export function getPrivateRouteAuditResult(
     return context.betaLoadError || context.airlineEmailLoadError
       ? "storage_not_ready"
       : "redirect_access_hold";
+  }
+
+  if (gate.path.startsWith(PRIVATE_APP_ROUTES.policyAcceptance)) {
+    return context.policyAcceptanceLoadError
+      ? "storage_not_ready"
+      : "redirect_policy_acceptance";
   }
 
   return "redirect";

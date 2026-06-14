@@ -8,6 +8,10 @@ import { AUTH_ROUTES, sanitizeNextPath } from "../auth/routes";
 import { getPrivateAppGateResult } from "../privateApp/access";
 import { getJmpseatLaunchMode, type JmpseatLaunchMode } from "../privateApp/launchMode";
 import { getProfileCompletionState, type AppProfileRecord } from "../profile/profile";
+import {
+  POLICY_ACCEPTANCE_STORAGE_NOT_READY_MESSAGE,
+} from "../policyAcceptance/server";
+import type { PolicyAcceptanceRecord } from "../policyAcceptance/policies";
 import { recordSecurityEvent } from "../securityEvents/server";
 import { getSupabaseBrowserEnv } from "../supabase/config";
 import { createClient } from "../supabase/server";
@@ -79,6 +83,8 @@ type QueryVerificationClaimRow = {
   revoked_at: string | null;
 };
 
+type QueryPolicyAcceptanceRow = PolicyAcceptanceRecord;
+
 export type CurrentAppAccessContext = {
   authConfigured: boolean;
   user: User | null;
@@ -93,6 +99,8 @@ export type CurrentAppAccessContext = {
   profileLoadError: string | null;
   betaLoadError: string | null;
   airlineEmailLoadError: string | null;
+  policyAcceptanceRecords: PolicyAcceptanceRecord[];
+  policyAcceptanceLoadError: string | null;
 };
 
 function buildPath(path: string, params: Record<string, string | null | undefined>) {
@@ -145,6 +153,8 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       profileLoadError: null,
       betaLoadError: null,
       airlineEmailLoadError: null,
+      policyAcceptanceRecords: [],
+      policyAcceptanceLoadError: null,
     };
   }
 
@@ -169,6 +179,8 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       profileLoadError: userError?.message ?? null,
       betaLoadError: null,
       airlineEmailLoadError: null,
+      policyAcceptanceRecords: [],
+      policyAcceptanceLoadError: null,
     };
   }
 
@@ -180,6 +192,7 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
     verificationEvidenceResult,
     verificationClaimsResult,
     operatorScopesResult,
+    policyAcceptancesResult,
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -217,6 +230,11 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       .order("approved_at", { ascending: false })
       .returns<QueryVerificationClaimRow[]>(),
     supabase.rpc("current_user_operator_scopes"),
+    supabase
+      .from("user_policy_acceptances")
+      .select("policy_key, policy_version")
+      .eq("user_id", user.id)
+      .returns<QueryPolicyAcceptanceRow[]>(),
   ]);
 
   const operatorScopes = filterOperatorScopes(
@@ -232,6 +250,9 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
     verificationClaimsResult.error
       ? getAirlineEmailAccessStorageErrorMessage()
       : null;
+  const policyAcceptanceLoadError = policyAcceptancesResult.error
+    ? POLICY_ACCEPTANCE_STORAGE_NOT_READY_MESSAGE
+    : null;
   const airlineEmailAccessState = getCurrentAirlineEmailAccessState({
     approvedDomains: approvedDomainsResult.data ?? [],
     requests: verificationRequestsResult.data ?? [],
@@ -259,6 +280,8 @@ export async function getCurrentAppAccessContext(): Promise<CurrentAppAccessCont
       : null,
     betaLoadError: betaResult.error ? getBetaAccessStorageErrorMessage() : null,
     airlineEmailLoadError,
+    policyAcceptanceRecords: policyAcceptancesResult.data ?? [],
+    policyAcceptanceLoadError,
   };
 }
 

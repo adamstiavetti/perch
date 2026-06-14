@@ -91,6 +91,13 @@ Current scope note:
   recommended minimal policy acceptance tracking design for private beta terms,
   privacy notice, and community rules. It does not implement schema, migrations,
   UI, route gates, runtime behavior, or legal approval.
+- POL-ACCEPT-01A local implementation:
+  `docs/ops/pol-accept-01a-policy-acceptance-tracking-implementation.md`
+  records the local migration, RPC, server helper, route gate, and
+  `/app/policy-acceptance` interstitial for otherwise app-eligible users. The
+  runtime migration apply, deployment, and browser smoke are still pending. It
+  adds no raw IP/user-agent collection, support/deletion/export/appeal backend,
+  legal approval, broader-beta approval, or comments/replies.
 
 ## 1. Purpose
 
@@ -557,6 +564,7 @@ Pre-beta checklist:
 - [ ] Terms of service draft ready.
 - [ ] Privacy policy draft ready.
 - [ ] Community guidelines ready.
+- [ ] Policy acceptance tracking runtime-applied and browser-smoked.
 - [ ] Verification consent language ready.
 - [ ] AI disclaimer ready.
 - [ ] Verification artifact retention policy approved for beta.

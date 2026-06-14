@@ -112,7 +112,7 @@ test("policy pages wire manual support privacy deletion export and appeal intake
   assert.doesNotMatch(policyContentSource, /AI makes final|AI decides final|automatic appeal approval/i);
 });
 
-test("public and auth surfaces link to private-beta policy pages without acceptance tracking", () => {
+test("public and auth surfaces link to private-beta policy pages without acceptance mutation scope", () => {
   assert.match(publicHomeSource, /href="\/legal\/beta-terms"/);
   assert.match(publicHomeSource, /href="\/legal\/privacy"/);
   assert.match(publicHomeSource, /href="\/legal\/community-rules"/);
@@ -154,11 +154,11 @@ test("admin moderation surface links policy drafts without expanding operator ac
   assert.doesNotMatch(adminModerationSource, /ban|suspend|AI final|public moderation feed/i);
 });
 
-test("Policy/Ops Pack v1 UI wiring adds no migrations, tables, or proof-upload runtime scope", () => {
+test("Policy/Ops pages add only the dedicated acceptance migration and no proof-upload runtime scope", () => {
   const migrationFiles = readdirSync(new URL("../../supabase/migrations", import.meta.url));
-  assert.equal(
-    migrationFiles.some((file) => /policy|terms|privacy|acceptance/i.test(file)),
-    false,
+  assert.deepEqual(
+    migrationFiles.filter((file) => /policy|terms|privacy|acceptance/i.test(file)),
+    ["20260614172239_create_user_policy_acceptances.sql"],
   );
 
   const appSources = [

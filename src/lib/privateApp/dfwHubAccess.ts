@@ -8,6 +8,7 @@ import {
   getPrivateAppGateResult,
   getPrivateRouteAuditResult,
 } from "./access";
+import { requireCurrentPolicyAcceptance } from "../policyAcceptance/server";
 import { getPrivateAccessEventType } from "../securityEvents/securityEvents";
 import { recordSecurityEvent } from "../securityEvents/server";
 
@@ -46,4 +47,10 @@ export async function requireDfwHubRouteAccess({
   if (gate.kind === "redirect") {
     redirect(gate.path);
   }
+
+  requireCurrentPolicyAcceptance({
+    context,
+    gate,
+    nextPath: route,
+  });
 }

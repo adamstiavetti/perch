@@ -45,6 +45,12 @@ function createContext(overrides: Partial<Parameters<typeof getPrivateAppGateRes
     profileLoadError: null,
     betaLoadError: null,
     airlineEmailLoadError: null,
+    policyAcceptanceRecords: [
+      { policy_key: "private_beta_terms", policy_version: "v1" },
+      { policy_key: "privacy_notice", policy_version: "v1" },
+      { policy_key: "community_rules", policy_version: "v1" },
+    ],
+    policyAcceptanceLoadError: null,
     ...overrides,
   };
 }
@@ -323,6 +329,81 @@ test("shared private-app gate allows active-beta users into known private routes
       context: createContext(),
     }),
     expectNormalAllow(),
+  );
+});
+
+test("otherwise app-eligible users missing policy acceptance redirect to acceptance interstitial", () => {
+  assert.deepEqual(
+    getPrivateAppGateResult({
+      routeKind: "private-child",
+      nextPath: "/app/hubs/dfw",
+      context: createContext({
+        policyAcceptanceRecords: [
+          { policy_key: "private_beta_terms", policy_version: "v1" },
+          { policy_key: "privacy_notice", policy_version: "v1" },
+        ],
+      }),
+    }),
+    expectBlockedRedirect("/app/policy-acceptance?next=%2Fapp%2Fhubs%2Fdfw"),
+  );
+});
+
+test("policy acceptance gate runs after existing access-hold checks", () => {
+  assert.deepEqual(
+    getPrivateAppGateResult({
+      routeKind: "private-child",
+      nextPath: "/app/hubs/dfw",
+      context: createContext({
+        betaActive: false,
+        policyAcceptanceRecords: [],
+      }),
+    }),
+    expectBlockedRedirect("/app/access-hold"),
+  );
+});
+
+test("policy acceptance route is available only after normal app eligibility checks", () => {
+  assert.deepEqual(
+    getPrivateAppGateResult({
+      routeKind: "policy-acceptance",
+      nextPath: "/app/policy-acceptance",
+      context: createContext({
+        betaActive: false,
+        policyAcceptanceRecords: [],
+      }),
+    }),
+    expectBlockedRedirect("/app/access-hold"),
+  );
+
+  assert.deepEqual(
+    getPrivateAppGateResult({
+      routeKind: "policy-acceptance",
+      nextPath: "/app/policy-acceptance",
+      context: createContext({
+        policyAcceptanceRecords: [],
+      }),
+    }),
+    expectNormalAllow(),
+  );
+});
+
+test("accepted users bypass policy interstitial and policy route redirects to app", () => {
+  assert.deepEqual(
+    getPrivateAppGateResult({
+      routeKind: "private-child",
+      nextPath: "/app/hubs/dfw",
+      context: createContext(),
+    }),
+    expectNormalAllow(),
+  );
+
+  assert.deepEqual(
+    getPrivateAppGateResult({
+      routeKind: "policy-acceptance",
+      nextPath: "/app/policy-acceptance",
+      context: createContext(),
+    }),
+    expectBlockedRedirect("/app"),
   );
 });
 

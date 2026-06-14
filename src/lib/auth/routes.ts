@@ -10,6 +10,7 @@ export const AUTH_ROUTES = {
   verificationConfirm: "/app/verification/confirm",
   accessHold: "/app/access-hold",
   accessRestricted: "/app/access-restricted",
+  policyAcceptance: "/app/policy-acceptance",
 } as const;
 
 export function resolvePostAuthPath(next?: string | null) {

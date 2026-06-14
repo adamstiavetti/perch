@@ -17,6 +17,7 @@ import {
   getPrivateAppGateResult,
   getPrivateRouteAuditResult,
 } from "../../../src/lib/privateApp/access";
+import { requireCurrentPolicyAcceptance } from "../../../src/lib/policyAcceptance/server";
 import { getPrivateAccessEventType } from "../../../src/lib/securityEvents/securityEvents";
 import { recordSecurityEvent } from "../../../src/lib/securityEvents/server";
 import { getSupabaseBrowserEnv } from "../../../src/lib/supabase/config";
@@ -70,6 +71,12 @@ export default async function AdminHomePage() {
   if (gate.kind === "redirect") {
     redirect(gate.path);
   }
+
+  requireCurrentPolicyAcceptance({
+    context: appContext,
+    gate,
+    nextPath: ADMIN_ROUTES.home,
+  });
 
   const reviewerContext =
     await getCurrentVerificationReviewerAuthorizationContext();

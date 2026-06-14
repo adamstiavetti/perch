@@ -323,6 +323,14 @@ Current controlling docs for Hub work:
   interstitial for otherwise app-eligible users. It does not add schema,
   migrations, UI, route gates, runtime apply, policy acceptance behavior, legal
   approval, or comments/replies.
+- [POL-ACCEPT-01A Policy Acceptance Tracking Implementation](ops/pol-accept-01a-policy-acceptance-tracking-implementation.md) -
+  local implementation for minimal private-beta policy acceptance tracking. It
+  adds the `public.user_policy_acceptances` migration, exact current policy
+  allowlist, idempotent server-controlled acceptance RPC/action, protected
+  `/app/policy-acceptance` interstitial, and post-eligibility app/admin/DFW Hub
+  gate wiring. Runtime migration apply, deployment, browser smoke, legal
+  approval, backend support/deletion/export/appeal intake, and comments/replies
+  remain pending.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

@@ -39,6 +39,7 @@ Relationships:
 - Has one Profile.
 - Has many Verifications.
 - Has many Posts, Comments, SavedItems, Reports, ModerationActions, and AIBriefs.
+- Has many UserPolicyAcceptance records.
 - Has one current TrustLevel.
 
 Home Dashboard note:
@@ -86,6 +87,60 @@ Home Dashboard note:
   grant verification, DB-level read eligibility, safe return fields,
   `board_posts` RLS/policy posture, and confirmation that no user/community
   content was created.
+
+## UserPolicyAcceptance
+
+Minimal private-beta policy acceptance audit record for the current user-facing
+policy set.
+
+Current POL-ACCEPT-01A implementation note:
+
+- `supabase/migrations/20260614172239_create_user_policy_acceptances.sql`
+  creates `public.user_policy_acceptances` locally. Runtime apply is pending.
+- The required current acceptance set is:
+  - `private_beta_terms:v1`
+  - `privacy_notice:v1`
+  - `community_rules:v1`
+- The table stores policy key/version acceptance records for authenticated
+  users. It does not store raw IP addresses, raw user agents, hashed IP
+  addresses, hashed user agents, policy body snapshots, public handles, work
+  emails, profile labels, or routes.
+- The migration adds `public.accept_current_private_beta_policies()` as the
+  server-controlled idempotent RPC for the exact current policy set.
+- The implementation is local repo work only until reviewed, committed, and
+  targeted runtime-applied. Browser smoke remains pending after runtime
+  apply/deploy.
+
+Important fields:
+
+- id
+- user_id
+- policy_key
+- policy_version
+- accepted_at
+- created_at
+
+Relationships:
+
+- Belongs to auth User.
+
+Constraints:
+
+- `policy_key` is limited to `private_beta_terms`, `privacy_notice`, and
+  `community_rules`.
+- `policy_version` is limited to `v1`.
+- `(user_id, policy_key, policy_version)` is unique.
+- `user_id` references `auth.users(id)` with `on delete cascade`.
+
+Access model:
+
+- RLS is enabled.
+- `anon` has no table access.
+- Authenticated users can select only their own acceptance records.
+- Authenticated users do not receive direct insert/update/delete table policies.
+- Inserts go through the controlled RPC/server action path.
+- Acceptance records are not publicly exposed and are not identity verification,
+  beta approval, profile completion, or operator authorization.
 
 ## Profile
 

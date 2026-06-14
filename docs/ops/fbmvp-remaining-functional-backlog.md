@@ -373,6 +373,15 @@ server-controlled app-entry interstitial. This is design-only; schema,
 migration, route gate, UI, runtime apply, legal approval, and browser smoke
 remain pending before broader beta.
 
+POL-ACCEPT-01A policy acceptance tracking implementation is recorded in
+`docs/ops/pol-accept-01a-policy-acceptance-tracking-implementation.md`. It adds
+local repo code and migration for `public.user_policy_acceptances`, the exact
+current policy allowlist, a server-controlled idempotent acceptance RPC/action,
+`/app/policy-acceptance`, and app/admin/DFW Hub gate wiring for otherwise
+app-eligible users. Runtime apply, deployment, browser smoke, legal approval,
+support/deletion/export/appeal backend intake, and comments/replies remain
+pending.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

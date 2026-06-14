@@ -88,6 +88,13 @@ Current scope note:
   proposed minimal acceptance model for private beta terms, privacy notice, and
   community rules. It is design/preflight only; no schema, migration, route
   gate, acceptance UI, runtime apply, or browser smoke has been implemented.
+- POL-ACCEPT-01A local implementation:
+  `docs/ops/pol-accept-01a-policy-acceptance-tracking-implementation.md`
+  records the local migration/app-code implementation for minimal acceptance of
+  private beta terms, privacy notice, and community rules. Runtime migration
+  apply, deployment, and browser smoke remain pending. The lane adds no raw
+  IP/user-agent collection, support/deletion/export/appeal backend, legal
+  approval, broader-beta approval, or comments/replies.
 
 ## How to Use This Checklist
 
@@ -461,6 +468,8 @@ Minimum readiness criteria:
 - [ ] Privacy review is completed.
 - [ ] Rollback plan is documented.
 - [ ] User support/contact path exists.
+- [ ] Policy acceptance tracking is runtime-applied and browser-smoked for
+      otherwise app-eligible users.
 - [ ] Known limitations are documented for beta users.
 
 Do not launch beta if:
@@ -472,6 +481,8 @@ Do not launch beta if:
 - [ ] Emergency escalation category is missing.
 - [ ] Anonymous posting cannot be tied to an internal account for enforcement.
 - [ ] RLS/server-side authorization has not been tested.
+- [ ] Policy acceptance tracking is client-only, bypasses private-app access
+      gates, or has not been runtime-smoked.
 - [ ] AI can approve verification or issue final bans.
 - [ ] Jumpseat Brief can output exact crew hotel exposure, passenger private information, airport security procedures, or live operations-sensitive information.
 - [ ] V1 includes airline portal login, schedule scraping, public nearby crew tracking, dating/swiping, flight-load requests, native mobile, full marketplace payments, advanced employment verification APIs, or roster/calendar integrations.
