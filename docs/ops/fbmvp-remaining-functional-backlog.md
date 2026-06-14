@@ -332,6 +332,13 @@ deletion/export, moderation appeals, policy acceptance tracking, owners,
 retention expectations, and the two limited smoke areas before broader private
 beta or comments/replies.
 
+Policy/Ops founder decisions should be recorded in
+`docs/ops/policy-ops-founder-decision-capture.md` before Codex implements
+policy copy revisions, support/contact/deletion/appeal intake, policy
+acceptance tracking, re-smoke, or comments/replies readiness work. Selected MVP
+defaults are now recorded there, but the required implementation, legal review,
+confirmation, and deferral gates remain open.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

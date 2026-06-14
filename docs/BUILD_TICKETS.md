@@ -284,6 +284,13 @@ Current controlling docs for Hub work:
   unsupported or placeholder language, and recommends deciding official
   support/contact, deletion/export, and moderation appeal paths before backend
   intake or comments/replies work.
+- [Policy/Ops Founder Decision Capture](ops/policy-ops-founder-decision-capture.md) -
+  docs-only worksheet for recording founder-selected decisions, statuses,
+  owners, and implementation follow-up impact before Codex starts policy copy,
+  support/contact/deletion/appeal intake, policy acceptance tracking, re-smoke,
+  or comments/replies readiness work. Selected MVP defaults are recorded, but
+  they do not implement intake, acceptance tracking, comments/replies, runtime
+  behavior, or legal approval.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

@@ -61,6 +61,13 @@ Current scope note:
   implemented behavior and identifies the support/contact, deletion/export,
   appeal, owner, acceptance-tracking, and re-smoke decisions needed before
   broader private beta or comments/replies.
+- Policy/Ops founder decision capture:
+  `docs/ops/policy-ops-founder-decision-capture.md` is the worksheet where the
+  founder should record selected decisions, statuses, and implementation impact
+  before Codex starts policy copy, intake, acceptance tracking, re-smoke, or
+  comments/replies follow-up lanes. Selected MVP defaults are recorded there,
+  but they still require the listed implementation, legal review, confirmation,
+  or deferral handling before broader private-beta use.
 
 ## 1. Purpose
 

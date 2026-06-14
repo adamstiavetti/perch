@@ -56,6 +56,12 @@ Current scope note:
   blockers before broader beta, blockers before comments/replies, language risk
   notes, and follow-up ticket candidates. It is not legal advice and does not
   mark the policy copy as approved.
+- Policy/Ops founder decision capture:
+  `docs/ops/policy-ops-founder-decision-capture.md` is the fillable worksheet
+  for recording founder-selected decisions before Codex implements policy copy,
+  intake, acceptance tracking, re-smoke, or comments/replies follow-up work.
+  Selected MVP defaults are recorded there, but they are not implementation,
+  legal approval, or broader-beta approval by themselves.
 
 ## How to Use This Checklist
 
