@@ -84,6 +84,9 @@ None.
 - Comments/replies remain blocked.
 - Access-hold and operator-admin policy-link smoke limitations remain open from
   the earlier Policy/Ops UI wiring smoke.
+- `docs/ops/qa-pol-01-limited-policy-ui-smoke.md` records a follow-up limited
+  re-smoke attempt; the available session still could not render access-hold or
+  operator-scoped admin moderation, so both limitations remain open.
 - Incident/escalation backup owner remains unresolved unless later decided.
 
 ## Result

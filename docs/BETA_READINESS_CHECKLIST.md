@@ -76,6 +76,13 @@ Current scope note:
   an optional `/legal/beta-terms` spot-check. Manual intake copy rendered,
   public legal access passed, `/app` still redirected unauthenticated users to
   login, and no backend/form/automation/legal-finality claims were found.
+- QA-POL-01 limited Policy UI smoke:
+  `docs/ops/qa-pol-01-limited-policy-ui-smoke.md` records a focused beta
+  re-smoke attempt for access-hold and operator-admin policy links. The active
+  session redirected `/app/access-hold` to `/app` and
+  `/app/admin/community-moderation` to `/app/access-restricted`; no-cookie auth
+  gates and non-operator denial passed, but both visibility limitations remain
+  open until suitable access-hold and operator-scoped sessions are available.
 
 ## How to Use This Checklist
 

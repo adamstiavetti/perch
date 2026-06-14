@@ -81,6 +81,11 @@ Current scope note:
   public legal pages. Manual intake copy rendered, legal pages stayed public,
   unauthenticated `/app` stayed gated to login, and no unsupported
   backend/form/automation/legal-finality claim was found.
+- QA-POL-01 limited Policy UI smoke:
+  `docs/ops/qa-pol-01-limited-policy-ui-smoke.md` records that the current
+  active session still could not render access-hold or operator-scoped admin
+  moderation. No-cookie auth gates and non-operator denial passed; access-hold
+  copy visibility and operator policy-link visibility remain open.
 
 ## 1. Purpose
 

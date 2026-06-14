@@ -307,6 +307,14 @@ Current controlling docs for Hub work:
   support form, API action, automated deletion/export, guaranteed timeline,
   instant/guaranteed appeal, AI final decision, secret, runtime mutation, or
   legal-finality issue was found.
+- [QA-POL-01 Limited Policy UI Smoke](ops/qa-pol-01-limited-policy-ui-smoke.md) -
+  records a focused beta re-smoke attempt for `/app/access-hold` and
+  `/app/admin/community-moderation`. The available session was app-eligible and
+  non-operator, so access-hold redirected to `/app` and admin moderation
+  redirected to `/app/access-restricted`. No-cookie auth gates and non-operator
+  denial passed, no runtime mutation occurred, and both target visibility
+  limitations remain open until suitable access-hold and operator-scoped
+  sessions are available.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

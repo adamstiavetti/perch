@@ -357,6 +357,14 @@ mutation issue was found. Backend intake, policy acceptance tracking,
 comments/replies, legal review, access-hold/operator-admin re-smoke, and
 incident backup ownership remain open.
 
+QA-POL-01 limited Policy UI smoke is recorded in
+`docs/ops/qa-pol-01-limited-policy-ui-smoke.md`. The active session remained
+app-eligible and non-operator, so `/app/access-hold` redirected to `/app` and
+`/app/admin/community-moderation` redirected to `/app/access-restricted`.
+No-cookie auth gates and non-operator denial passed, no runtime mutation or
+sensitive leakage occurred, and both target visibility limitations remain open
+until suitable access-hold and operator-scoped sessions are available.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.

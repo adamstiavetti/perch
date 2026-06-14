@@ -87,6 +87,10 @@ No proof upload or policy acceptance surfaced in the active app redirect.
 Future browser smoke may recheck `/app/access-hold` with an account state that
 naturally lands on access-hold.
 
+Follow-up note: `docs/ops/qa-pol-01-limited-policy-ui-smoke.md` records a
+focused re-smoke attempt after `4ddf345`. The available session still redirected
+`/app/access-hold` to `/app`, so this limitation remains open.
+
 ## Channel Composer Policy Link Result
 
 Status: passed.
@@ -122,6 +126,11 @@ The non-operator gate passed. Operator-scoped policy-link visibility remains
 pending unless an operator session is available.
 
 No moderation data or actions were exposed to the non-operator session.
+
+Follow-up note: `docs/ops/qa-pol-01-limited-policy-ui-smoke.md` records a
+focused re-smoke attempt after `4ddf345`. The available session still redirected
+`/app/admin/community-moderation` to `/app/access-restricted`, so operator
+policy-link visibility remains open.
 
 ## Public-Domain Boundary Result
 
