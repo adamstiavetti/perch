@@ -108,7 +108,9 @@ export const privacyNoticeContent: PolicyPageContent = {
     {
       title: "Deletion and export",
       paragraphs: [
-        "Deletion/export handling is a draft/manual process and implementation may be pending.",
+        "Deletion/export handling is manual during private beta. Use privacy@jmpseat.com once configured for privacy, deletion, or export requests.",
+        "If a separate privacy inbox is not available, route the request through support@jmpseat.com with the subject prefix [Privacy Request], [Deletion Request], or [Export Request].",
+        "jmpseat does not currently offer automated self-service deletion or export tooling.",
         "Reports, moderation actions, security events, and abuse records may need limited retention for accountability, appeals, safety, or legal reasons.",
       ],
     },
@@ -236,7 +238,9 @@ export const moderationAppealsContent: PolicyPageContent = {
     {
       title: "Appeals",
       paragraphs: [
-        "Appeals are a draft/manual process during private beta. A formal appeal intake may be wired later.",
+        "Appeals are a manual process during private beta. Use support@jmpseat.com once configured with the subject prefix [Moderation Appeal].",
+        "There is no in-app appeal backend or automatic appeal workflow in the current product.",
+        "Appeals are reviewed by a human/admin operator where appropriate. They are not guaranteed, instant, or automatically granted.",
         "Appeals should not restore content that exposes passengers, exact crew hotels, security procedures, live operations-sensitive information, doxxing, threats, or confidential company information.",
       ],
     },
@@ -263,14 +267,17 @@ export const supportRequestsContent: PolicyPageContent = {
     {
       title: "Contact path",
       paragraphs: [
-        "Approved support/contact paths are still being finalized for private beta. Until a specific in-app form is wired, use the contact path provided by the founder or beta operator for your beta cohort.",
+        "Use support@jmpseat.com once configured for private-beta support, account/access questions, verification questions, report follow-up, moderation appeals, and safety or aviation-sensitive concerns.",
+        "There is no in-app support form in the current product. Do not rely on support response timelines until they are separately approved and published.",
         "Do not send passwords, portal credentials, employee numbers, confidential company documents, passenger information, exact crew hotel details, or security-sensitive information in support messages.",
       ],
     },
     {
       title: "Deletion and export",
       paragraphs: [
-        "Deletion/export request handling is draft/manual and may require founder/legal review before completion.",
+        "Use privacy@jmpseat.com once configured for privacy, deletion, or export requests.",
+        "If a separate privacy inbox is not available, route the request through support@jmpseat.com with the subject prefix [Privacy Request], [Deletion Request], or [Export Request].",
+        "Deletion/export request handling is manual and may require founder/legal review before completion. There is no automated self-service deletion or export workflow in the current product.",
         "Exports should exclude other users' private data, reporter identities, author user IDs, internal operator notes, proof artifacts, signed URLs, storage paths, and security-sensitive data unless legally required and reviewed.",
       ],
     },

@@ -45,8 +45,8 @@ Current scope note:
   `docs/ops/policy-ops-pack-v1-ui-wiring.md` adds read-only private-beta policy
   pages and focused links from public/auth/access-hold/Channels/admin surfaces.
   This does not add legal acceptance tracking, support/deletion/export/appeal
-  intake, final approved contact paths, or final legal approval. Browser smoke
-  is recorded in `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`:
+  backend intake, response-time commitments, or final legal approval. Browser
+  smoke is recorded in `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`:
   public legal routes, public/auth links, Channel composer/report links, and
   public-domain boundaries passed; access-hold copy and operator admin
   policy-link visibility remain limited by session state.
@@ -62,6 +62,14 @@ Current scope note:
   intake, acceptance tracking, re-smoke, or comments/replies follow-up work.
   Selected MVP defaults are recorded there, but they are not implementation,
   legal approval, or broader-beta approval by themselves.
+- OPS-INTAKE-01 copy wiring: public legal content and policy/runbook drafts now
+  name the selected manual MVP intake paths: `support@jmpseat.com` once
+  configured, `privacy@jmpseat.com` once configured, fallback
+  `[Privacy Request]`, `[Deletion Request]`, and `[Export Request]` subject
+  prefixes through support, and `[Moderation Appeal]` through support. This is
+  copy wiring only; support/deletion/export/appeal backend intake, policy
+  acceptance tracking, legal approval, broader-beta approval, and
+  comments/replies remain unimplemented.
 
 ## How to Use This Checklist
 

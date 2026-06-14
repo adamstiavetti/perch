@@ -268,8 +268,8 @@ Current controlling docs for Hub work:
   policy pages plus focused links from public waitlist, auth, access-hold
   verification copy, DFW Channel composer/reporting, and admin moderation
   surfaces. It adds no policy acceptance tracking, support form backend,
-  deletion/export intake, appeal intake, migrations, runtime apply, or final
-  legal approval.
+  deletion/export backend intake, appeal backend intake, migrations, runtime
+  apply, response-time commitments, or final legal approval.
 - [Policy/Ops Pack v1 UI Wiring Browser Smoke](ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md) - records beta browser smoke after
   `21f2e58`: public legal routes, public/auth links, Channel composer policy
   link, report UI policy link, public-domain boundaries, and product/safety
@@ -291,6 +291,14 @@ Current controlling docs for Hub work:
   or comments/replies readiness work. Selected MVP defaults are recorded, but
   they do not implement intake, acceptance tracking, comments/replies, runtime
   behavior, or legal approval.
+- `OPS-INTAKE-01 Support Privacy Deletion Appeal Intake Copy Wiring` - narrow
+  copy/content wiring that adds selected manual MVP intake paths to public legal
+  content and policy/runbook drafts: `support@jmpseat.com` once configured,
+  `privacy@jmpseat.com` once configured, fallback privacy/deletion/export
+  subject prefixes through support, and `[Moderation Appeal]` through support.
+  It adds no support form, deletion/export backend, appeal backend, policy
+  acceptance tracking, database/migration/runtime behavior, legal approval,
+  broader-beta approval, or comments/replies.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

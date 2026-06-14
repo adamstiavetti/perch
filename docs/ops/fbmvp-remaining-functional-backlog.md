@@ -318,8 +318,8 @@ Policy/Ops Pack v1 UI wiring is recorded in
 `/legal/...` pages and focused links from public waitlist, auth, access-hold
 verification copy, DFW Channel composer/report UI, and admin moderation. It
 does not add policy acceptance tracking, support form backend, deletion/export
-intake, appeal intake, final approved contact paths, migrations, or runtime
-changes. Browser smoke is recorded in
+backend intake, appeal backend intake, response-time commitments, migrations,
+or runtime changes. Browser smoke is recorded in
 `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`: public legal routes,
 public/auth links, Channel composer/report policy links, public-domain boundary
 behavior, and product/safety boundaries passed. Access-hold verification copy
@@ -338,6 +338,15 @@ policy copy revisions, support/contact/deletion/appeal intake, policy
 acceptance tracking, re-smoke, or comments/replies readiness work. Selected MVP
 defaults are now recorded there, but the required implementation, legal review,
 confirmation, and deferral gates remain open.
+
+OPS-INTAKE-01 copy wiring now records the selected manual MVP intake paths in
+public legal content and policy/runbook drafts: `support@jmpseat.com` once
+configured, `privacy@jmpseat.com` once configured, fallback
+privacy/deletion/export subject prefixes through support, and
+`[Moderation Appeal]` through support. This is not backend intake: support form
+implementation, deletion/export tooling, appeal workflow implementation, policy
+acceptance tracking, broader-beta approval, and comments/replies remain pending
+or deferred.
 
 ## UI/UX Rule
 

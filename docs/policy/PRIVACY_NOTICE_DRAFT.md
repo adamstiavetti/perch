@@ -209,13 +209,17 @@ Exact retention periods require founder/legal/security review.
 
 Draft/manual process, implementation pending:
 
-- deletion/export requests should go to `privacy@jmpseat.com` or the approved
-  private-beta privacy support path
+- deletion/export requests should go to `privacy@jmpseat.com` once configured
+- if a separate privacy inbox is unavailable, requests may be routed through
+  `support@jmpseat.com` with the subject prefix `[Privacy Request]`,
+  `[Deletion Request]`, or `[Export Request]`
 - jmpseat should verify the requester before acting
 - jmpseat should document what can be deleted, exported, anonymized, or retained
   for safety/security/legal/audit reasons
 - reports, moderation actions, security events, and abuse records may need to be
   retained in limited form where necessary
+- jmpseat does not currently provide automated self-service deletion or export
+  tooling
 
 ## Security
 
@@ -225,12 +229,15 @@ scopes, and report/moderation controls to protect private-beta surfaces.
 No internet service can guarantee perfect security. Users should not submit
 unnecessary sensitive information.
 
-## Contact Placeholder
+## Manual Contact Paths
 
-Draft contact paths:
+Draft/manual contact paths:
 
-- Privacy, deletion, export: `privacy@jmpseat.com`
-- General support: `support@jmpseat.com`
+- Privacy, deletion, export: `privacy@jmpseat.com` once configured
+- Fallback privacy/deletion/export routing: `support@jmpseat.com` with subject
+  prefix `[Privacy Request]`, `[Deletion Request]`, or `[Export Request]` if a
+  separate privacy inbox is unavailable
+- General support: `support@jmpseat.com` once configured
 - Safety/security escalation: owner and address pending founder decision
 
 ## Legal Review Note

@@ -93,6 +93,25 @@ test("policy pages preserve private-beta boundaries without overclaiming legal c
   assert.doesNotMatch(policyContentSource, /fully compliant|legally final|lawyer-approved|official legal advice/i);
 });
 
+test("policy pages wire manual support privacy deletion export and appeal intake copy only", () => {
+  assert.match(policyContentSource, /support@jmpseat\.com/);
+  assert.match(policyContentSource, /once configured/);
+  assert.match(policyContentSource, /privacy@jmpseat\.com/);
+  assert.match(policyContentSource, /\[Privacy Request\]/);
+  assert.match(policyContentSource, /\[Deletion Request\]/);
+  assert.match(policyContentSource, /\[Export Request\]/);
+  assert.match(policyContentSource, /\[Moderation Appeal\]/);
+  assert.match(policyContentSource, /There is no in-app support form/);
+  assert.match(policyContentSource, /There is no in-app appeal backend/);
+  assert.match(policyContentSource, /does not currently offer automated self-service deletion or export tooling/);
+  assert.match(policyContentSource, /No AI final moderation decisions/);
+  assert.match(policyContentSource, /AI does not make final verification decisions/);
+
+  assert.doesNotMatch(policyContentSource, /<form|action=|\/api\/support|\/api\/privacy|\/api\/appeal/i);
+  assert.doesNotMatch(policyContentSource, /automated self-service deletion is available|automated self-service export is available|instant export|immediate deletion/i);
+  assert.doesNotMatch(policyContentSource, /AI makes final|AI decides final|automatic appeal approval/i);
+});
+
 test("public and auth surfaces link to private-beta policy pages without acceptance tracking", () => {
   assert.match(publicHomeSource, /href="\/legal\/beta-terms"/);
   assert.match(publicHomeSource, /href="\/legal\/privacy"/);

@@ -39,6 +39,18 @@ The pages use private-beta draft framing and state that the copy is not legal
 advice, not final legal terms, and still needs founder/legal review before broad
 launch.
 
+OPS-INTAKE-01 copy wiring updates the public legal content to show selected
+manual MVP intake paths without adding backend behavior:
+
+- `support@jmpseat.com` once configured for private-beta support
+- `privacy@jmpseat.com` once configured for privacy, deletion, and export
+  requests
+- fallback privacy/deletion/export subject prefixes through support if a
+  separate privacy inbox is unavailable: `[Privacy Request]`,
+  `[Deletion Request]`, and `[Export Request]`
+- `[Moderation Appeal]` as the manual moderation appeal subject prefix through
+  support
+
 ## Surfaces Linked
 
 Public waitlist:
@@ -80,11 +92,12 @@ Still not implemented:
 - policy acceptance tracking
 - acceptance database table
 - support/contact form backend
-- deletion/export request intake
-- appeal intake
+- deletion/export request backend intake or automated self-service
+- appeal backend intake or in-app appeal workflow
 - approved final contact paths
 - footer/onboarding links beyond the focused MVP surfaces listed above
 - final legal approval
+- response-time promises
 
 ## Scope Boundaries
 

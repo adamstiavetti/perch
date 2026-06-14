@@ -50,8 +50,8 @@ Current scope note:
   private-beta policy pages plus focused links from the public waitlist, auth
   entry, access-hold verification copy, DFW Channel composer/reporting, and
   admin moderation surfaces. Policy acceptance, support form backend,
-  deletion/export intake, appeal intake, final contact paths, and final legal
-  approval remain unwired. Browser smoke is recorded in
+  deletion/export backend intake, appeal backend intake, response-time
+  commitments, and final legal approval remain unwired. Browser smoke is recorded in
   `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`; public legal
   routes and linked surfaces tested passed, with access-hold and operator-admin
   checks limited by the active session state.
@@ -68,6 +68,14 @@ Current scope note:
   comments/replies follow-up lanes. Selected MVP defaults are recorded there,
   but they still require the listed implementation, legal review, confirmation,
   or deferral handling before broader private-beta use.
+- OPS-INTAKE-01 copy wiring:
+  Public legal content and policy/runbook drafts now include the selected manual
+  MVP intake paths: `support@jmpseat.com` once configured,
+  `privacy@jmpseat.com` once configured, fallback privacy/deletion/export
+  subject prefixes through support, and `[Moderation Appeal]` through support.
+  This does not add an in-app support form, deletion/export backend, appeal
+  backend, policy acceptance tracking, legal approval, broader-beta approval, or
+  comments/replies.
 
 ## 1. Purpose
 

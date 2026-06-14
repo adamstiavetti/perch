@@ -151,8 +151,11 @@ details.
 
 Private-beta appeals are draft/manual and implementation is pending.
 
-Until a formal appeal flow is wired, users should contact the beta support path
-listed by jmpseat for account, verification, or moderation questions.
+Until a formal appeal flow is implemented, users should contact
+`support@jmpseat.com` once configured with the subject prefix
+`[Moderation Appeal]` for account, verification, or moderation questions.
+There is no in-app appeal backend or automatic appeal workflow in the current
+product.
 
 Appeals may not restore content that exposes passengers, exact crew hotels,
 airport/security-sensitive procedures, live operations-sensitive information,
@@ -187,10 +190,15 @@ information in feedback.
 
 ## Contact Placeholder
 
-Draft support paths:
+Draft/manual support paths:
 
-- General beta support: `support@jmpseat.com`
-- Privacy/deletion/export requests: `privacy@jmpseat.com`
+- General beta support: `support@jmpseat.com` once configured
+- Privacy/deletion/export requests: `privacy@jmpseat.com` once configured
+- Privacy/deletion/export fallback if a separate privacy inbox is unavailable:
+  `support@jmpseat.com` with subject prefix `[Privacy Request]`,
+  `[Deletion Request]`, or `[Export Request]`
+- Moderation appeals: `support@jmpseat.com` with subject prefix
+  `[Moderation Appeal]`
 - Safety/security escalation: owner and address pending founder decision
 
 These contact paths must be reviewed before broad private-beta use.

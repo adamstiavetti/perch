@@ -23,11 +23,19 @@ Draft support categories:
 - bug report
 - product feedback
 
-Draft contact placeholders:
+Draft/manual contact paths:
 
-- General support: `support@jmpseat.com`
-- Privacy/deletion/export: `privacy@jmpseat.com`
+- General support: `support@jmpseat.com` once configured
+- Privacy/deletion/export: `privacy@jmpseat.com` once configured
+- Privacy/deletion/export fallback if a separate privacy inbox is unavailable:
+  route through `support@jmpseat.com` with subject prefix `[Privacy Request]`,
+  `[Deletion Request]`, or `[Export Request]`
+- Moderation appeal: `support@jmpseat.com` with subject prefix
+  `[Moderation Appeal]`
 - Safety/security escalation: `[owner/address pending]`
+
+There is no in-app support, deletion/export, or appeal backend in the current
+product.
 
 ## Intake Rules
 
@@ -136,6 +144,10 @@ Rules:
 
 Appeals should be handled through the manual process in
 `docs/policy/MODERATION_AND_APPEALS_RUNBOOK.md`.
+
+Use `support@jmpseat.com` once configured with the subject prefix
+`[Moderation Appeal]`. Do not promise instant review, guaranteed restoration,
+or automatic appeal approval.
 
 Do not reveal reporter identity, author user ID, private account data,
 verification data, or unrelated moderator notes.

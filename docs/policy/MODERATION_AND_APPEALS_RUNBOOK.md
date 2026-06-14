@@ -153,9 +153,16 @@ Appeals are manual during private beta until a formal flow is implemented.
 
 Draft intake:
 
-- support path: `support@jmpseat.com`
-- privacy/deletion path: `privacy@jmpseat.com`
+- support path: `support@jmpseat.com` once configured
+- appeal subject prefix: `[Moderation Appeal]`
+- privacy/deletion/export path: `privacy@jmpseat.com` once configured
+- privacy/deletion/export fallback if a separate privacy inbox is unavailable:
+  route through `support@jmpseat.com` with subject prefix `[Privacy Request]`,
+  `[Deletion Request]`, or `[Export Request]`
 - appeal owner: `[owner pending]`
+
+No in-app appeal backend or automated appeal workflow exists in the current
+product.
 
 Appeal review steps:
 

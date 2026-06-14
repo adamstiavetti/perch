@@ -18,9 +18,17 @@ Follow-up UI wiring is recorded in
 `docs/ops/policy-ops-pack-v1-ui-wiring.md`. That follow-up adds public
 read-only policy routes and focused links from public, auth, verification,
 Channel composer/reporting, and admin moderation surfaces. It still does not
-add policy acceptance tracking, support form backend, deletion/export intake,
-appeal intake, database tables, migrations, runtime behavior, or final legal
-approval.
+add policy acceptance tracking, support form backend, deletion/export backend
+intake, appeal backend intake, database tables, migrations, runtime behavior,
+response-time commitments, or final legal approval.
+
+OPS-INTAKE-01 copy wiring adds the selected manual MVP contact paths to public
+legal content and policy/runbook drafts: `support@jmpseat.com` once configured,
+`privacy@jmpseat.com` once configured, fallback privacy/deletion/export subject
+prefixes through support, and `[Moderation Appeal]` manual appeal routing. This
+copy wiring does not add a support form, deletion/export backend, appeal
+backend, policy acceptance tracking, database tables, migrations, runtime
+behavior, response-time promises, or legal approval.
 
 ## Created Drafts
 
@@ -82,16 +90,20 @@ Future implementation tasks may need to:
 - expand policy links into any remaining onboarding, settings, help, or support
   surfaces once those surfaces are approved
 - add policy acceptance if required
-- add or update support/contact UI
-- add deletion/export request intake if required
-- add appeal intake if required
-- finalize approved support/contact paths
+- add support/contact backend or form intake if required
+- add deletion/export request backend intake if required
+- add appeal backend intake if required
+- confirm inbox configuration, owner, and monitoring cadence
 - add admin/operator checklist links where appropriate
 - browser-smoke the copy after it is wired
 
 The first wiring pass added policy routes and focused links, but it did not add
 runtime acceptance, support intake, deletion/export intake, appeal intake, or
 final legal approval.
+
+OPS-INTAKE-01 copy wiring adds the manual intake language only; it still does
+not add backend intake, automated deletion/export, in-app appeal workflow,
+policy acceptance tracking, or final legal approval.
 
 ## Deferred Scope
 
