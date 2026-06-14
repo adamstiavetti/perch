@@ -50,6 +50,12 @@ Current scope note:
   public legal routes, public/auth links, Channel composer/report links, and
   public-domain boundaries passed; access-hold copy and operator admin
   policy-link visibility remain limited by session state.
+- Policy/Ops founder review packet:
+  `docs/ops/policy-ops-founder-review-packet.md` consolidates the current
+  Policy/Ops Pack v1 inventory, product behavior mapping, founder decisions,
+  blockers before broader beta, blockers before comments/replies, language risk
+  notes, and follow-up ticket candidates. It is not legal advice and does not
+  mark the policy copy as approved.
 
 ## How to Use This Checklist
 

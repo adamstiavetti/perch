@@ -55,6 +55,12 @@ Current scope note:
   `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`; public legal
   routes and linked surfaces tested passed, with access-hold and operator-admin
   checks limited by the active session state.
+- Policy/Ops founder review packet:
+  `docs/ops/policy-ops-founder-review-packet.md` is the current decision aid
+  for founder/legal review. It maps the existing draft policy language to
+  implemented behavior and identifies the support/contact, deletion/export,
+  appeal, owner, acceptance-tracking, and re-smoke decisions needed before
+  broader private beta or comments/replies.
 
 ## 1. Purpose
 

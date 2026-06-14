@@ -325,6 +325,13 @@ public/auth links, Channel composer/report policy links, public-domain boundary
 behavior, and product/safety boundaries passed. Access-hold verification copy
 and operator-admin policy-link visibility remain limited by session state.
 
+Policy/Ops founder review is now packaged in
+`docs/ops/policy-ops-founder-review-packet.md`. It does not approve policy
+copy or implement intake. It identifies founder decisions for support/contact,
+deletion/export, moderation appeals, policy acceptance tracking, owners,
+retention expectations, and the two limited smoke areas before broader private
+beta or comments/replies.
+
 ## UI/UX Rule
 
 Do not broadly redesign routes before they are functional.
