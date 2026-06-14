@@ -319,7 +319,11 @@ Policy/Ops Pack v1 UI wiring is recorded in
 verification copy, DFW Channel composer/report UI, and admin moderation. It
 does not add policy acceptance tracking, support form backend, deletion/export
 intake, appeal intake, final approved contact paths, migrations, or runtime
-changes. Browser smoke remains needed after deployment.
+changes. Browser smoke is recorded in
+`docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`: public legal routes,
+public/auth links, Channel composer/report policy links, public-domain boundary
+behavior, and product/safety boundaries passed. Access-hold verification copy
+and operator-admin policy-link visibility remain limited by session state.
 
 ## UI/UX Rule
 

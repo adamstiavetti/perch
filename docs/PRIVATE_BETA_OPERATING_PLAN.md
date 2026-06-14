@@ -51,7 +51,10 @@ Current scope note:
   entry, access-hold verification copy, DFW Channel composer/reporting, and
   admin moderation surfaces. Policy acceptance, support form backend,
   deletion/export intake, appeal intake, final contact paths, and final legal
-  approval remain unwired.
+  approval remain unwired. Browser smoke is recorded in
+  `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`; public legal
+  routes and linked surfaces tested passed, with access-hold and operator-admin
+  checks limited by the active session state.
 
 ## 1. Purpose
 

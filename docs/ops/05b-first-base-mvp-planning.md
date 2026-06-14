@@ -411,7 +411,10 @@ pages and focused links from public, auth, verification/access-hold, DFW
 Channel composer/reporting, and admin moderation surfaces. It does not add
 policy acceptance tracking, support form backend, deletion/export intake, appeal
 intake, final approved contact paths, migrations, or runtime changes. Browser
-smoke remains required after deployment.
+smoke is recorded in `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`:
+public legal routes, public/auth links, Channel composer/report policy links,
+public-domain boundaries, and product/safety boundaries passed. Access-hold
+copy and operator-admin policy-link visibility remain limited by session state.
 
 The remaining functional backlog from checkpoint `c2bbd73` to narrow
 private-beta MVP is recorded in

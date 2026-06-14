@@ -269,7 +269,14 @@ Current controlling docs for Hub work:
   verification copy, DFW Channel composer/reporting, and admin moderation
   surfaces. It adds no policy acceptance tracking, support form backend,
   deletion/export intake, appeal intake, migrations, runtime apply, or final
-  legal approval; browser smoke remains pending after deployment.
+  legal approval.
+- [Policy/Ops Pack v1 UI Wiring Browser Smoke](ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md) - records beta browser smoke after
+  `21f2e58`: public legal routes, public/auth links, Channel composer policy
+  link, report UI policy link, public-domain boundaries, and product/safety
+  boundaries passed. Access-hold verification copy remained limited because the
+  active account redirected to `/app`, and operator admin policy-link visibility
+  remained limited because the active session was non-operator and correctly
+  denied.
 - [FBMVP Checkpoint: DFW Hub + Channels Foundation Level-Set](ops/fbmvp-checkpoint-dfw-hub-channels-foundation-level-set.md) - docs-only
   checkpoint at `0249e0d` after T26A runtime apply docs. It records the current
   completed DFW Hub + Channels metadata foundation and the sequence before

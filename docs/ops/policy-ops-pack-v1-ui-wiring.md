@@ -145,6 +145,7 @@ Docs Updated:
 - `docs/ops/fbmvp-remaining-functional-backlog.md`
 - `docs/ops/05b-first-base-mvp-planning.md`
 - `docs/ops/policy-ops-pack-v1-summary.md`
+- `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`
 - this record
 
 Docs Not Updated / Why:
@@ -152,8 +153,8 @@ Docs Not Updated / Why:
 - `docs/DATA_MODEL.md` was not updated because no schema, table, RPC,
   migration, policy acceptance model, or runtime data model changed.
 - Runtime-apply docs were not created because no runtime apply is needed.
-- Browser-smoke docs were not created in this implementation task because smoke
-  must happen after deployment.
+- Browser-smoke docs are recorded separately in
+  `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`.
 
 Scope Impact:
 
@@ -167,11 +168,15 @@ Runtime Apply Docs Needed?
 
 Browser Smoke Docs Needed?
 
-- Yes. Browser smoke is needed after deployment to verify the public policy
-  routes, links from public/auth/access-hold/Channels/admin surfaces, and
-  domain-boundary behavior.
+- Mostly satisfied by
+  `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`. Public legal
+  routes, public/auth links, Channel composer/report policy links,
+  public-domain boundary behavior, and product/safety boundaries passed.
+  Access-hold verification copy and operator-admin policy-link visibility remain
+  limited by session state.
 
 ## Status
 
-Policy/Ops Pack v1 UI wiring is ready for review. The policy pages remain draft
-private-beta copy and should not be treated as final legal approval.
+Policy/Ops Pack v1 UI wiring is implemented and beta-smoked with the limitations
+recorded above. The policy pages remain draft private-beta copy and should not
+be treated as final legal approval.

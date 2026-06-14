@@ -46,7 +46,10 @@ Current scope note:
   pages and focused links from public/auth/access-hold/Channels/admin surfaces.
   This does not add legal acceptance tracking, support/deletion/export/appeal
   intake, final approved contact paths, or final legal approval. Browser smoke
-  is needed after deployment.
+  is recorded in `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`:
+  public legal routes, public/auth links, Channel composer/report links, and
+  public-domain boundaries passed; access-hold copy and operator admin
+  policy-link visibility remain limited by session state.
 
 ## How to Use This Checklist
 

@@ -179,11 +179,15 @@ Runtime Apply Docs Needed?
 
 Browser Smoke Docs Needed?
 
-- Yes after the UI wiring follow-up deploys. Smoke should verify public policy
-  routes, linked surfaces, and domain-boundary behavior.
+- Mostly satisfied by
+  `docs/ops/policy-ops-pack-v1-ui-wiring-browser-smoke.md`. Public legal
+  routes, public/auth links, Channel composer/report policy links,
+  public-domain boundary behavior, and product/safety boundaries passed.
+  Access-hold verification copy and operator-admin policy-link visibility remain
+  limited by session state.
 
 ## Status
 
-Policy/Ops Pack v1 has draft copy plus narrow UI wiring. It remains pending
-founder/legal/policy review and post-deployment browser smoke before broader
-private-beta use.
+Policy/Ops Pack v1 has draft copy plus narrow UI wiring and beta browser smoke
+with the limitations above. It remains pending founder/legal/policy review
+before broader private-beta use.
