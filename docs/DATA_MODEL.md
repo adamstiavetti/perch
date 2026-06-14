@@ -439,8 +439,9 @@ Current data model implication:
   `20260612024544 create_hub_channel_post_detail_rpc`. The runtime apply used
   a targeted SQL transaction, added only the matching ledger row, and did not
   use broad database push, migration repair, `apply_migration`, deploy, app
-  code changes, staging, or commit. Authenticated browser/route smoke remains
-  pending and may require a safe post existing on a child `hub_channel` board.
+  code changes, staging, or commit. Authenticated browser/detail smoke is
+  documented through the later T26D post-fix and final create-redirect smoke
+  records, which reused safe child-channel posts and verified the detail route.
 - `FBMVP-T26D` locally adds the selected-channel post create RPC,
   `public.create_open_hub_channel_post(p_base_code text, p_channel_slug text, p_title text, p_body text, p_content_type text default null, p_category text default null)`,
   plus a server action and selected-channel title/body composer on
@@ -462,8 +463,11 @@ Current data model implication:
   `20260612044500 create_hub_channel_post_create_rpc`. The runtime apply used a
   targeted SQL transaction, added only the matching ledger row, and did not use
   broad database push, migration repair, `apply_migration`, deploy, app code
-  changes, staging, or commit. Authenticated browser/create smoke remains
-  pending.
+  changes, staging, or commit. Authenticated browser/create smoke is documented:
+  the first final create smoke created one safe post but exposed a redirect
+  issue; the subsequent redirect fix and final create-redirect smoke verified
+  create navigation to the created detail route, plus T26B list and T26C detail
+  regressions.
 - `FBMVP-T26E-A` locally adds the selected-channel post reporting and moderation
   review foundation by reusing `public.board_post_reports`. It does not create a
   new report table.
@@ -486,8 +490,11 @@ Current data model implication:
   `20260613091500 create_hub_channel_post_reporting_rpc`. Runtime now has
   `public.report_open_hub_channel_post(...)`,
   `public.list_open_hub_channel_post_reports(...)`, and
-  `public.moderate_open_hub_channel_post(...)`; browser smoke remains pending
-  after deployment readiness.
+  `public.moderate_open_hub_channel_post(...)`. Partial user-side browser smoke
+  verified report submission, duplicate handling, non-operator admin denial, and
+  safe public UI boundaries; final operator-scoped browser smoke verified the
+  DFW Channel report in `/app/admin/community-moderation` with safe context and
+  restored the temporary moderation scope.
 - Future multi-airport channel expansion may need airport-prefixed slugs or a
   scoped uniqueness model because `boards.slug` is currently globally unique.
   Once meaningful user content exists in channel boards, slugs should be
@@ -528,13 +535,19 @@ channel browser smoke passed and is recorded in
 implementation adds the selected-channel post detail route/RPC, and T26C
 runtime apply is recorded in
 `ops/fbmvp-t26c-channel-post-detail-read-foundation-runtime-apply.md`; browser
-smoke remains pending.
+smoke is documented in the later post-fix/final T26D records. T26D adds the
+selected-channel composer/create-post foundation, targeted runtime apply, and
+final create-redirect browser smoke. T26E-A adds selected-channel post
+reporting and operator-scoped moderation review, with targeted runtime apply
+and final browser smoke documented. Channel comments and replies remain
+incomplete until a later scoped ticket.
 
 T26A local implementation and targeted runtime apply start surfacing channel
 metadata through the real DFW Channels overview route. T26B starts the selected
 Channel thread-list route, and T26C starts the selected Channel post detail
-route. Composer, comments, reports, and moderation integration remain
-incomplete until later scoped tickets.
+route. T26D closes the composer/create-post baseline and redirect smoke, and
+T26E-A closes the first post reporting/moderation-review safety layer. Comments
+and replies remain incomplete until later scoped tickets.
 
 Layover section strategy:
 

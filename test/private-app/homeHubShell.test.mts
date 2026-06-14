@@ -550,6 +550,9 @@ test("DFW Channels selected-channel shell supports scoped composer and avoids ol
   assert.match(composerFormSource, /Post to this DFW Channel/);
   assert.match(composerFormSource, /Publish thread/);
   assert.match(selectedChannelSource, /No threads in this Channel yet/);
+  assert.match(selectedChannelSource, /reported\s+from post detail/);
+  assert.match(selectedChannelSource, /operator-scoped review/);
+  assert.match(selectedChannelSource, /Comments and\s+replies remain scoped out/);
   assert.match(selectedChannelSource, /post\.authorLabel/);
   assert.match(selectedChannelSource, /formatPostMetaValue\(post\.contentType\)/);
   assert.match(selectedChannelSource, /formatPostMetaValue\(post\.category\)/);

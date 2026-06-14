@@ -56,9 +56,10 @@ test("community moderation page extends existing operator-gated route with comme
   assert.match(pageSource, /name="reason"/);
   assert.match(pageSource, /commentBodyPreview/);
   assert.match(pageSource, /postTitlePreview/);
+  assert.match(pageSource, /href="\/legal\/moderation-appeals"/);
   assert.doesNotMatch(
     pageSource,
-    /reporter_user_id|reporter email|author_user_id|comment moderation queue|ban|suspend|appeal|AI moderation|public sharing/i,
+    /reporter_user_id|reporter email|author_user_id|comment moderation queue|ban|suspend|appeal action|appeal form|appeal workflow|appeal mutation|AI moderation|public sharing/i,
   );
 });
 

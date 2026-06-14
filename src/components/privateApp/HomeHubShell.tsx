@@ -1964,8 +1964,9 @@ export function DfwChannelThreadListShell({
             <div>
               <h2 id="dfw-channel-threads-title">Channel Threads</h2>
               <p>
-                Published threads for this DFW Channel. Start a focused
-                thread here; comments and reports are later scoped tickets.
+                Published threads for this DFW Channel. Posts can be reported
+                from post detail for operator-scoped review. Comments and
+                replies remain scoped out.
               </p>
             </div>
           </div>

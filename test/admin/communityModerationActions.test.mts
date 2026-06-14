@@ -50,9 +50,10 @@ test("community moderation page renders report cards and scoped hide/remove form
   assert.match(pageSource, /value="remove"/);
   assert.match(pageSource, /name="reason"/);
   assert.match(pageSource, /postBodyPreview/);
+  assert.match(pageSource, /href="\/legal\/moderation-appeals"/);
   assert.doesNotMatch(
     pageSource,
-    /reply moderation|ban|suspend|appeal|AI moderation|public sharing|reporter_user_id|reporter email|author_user_id/i,
+    /reply moderation|ban|suspend|appeal action|appeal form|appeal workflow|appeal mutation|AI moderation|public sharing|reporter_user_id|reporter email|author_user_id/i,
   );
 });
 
